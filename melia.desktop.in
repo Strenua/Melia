@@ -1,0 +1,8 @@
+[Desktop Entry]
+_Name=Melia
+_Comment=Melia application
+Categories=GNOME;Utility;
+Exec=melia
+Icon=melia
+Terminal=false
+Type=Application
