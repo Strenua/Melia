@@ -4,6 +4,7 @@
 ### END LICENSE
 import os
 import gettext
+import gconf
 from gettext import gettext as _
 gettext.textdomain('melia')
 
@@ -26,7 +27,14 @@ from melia.AboutMeliaDialog import AboutMeliaDialog
 from melia.PreferencesMeliaDialog import PreferencesMeliaDialog
 
 
-import gconf
+
+def my_import(name):
+    mod = __import__(name)
+    components = name.split('.')
+    for comp in components[1:]:
+        mod = getattr(mod, comp)
+    return mod
+    
 # See melia_lib.Window.py for more details about how this class works
 class MeliaWindow(Window):
     __gtype_name__ = "MeliaWindow"
@@ -37,6 +45,10 @@ class MeliaWindow(Window):
 
         self.AboutDialog = AboutMeliaDialog
         self.PreferencesDialog = PreferencesMeliaDialog
+        
+        #set the height
+        #print dir(self.ui.melia_window)
+        self.ui.melia_window.set_size_request(48, self.get_screen().get_height())
 
         # Code for other initialization actions should be added here.
         #color = gtk.gdk.color_parse('#000')
@@ -52,14 +64,22 @@ class MeliaWindow(Window):
         self.ui.Home.command = 'nautilus %s'
         home = os.getenv('HOME')
         self.ui.Home.list = {'Home': home, 'Documents': home + '/Documents', 'Downloads': home + '/Downloads', 'Pictures': home + '/Pictures', 'Music': home + '/Music', 'Videos': home + '/Videos'}
+        self.ui.Home.appname = 'Home'
         self.ui.Trash.command = 'nautilus trash:///'
-        self.ui.Trash.list = {'Empty Trash': 'rm -rf ~/.Trash/*'}
+        self.ui.Trash.list = {'Empty Trash': 'rm -rf %s/.local/share/Trash/info/* && rm -rf %s/.local/share/Trash/files/*' % (os.getenv('HOME'), os.getenv('HOME'))}
+        self.ui.Trash.appname = 'Trash'
         
         #gtk.timeout_add(1000, self.update_wins)
         
         screen.connect('window-opened', self.add_window)
         screen.connect('window-closed', self.remove_window)
         
+        # load all the custom quicklists
+        self.qls = {}
+        for ql in os.listdir('quicklists/'):
+            if ql.endswith('.py') and not ql.startswith('_'):
+                qlm = my_import('quicklists.' + ql.split('.py')[0])
+                self.qls.update({ql.split('.py')[0]: (qlm.command, qlm.ql)})
         
         #self.classes = {'File Manager': self.ui.Home}
         self.wins = {}
@@ -84,12 +104,21 @@ class MeliaWindow(Window):
                     
                     btn = gtk.Button()
                     img = gtk.Image()
-                    img.set_from_pixbuf(win.get_icon())
+                   # print dir(win.get_class_group().get_icon())
+                    img.set_from_pixbuf(win.get_class_group().get_icon())
                     btn.set_image(img)
                     btn.set_relief(gtk.RELIEF_NONE)
                     btn.win_is_open = True
                     btn.connect('clicked', self.minmaxer)
                     btn.list = {}
+                    
+                    # check for an imported quicklist
+                    sc = win.get_application().get_name().lower().replace(' ', '_').replace('-', '_')
+                    if sc in self.qls.keys():
+                        if self.qls[sc][0]: btn.command = self.qls[sc][0]
+                        btn.list = self.qls[sc][1]
+                    
+                    btn.appname = win.get_name()
                     btn.connect('button-press-event', self.on_click)
                     btn.win = win
                     self.ui.topbox.pack_start(btn)
@@ -98,6 +127,9 @@ class MeliaWindow(Window):
                     self.wins.update({win.get_xid(): btn})
                     print win.get_class_group().get_name(), win.get_pid()
                    # showedwins += [win.get_pid()]
+        #for d in dir(self):
+        #    if 'move' in d: print d
+                   
                 
 
     def on_winbtn_click(self, widget, data=None):
@@ -106,7 +138,7 @@ class MeliaWindow(Window):
     def on_click(self, widget, event):
         if event.button == 3:
             self.ui.quicklist = gtk.Menu() # clear the menu each time
-            print 'right-clicked', widget.get_label()
+            print 'right-clicked', widget.appname
             for i in widget.list.keys():
                 item = gtk.MenuItem(i)
                 item.command = widget.list[i]
@@ -156,6 +188,14 @@ class MeliaWindow(Window):
                 btn.win = win
                 self.ui.topbox.pack_start(btn)
                 btn.list = {}
+                
+                # check for an imported quicklist
+                sc = win.get_application().get_name().lower().replace(' ', '_').replace('-', '_')
+                if sc in self.qls.keys():
+                    if self.qls[sc][0]: btn.command = self.qls[sc][0]
+                    btn.list = self.qls[sc][1]
+                        
+                btn.appname = win.get_name()
                 btn.connect('button-press-event', self.on_click)
                 btn.show()
                 #self.classes.update({win.get_class_group().get_name(): btn})

@@ -34,6 +34,8 @@ class Window(gtk.Window):
         builder = get_builder('MeliaWindow')
         new_object = builder.get_object("melia_window")
         new_object.finish_initializing(builder)
+        #new_object2 = builder.get_object("melia_panel")
+        #new_object2.finish_initializing(builder)
         return new_object
 
     def finish_initializing(self, builder):
