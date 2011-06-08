@@ -77,12 +77,12 @@ class InstallAndUpdateDataDirectory(DistUtilsExtra.auto.install_auto):
 DistUtilsExtra.auto.setup(
     name='melia',
     version='0.1',
-    #license='GPL-3',
-    #author='Your Name',
-    #author_email='email@ubuntu.com',
-    #description='UI for managing …',
-    #long_description='Here a longer description',
-    #url='https://launchpad.net/melia',
+    license='GPL-3',
+    author='Michael Smith',
+    author_email='crazedpsyc@duckduckgo.com',
+    description='A magical desktop shell for lawn gnomes and housecats... Oh, and big-twoleg-giants',
+    long_description='Melia is a magical desktop shell for strange, mystical creatures; a copy of which was stolen from a drunken gnome named Glog. The thief spirited it away to the humans, who were amazed because of its three dimensional two dimensionality, and its \'purdyness\'. Don\'t worry, the gnomes have now reluctantly signed a contract making it perfectly legal (and free) to distribute! A little-known fact is that the gnomes write everything in Python now, because they forced their mortal enemies, the snakes, to give it to them after a particularly devastating war.',
+    url='https://launchpad.net/strenua',
     cmdclass={'install': InstallAndUpdateDataDirectory}
     )
 

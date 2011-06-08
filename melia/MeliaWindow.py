@@ -210,6 +210,8 @@ class MeliaWindow(Window):
             self.ui.quicklist.popup(None, None, None, event.button, event.time)
         elif event.button == 1:
             print 'clicked', widget.get_label()
+        panel = MeliaPanelDialog()
+        panel.run()
             
     def quicklaunch(self, widget, data=None):
         print 'Running', widget.command
