@@ -5,6 +5,7 @@
 import os
 import gettext
 import gconf
+from ConfigParser import ConfigParser
 from gettext import gettext as _
 gettext.textdomain('melia')
 
@@ -19,12 +20,14 @@ def getwins():
     wins = screen.get_windows()
     return wins
     
+import launcher_config
 import logging
 logger = logging.getLogger('melia')
 
 from melia_lib import Window
 from melia.AboutMeliaDialog import AboutMeliaDialog
 from melia.PreferencesMeliaDialog import PreferencesMeliaDialog
+from melia.MeliaPanelDialog import MeliaPanelDialog
 
 
 
@@ -45,10 +48,12 @@ class MeliaWindow(Window):
 
         self.AboutDialog = AboutMeliaDialog
         self.PreferencesDialog = PreferencesMeliaDialog
+        #self.MeliaPanel = MeliaPanelDialog
         
         #set the height
         #print dir(self.ui.melia_window)
-        self.ui.melia_window.set_size_request(48, self.get_screen().get_height())
+        if launcher_config.height == 'default': launcher_config.height = self.get_screen().get_height() - launcher_config.top_panel_height
+        self.ui.melia_window.set_size_request(launcher_config.width, self.get_screen().get_height() - launcher_config.top_panel_height)
 
         # Code for other initialization actions should be added here.
         #color = gtk.gdk.color_parse('#000')
@@ -59,12 +64,69 @@ class MeliaWindow(Window):
 
         client.add_dir ("/apps/melia",
                       gconf.CLIENT_PRELOAD_NONE)
-              
         
-        self.ui.Home.command = 'nautilus %s'
+        # load all the custom quicklists
+        self.qls = {}
+        for ql in os.listdir('quicklists/'):
+            if ql.endswith('.py') and not ql.startswith('_'):
+                qlm = my_import('quicklists.' + ql.split('.py')[0])
+                self.qls.update({ql.split('.py')[0]: (qlm.command, qlm.ql)})  
+                if 'empty_render' in dir(qlm): self.qls.update({ql.split('.py')[0]: (qlm.command, qlm.ql, qlm.empty_render)})  
+             
         home = os.getenv('HOME')
-        self.ui.Home.list = {'Home': home, 'Documents': home + '/Documents', 'Downloads': home + '/Downloads', 'Pictures': home + '/Pictures', 'Music': home + '/Music', 'Videos': home + '/Videos'}
-        self.ui.Home.appname = 'Home'
+        l0 = os.listdir('/usr/share/applications')
+        l1 = os.listdir(home + '/.local/share/applications')
+        for i in launcher_config.pinned.keys():
+            if launcher_config.pinned[i] + '.desktop' in l0:
+                print '[INFO] Adding %s from pinstack' % launcher_config.pinned[i]
+                cf = ConfigParser()
+                cf.read('/usr/share/applications/%s.desktop' % launcher_config.pinned[i])
+                items = cf.items('Desktop Entry')
+                name, swc, command, icon = False, False, False, False
+                for c in items:
+                    if c[0] == 'name': name = c[1]
+                    elif c[0] == 'startupwmclass': swc = c[1]
+                    elif c[0] == 'exec': command = c[1]
+                    elif c[0] == 'icon': icon = c[1]
+                    if command and not swc: swc = launcher_config.pinned[i]
+                if swc and command and icon and name:
+                    btn = gtk.Button()
+                    img = gtk.Image()
+                   # print dir(win.get_class_group().get_icon())
+                    img.set_from_icon_name(icon, gtk.ICON_SIZE_DND)
+                    
+                    btn.set_image(img)
+                    btn.set_relief(gtk.RELIEF_NONE)
+                    btn.win_is_open = False
+                    btn.connect('clicked', self.launcher)
+                    btn.list = {}
+                    
+                    btn.command = command
+                    btn.empty_render = ''
+                    
+                    # check for an imported quicklist
+                    sc = launcher_config.pinned[i].replace('-', '_')
+                    if sc in self.qls.keys():
+                        if self.qls[sc][0]: btn.command = self.qls[sc][0]
+                        btn.list = self.qls[sc][1]
+                        if len(self.qls[sc]) > 2: btn.empty_render = self.qls[sc][2]
+                    
+                    btn.appname = name
+                    btn.connect('button-press-event', self.on_click)
+                    btn.win = None
+                    self.ui.topbox.pack_start(btn)
+                    btn.show()
+                else: 
+                    print swc, command, icon, name
+                
+                
+            else: 
+                print '[DEBUG] No such launcher: %s' % launcher_config.pinned[i] 
+                logger.debug('No such launcher: %s' % launcher_config.pinned[i])
+                
+        
+
+
         self.ui.Trash.command = 'nautilus trash:///'
         self.ui.Trash.list = {'Empty Trash': 'rm -rf %s/.local/share/Trash/info/* && rm -rf %s/.local/share/Trash/files/*' % (os.getenv('HOME'), os.getenv('HOME'))}
         self.ui.Trash.appname = 'Trash'
@@ -73,13 +135,6 @@ class MeliaWindow(Window):
         
         screen.connect('window-opened', self.add_window)
         screen.connect('window-closed', self.remove_window)
-        
-        # load all the custom quicklists
-        self.qls = {}
-        for ql in os.listdir('quicklists/'):
-            if ql.endswith('.py') and not ql.startswith('_'):
-                qlm = my_import('quicklists.' + ql.split('.py')[0])
-                self.qls.update({ql.split('.py')[0]: (qlm.command, qlm.ql)})
         
         #self.classes = {'File Manager': self.ui.Home}
         self.wins = {}
@@ -112,11 +167,14 @@ class MeliaWindow(Window):
                     btn.connect('clicked', self.minmaxer)
                     btn.list = {}
                     
+                    btn.empty_render = ''
+                    
                     # check for an imported quicklist
                     sc = win.get_application().get_name().lower().replace(' ', '_').replace('-', '_')
                     if sc in self.qls.keys():
                         if self.qls[sc][0]: btn.command = self.qls[sc][0]
                         btn.list = self.qls[sc][1]
+                        if len(self.qls[sc]) > 2: btn.empty_render = self.qls[sc][2]
                     
                     btn.appname = win.get_name()
                     btn.connect('button-press-event', self.on_click)
@@ -127,10 +185,7 @@ class MeliaWindow(Window):
                     self.wins.update({win.get_xid(): btn})
                     print win.get_class_group().get_name(), win.get_pid()
                    # showedwins += [win.get_pid()]
-        #for d in dir(self):
-        #    if 'move' in d: print d
-                   
-                
+        
 
     def on_winbtn_click(self, widget, data=None):
         print widget.get_label()
@@ -221,3 +276,11 @@ class MeliaWindow(Window):
 
     def unautohide(self, wid, e):
         print 'Unautohiding (fakishly)'
+        
+        
+    def launcher(self, wid, e=None):
+        print 'Launching ' + wid.command
+        if '%s' in wid.command: os.system(wid.command % wid.empty_render)
+        else: os.system(wid.command)
+        
+        

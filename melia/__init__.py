@@ -11,7 +11,7 @@ gettext.textdomain('melia')
 
 import gtk
 
-from melia import MeliaWindow
+from melia import MeliaWindow, MeliaPanelDialog
 
 from melia_lib import set_up_logging, preferences, get_version
 
@@ -43,6 +43,10 @@ def main():
     # Run the application.    
     window = MeliaWindow.MeliaWindow()
     window.show()
+    
+    # THIS THING IS B0RK3D!!!! (FIXME)    
+    #panel = MeliaPanelDialog.MeliaPanelDialog()
+    #panel.show()
     gtk.main()
     
     preferences.save()
