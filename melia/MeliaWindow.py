@@ -53,7 +53,8 @@ class MeliaWindow(Window):
         #set the height
         #print dir(self.ui.melia_window)
         if launcher_config.height == 'default': launcher_config.height = self.get_screen().get_height() - launcher_config.top_panel_height
-        self.ui.melia_window.set_size_request(launcher_config.width, self.get_screen().get_height() - launcher_config.top_panel_height)
+        self.ui.melia_window.set_size_request(launcher_config.width, launcher_config.height)
+        self.move(0, launcher_config.top_panel_height)
 
         # Code for other initialization actions should be added here.
         #color = gtk.gdk.color_parse('#000')
@@ -123,9 +124,7 @@ class MeliaWindow(Window):
             else: 
                 print '[DEBUG] No such launcher: %s' % launcher_config.pinned[i] 
                 logger.debug('No such launcher: %s' % launcher_config.pinned[i])
-                
-        
-
+        gtk.timeout_add(100, self.start_panel)
 
         self.ui.Trash.command = 'nautilus trash:///'
         self.ui.Trash.list = {'Empty Trash': 'rm -rf %s/.local/share/Trash/info/* && rm -rf %s/.local/share/Trash/files/*' % (os.getenv('HOME'), os.getenv('HOME'))}
@@ -186,6 +185,11 @@ class MeliaWindow(Window):
                     print win.get_class_group().get_name(), win.get_pid()
                    # showedwins += [win.get_pid()]
         
+    def start_panel(self):
+        ''
+        #panel = MeliaPanelDialog()
+        #panel.run()       
+        
 
     def on_winbtn_click(self, widget, data=None):
         print widget.get_label()
@@ -210,8 +214,7 @@ class MeliaWindow(Window):
             self.ui.quicklist.popup(None, None, None, event.button, event.time)
         elif event.button == 1:
             print 'clicked', widget.get_label()
-        panel = MeliaPanelDialog()
-        panel.run()
+        
             
     def quicklaunch(self, widget, data=None):
         print 'Running', widget.command
