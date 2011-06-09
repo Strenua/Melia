@@ -5,10 +5,16 @@ pinned = {
 2: 'gedit'
 }
 
-top_panel_height = 0 #TODO: Set this to 25 once there is actually a top panel
+top_panel_height = 25
 
-#launcher position:
+# launcher position:
 x, y = 0, top_panel_height
 
-#launcher size (set height to 'default' to fit to screen):
+# the orientation of the launcher. herizontal is more MS-like
+orientation = 'vertical' # 'vertical' or 'horizontal'
+
+# launcher size (set height to 'default' to fit to screen):
 width, height = 48, 'default' # note that the width does not currently affect the icons, so it looks odd
+
+# should buttons be like Win7/Unity or WinVista-/Gnome2?
+button_style = 'new' # 'new' for new buttons, 'old' for old buttons

@@ -38,6 +38,20 @@ def my_import(name):
         mod = getattr(mod, comp)
     return mod
     
+class Button(gtk.Button): # my cool buttons ;)
+    def finish_initializing(self, window_title='wind0w'): 
+        # shorten the title
+        if len(window_title) > 20: window_title = window_title[:19] + '...'
+        # figure out the button style from config
+        if launcher_config.button_style == 'new': return # for now, i'll just do nothing here :P
+        
+        else: 
+            # set width
+            self.set_size_request(200, 32)
+            # add the label
+            self.set_label(window_title)
+            
+    
 # See melia_lib.Window.py for more details about how this class works
 class MeliaWindow(Window):
     __gtype_name__ = "MeliaWindow"
@@ -50,12 +64,19 @@ class MeliaWindow(Window):
         self.PreferencesDialog = PreferencesMeliaDialog
         #self.MeliaPanel = MeliaPanelDialog
         
-        #set the height
+        #set the height/orientation/position
         #print dir(self.ui.melia_window)
         if launcher_config.height == 'default': launcher_config.height = self.get_screen().get_height() - launcher_config.top_panel_height
         self.ui.melia_window.set_size_request(launcher_config.width, launcher_config.height)
         self.move(0, launcher_config.top_panel_height)
-
+        if launcher_config.orientation == 'horizontal': 
+            self.ui.vbox1.set_orientation(gtk.ORIENTATION_HORIZONTAL)
+            self.ui.topbox.set_orientation(gtk.ORIENTATION_HORIZONTAL)
+            self.ui.bottombox.set_orientation(gtk.ORIENTATION_HORIZONTAL)
+            self.move(launcher_config.x, launcher_config.y)
+            
+        
+            
         # Code for other initialization actions should be added here.
         #color = gtk.gdk.color_parse('#000')
         #self.modify_bg(gtk.STATE_NORMAL, color)  
@@ -87,11 +108,12 @@ class MeliaWindow(Window):
                 for c in items:
                     if c[0] == 'name': name = c[1]
                     elif c[0] == 'startupwmclass': swc = c[1]
-                    elif c[0] == 'exec': command = c[1]
+                    elif c[0] == 'exec': command = c[1].replace('%U', '').replace('%u', '')
                     elif c[0] == 'icon': icon = c[1]
                     if command and not swc: swc = launcher_config.pinned[i]
                 if swc and command and icon and name:
-                    btn = gtk.Button()
+                    btn = Button()
+                    btn.finish_initializing(name)
                     img = gtk.Image()
                    # print dir(win.get_class_group().get_icon())
                     img.set_from_icon_name(icon, gtk.ICON_SIZE_DND)
@@ -151,12 +173,13 @@ class MeliaWindow(Window):
                     label = btn.get_label()
                     if label: newlabel = str(int(label) + 1)
                     else: newlabel = '2'
-                    btn.set_label(newlabel)
+                    #btn.set_label(newlabel)
                     btn.win_is_open = True
                     print win.get_class_group().get_name(), win.get_pid()
                 else:
                     
-                    btn = gtk.Button()
+                    btn = Button()
+                    btn.finish_initializing(win.get_name())
                     img = gtk.Image()
                    # print dir(win.get_class_group().get_icon())
                     img.set_from_pixbuf(win.get_class_group().get_icon())
@@ -186,8 +209,9 @@ class MeliaWindow(Window):
                    # showedwins += [win.get_pid()]
         
     def start_panel(self):
-        panel = MeliaPanelDialog()
-        panel.run()       
+        ''
+        #panel = MeliaPanelDialog()
+        #panel.run()       
         
 
     def on_winbtn_click(self, widget, data=None):
@@ -211,6 +235,7 @@ class MeliaWindow(Window):
             self.ui.quicklist.button = widget
             self.ui.quicklist.show_all()
             self.ui.quicklist.popup(None, None, None, event.button, event.time)
+            print 'BLABLA:', self.ui.quicklist.menu_get_for_attach_widget()
         elif event.button == 1:
             print 'clicked', widget.get_label()
         
@@ -237,7 +262,7 @@ class MeliaWindow(Window):
                 btn.win_is_open = True
                 print win.get_class_group().get_name(), win.get_pid()
             else:
-                btn = gtk.Button()
+                btn = Button()
                 img = gtk.Image()
                 img.set_from_pixbuf(win.get_icon())
                 btn.set_image(img)
