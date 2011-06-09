@@ -24,7 +24,6 @@
     <property name="skip_pager_hint">True</property>
     <property name="decorated">False</property>
     <property name="deletable">False</property>
-    <property name="transient_for">melia_window</property>
     <property name="has_resize_grip">False</property>
     <child>
       <object class="GtkHBox" id="hbox2">

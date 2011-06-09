@@ -186,9 +186,8 @@ class MeliaWindow(Window):
                    # showedwins += [win.get_pid()]
         
     def start_panel(self):
-        ''
-        #panel = MeliaPanelDialog()
-        #panel.run()       
+        panel = MeliaPanelDialog()
+        panel.run()       
         
 
     def on_winbtn_click(self, widget, data=None):

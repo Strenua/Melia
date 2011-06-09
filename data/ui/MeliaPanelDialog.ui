@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="2.16"/>
-  <!-- interface-requires melia_window 1.0 -->
   <!-- interface-naming-policy project-wide -->
   <object class="GtkImage" id="image14">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixel_size">15</property>
+    <property name="pixel_size">17</property>
     <property name="icon_name">system-shutdown</property>
   </object>
-  <object class="MeliaWindow" id="melia_panel_dialog">
+  <object class="MeliaPanelDialog" id="melia_panel_dialog">
     <property name="width_request">1366</property>
-    <property name="height_request">20</property>
+    <property name="height_request">25</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Melia Panel</property>
     <property name="resizable">False</property>
-    <property name="default_width">32</property>
-    <property name="default_height">768</property>
+    <property name="default_width">1366</property>
+    <property name="default_height">25</property>
     <property name="destroy_with_parent">True</property>
     <property name="icon">../media/melia.svg</property>
     <property name="type_hint">dock</property>
@@ -26,11 +25,11 @@
     <property name="deletable">False</property>
     <property name="has_resize_grip">False</property>
     <child>
-      <object class="GtkHBox" id="hbox2">
+      <object class="GtkHBox" id="hbox1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
-          <object class="GtkLayout" id="layout3">
+          <object class="GtkLayout" id="layout1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
           </object>
@@ -41,7 +40,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLayout" id="layout4">
+          <object class="GtkLayout" id="layout2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
           </object>
@@ -52,19 +51,20 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHButtonBox" id="hbuttonbox1">
+          <object class="GtkHButtonBox" id="hbuttonbox2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
               <placeholder/>
             </child>
             <child>
-              <object class="GtkButton" id="indicator-system">
+              <object class="GtkButton" id="indicator-system1">
                 <property name="label" translatable="yes">power</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_action_appearance">False</property>
+                <property name="image">image14</property>
                 <property name="relief">none</property>
                 <property name="image_position">right</property>
               </object>
