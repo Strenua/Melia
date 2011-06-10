@@ -8,8 +8,8 @@
         var oldpage = document.getElementById(activePage + '-body');
         var newpage = document.getElementById(page + '-body');
         var oldbutton = document.getElementById(activePage);
-        oldpage.style.opacity = '0.0';
-        newpage.style.opacity = '1.0';
+        oldpage.style.opacity = '0';
+        newpage.style.opacity = '1';
         button.className = button.className + ' active';
         oldbutton.className = oldbutton.className - ' active';
         activePage = page;
@@ -28,7 +28,13 @@
     <div id="test" onclick="changePage('test', this)">Test Drive</div>
   </nav>
   <div id="home-body" class="bodypart"><h1>This website is under development</h1></div>
-  <div id="peek-body" class="bodypart gone"><h1>Please Report Bugs to <a href="mailto:crazedpsyc@duckduckgo.com">Me</a></h1></div>
-  <div id="test-body" class="bodypart gone"><h1>Come back soon!</h1></div>
+  <div id="peek-body" class="bodypart gone"><h1>Please Report Bugs to <a href="mailto:crazedpsyc@duckduckgo.com">Me</a></h1>
+    <br>
+    <img src="https://github.com/Strenua/Melia/raw/master/melia.png" />
+    <br>
+    <img src="" />
+  </div>
+  <div id="test-body" class="bodypart gone"><h1>Come back soon!</h1>
+  </div>
 </body>
 </html>
