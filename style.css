@@ -47,6 +47,8 @@ div.gone {
 
 img {
     max-width: 80%;
+    box-shadow: 0px 0px 10px black;
+    border-radius: 5px;
 }
 
 #logo {
@@ -55,6 +57,7 @@ img {
     cursor: pointer;
     top: 2%;
     max-width: auto;
+    box-shadow: none;
 }
 
 nav {
