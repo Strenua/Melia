@@ -1,1 +1,34 @@
-My GitHub Page
+<html>
+<head>
+  <title>Melia</title>
+  <link rel="stylesheet" href="style.css" type="text/css" />
+  <script type="text/javascript">
+    activePage = 'home';
+    function changePage(page, button) {
+        var oldpage = document.getElementById(activePage + '-body');
+        var newpage = document.getElementById(page + '-body');
+        var oldbutton = document.getElementById(activePage);
+        oldpage.style.opacity = '0.0';
+        newpage.style.opacity = '1.0';
+        button.className = button.className + ' active';
+        oldbutton.className = oldbutton.className - ' active';
+        activePage = page;
+    }
+  </script>
+</head>
+<body>
+  <a href="no-logo.html"><img id="logo" src="no-logo.png" /></a>
+  <div id="header">
+    <h1>Melia</h1>
+    <h4>The desktop that will make you happy</h4>
+  </div>
+  <nav>
+    <div id="home" class="active" onclick="changePage('home', this)">Home</div>
+    <div id="peek" onclick="changePage('peek', this)">Take a Peek</div>
+    <div id="test" onclick="changePage('test', this)">Test Drive</div>
+  </nav>
+  <div id="home-body" class="bodypart"><h1>This website is under development</h1></div>
+  <div id="peek-body" class="bodypart gone"><h1>Please Report Bugs to <a href="mailto:crazedpsyc@duckduckgo.com">Me</a></h1></div>
+  <div id="test-body" class="bodypart gone"><h1>Come back soon!</h1></div>
+</body>
+</html>
