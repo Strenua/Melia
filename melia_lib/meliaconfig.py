@@ -17,8 +17,8 @@ __all__ = [
 # Where your project will look for your data (for instance, images and ui
 # files). By default, this is ../data, relative your trunk layout
 __melia_data_directory__ = '../data/'
-__license__ = ''
-__version__ = 'VERSION'
+__license__ = 'GPL-3'
+__version__ = '1.3'
 
 import os
 

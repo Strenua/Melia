@@ -4,7 +4,7 @@
 ### END LICENSE
 
 import gtk
-#from melia_lib import Window
+from melia_lib import Window
 from . helpers import get_builder
 
 class MeliaPanel(gtk.Window):

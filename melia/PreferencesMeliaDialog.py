@@ -22,9 +22,11 @@
 #
 # TODO: replace widget_methods with your own values
 
+import gtk, gobject
 
 widget_methods = {
     'example_entry': ['get_text', 'set_text', 'changed'],
+    'orientation': ['get_active', 'set_active', 'changed'],
 }
 
 import gettext
@@ -49,3 +51,15 @@ class PreferencesMeliaDialog(PreferencesDialog):
         self.set_widgets_from_preferences() # pylint: disable=E1101
 
         # Code for other initialization actions should be added here.
+        
+        # set up the combobox objects
+        renderer = gtk.CellRendererText()
+        self.ui.orientation.pack_start(renderer, False)
+        self.ui.orientation.add_attribute(renderer, 'text', 2)
+        self.ui.liststore1.append(('vertical',))
+        self.ui.liststore1.append(('horizontal',))
+        self.ui.orientation.set_model(self.ui.liststore1)
+        self.ui.orientation.show_all()
+        
+        
+        

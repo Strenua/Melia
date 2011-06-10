@@ -29,6 +29,8 @@ from melia.AboutMeliaDialog import AboutMeliaDialog
 from melia.PreferencesMeliaDialog import PreferencesMeliaDialog
 from melia.MeliaPanelDialog import MeliaPanelDialog
 
+from melia_lib.preferences import preferences
+
 
 
 def my_import(name):
@@ -51,7 +53,11 @@ class Button(gtk.Button): # my cool buttons ;)
             # add the label
             self.set_label(window_title)
             
-    
+   
+# test couchdb...
+preferences.db_connect()
+preferences.load()
+
 # See melia_lib.Window.py for more details about how this class works
 class MeliaWindow(Window):
     __gtype_name__ = "MeliaWindow"
@@ -66,16 +72,11 @@ class MeliaWindow(Window):
         
         #set the height/orientation/position
         #print dir(self.ui.melia_window)
-        if launcher_config.height == 'default': launcher_config.height = self.get_screen().get_height() - launcher_config.top_panel_height
-        self.ui.melia_window.set_size_request(launcher_config.width, launcher_config.height)
-        self.move(0, launcher_config.top_panel_height)
-        if launcher_config.orientation == 'horizontal': 
-            self.ui.vbox1.set_orientation(gtk.ORIENTATION_HORIZONTAL)
-            self.ui.topbox.set_orientation(gtk.ORIENTATION_HORIZONTAL)
-            self.ui.bottombox.set_orientation(gtk.ORIENTATION_HORIZONTAL)
-            self.move(launcher_config.x, launcher_config.y)
-            
-        
+        if preferences['launcher_height'] == 'default': preferences['launcher_height'] = self.get_screen().get_height() - preferences['top_panel_height']
+        self.ui.melia_window.set_size_request(preferences['launcher_width'], preferences['launcher_height'])
+        self.move(0, preferences['top_panel_height'])
+        self.set_orientation(preferences['orientation'])
+                
             
         # Code for other initialization actions should be added here.
         #color = gtk.gdk.color_parse('#000')
@@ -207,6 +208,7 @@ class MeliaWindow(Window):
                     self.wins.update({win.get_xid(): btn})
                     print win.get_class_group().get_name(), win.get_pid()
                    # showedwins += [win.get_pid()]
+                   
         
     def start_panel(self):
         ''
@@ -312,4 +314,14 @@ class MeliaWindow(Window):
         if '%s' in wid.command: os.system(wid.command % wid.empty_render)
         else: os.system(wid.command)
         
-        
+    def set_orientation(self, orientation):
+        if orientation == 1: 
+            self.ui.vbox1.set_orientation(gtk.ORIENTATION_HORIZONTAL)
+            self.ui.topbox.set_orientation(gtk.ORIENTATION_HORIZONTAL)
+            self.ui.bottombox.set_orientation(gtk.ORIENTATION_HORIZONTAL)
+            self.move(preferences['launcher_x_pos'], preferences['launcher_y_pos'])
+        else: 
+            self.ui.vbox1.set_orientation(gtk.ORIENTATION_VERTICAL)
+            self.ui.topbox.set_orientation(gtk.ORIENTATION_VERTICAL)
+            self.ui.bottombox.set_orientation(gtk.ORIENTATION_VERTICAL)
+            self.move(preferences['launcher_x_pos'], preferences['launcher_y_pos'])

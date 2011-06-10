@@ -53,6 +53,7 @@ class PreferencesDialog(gtk.Dialog):
 
     def set_widgets_from_preferences(self):
         ''' these widgets show values in the preferences dictionary '''
+        print preferences.keys()
         for key in preferences.keys():
             self.set_widget_from_preference(key)
 
@@ -88,7 +89,7 @@ Please edit 'widget_methods' in %s"""
             logger.warn("""'%s' unknown signal name '%s'
 Please edit 'widget_methods' in %s"""
             % (key, self.widget_methods[key][2], self.__gtype_name__))
-
+        print widget, value
         method(value)
 
     def get_key_for_widget(self, widget):

@@ -119,6 +119,7 @@ class Window(gtk.Window):
         logger.debug('main window received preferences changed')
         for key in data:
             logger.debug('preference changed: %s = %s' % (key, preferences[key]))
+            print 'preference changed: %s = %s' % (key, preferences[key])
 
     def on_preferences_dialog_destroyed(self, widget, data=None):
         '''only affects gui

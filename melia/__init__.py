@@ -31,9 +31,15 @@ def main():
 
     # preferences
     # set some values for our first session
-    # TODO: replace defaults with your own values
     default_preferences = {
     'example_entry': 'I remember stuff',
+    'orientation': 0, # 0=vertical 1=horizontal
+    'top_panel_height': 25,
+    'launcher_x_pos': 0,
+    'launcher_y_pos': 25,
+    'launcher_width': 48,
+    'launcher_height': 'default',
+    'button_style': 'new',
     }
     preferences.update(default_preferences)
     # user's stored preferences are used for 2nd and subsequent sessions
