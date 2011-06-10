@@ -34,7 +34,7 @@ div.gone {
 }
 
 #header {
-    position: absolute;
+    position: fixed;
     top: 0px;
     left: 0px;
     background-color: #353431;
@@ -51,14 +51,14 @@ img {
 
 #logo {
     z-index: 15;
-    position: absolute;
+    position: fixed;
     cursor: pointer;
     top: 2%;
     max-width: auto;
 }
 
 nav {
-    position: absolute;
+    position: fixed;
     left: 0px;
     top: 0px;
     background-color: #353431;
