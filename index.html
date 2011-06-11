@@ -4,15 +4,35 @@
   <link rel="stylesheet" href="style.css" type="text/css" />
   <script type="text/javascript">
     activePage = 'home';
+    x = 0;
+    function scrollUp() {
+        window.scrollBy(0,-50); // horizontal and vertical scroll increments
+        x++;
+        if (x==10) {
+            scrolldelay
+        }
+    }
     function changePage(page, button) {
+        window.scrollBy(0,-5000); // horizontal and vertical scroll increments
         var oldpage = document.getElementById(activePage + '-body');
         var newpage = document.getElementById(page + '-body');
         var oldbutton = document.getElementById(activePage);
         oldpage.style.opacity = '0';
+        oldpage.style.visibility = 'hidden';
         newpage.style.opacity = '1';
+        newpage.style.visibility = 'visible';
         button.className = button.className + ' active';
         oldbutton.className = oldbutton.className - ' active';
         activePage = page;
+        
+        
+    	scrolldelay = setTimeout('scrollUp()',50); // scrolls every 100 milliseconds*/
+    }
+    function imgMouseOver() {
+        document.getElementById('header').style.height = '10%';
+    }
+    function imgMouseOut() {
+        document.getElementById('header').style.height = '20%';
     }
   </script><!-- zyxwvutsrqponmlkjihgfedcba -->
   <link  href="http://fonts.googleapis.com/css?family=Ubuntu:300,300italic,regular,italic,500,500italic,bold,bolditalic" rel="stylesheet" type="text/css" >
@@ -36,15 +56,15 @@
   <div id="home-body" class="bodypart"><h1>This website is under development</h1></div>
   <div id="peek-body" class="bodypart gone"><h1>Please Report Bugs to <a href="mailto:crazedpsyc@duckduckgo.com">Me</a></h1>
     <br><br>
-    <img src="https://github.com/Strenua/Melia/raw/master/melia.png" />
+    <img src="https://github.com/Strenua/Melia/raw/master/melia.png" onmouseover="imgMouseOver()" onmouseout="imgMouseOut()" />
     <br><br>
-    <img src="https://github.com/Strenua/Melia/raw/master/melia-plexydesk2.png" />
+    <img src="https://github.com/Strenua/Melia/raw/master/melia-plexydesk2.png" onmouseover="imgMouseOver()" onmouseout="imgMouseOut()" />
     <br><br>
-    <img src="https://github.com/Strenua/Melia/raw/master/melia-horiz.png" />
+    <img src="https://github.com/Strenua/Melia/raw/master/melia-horiz.png" onmouseover="imgMouseOver()" onmouseout="imgMouseOut()" />
     <br><br>
-    <img src="https://github.com/Strenua/Melia/raw/master/melia-horiz-2.png" />
+    <img src="https://github.com/Strenua/Melia/raw/master/melia-horiz-2.png" onmouseover="imgMouseOver()" onmouseout="imgMouseOut()" />
     <br><br>
-    <img src="https://github.com/Strenua/Melia/raw/master/melia-horiz-3.png" />
+    <img src="https://github.com/Strenua/Melia/raw/master/melia-horiz-3.png" onmouseover="imgMouseOver()" onmouseout="imgMouseOut()" />
   </div>
   <div id="test-body" class="bodypart gone"><h1>Come back soon!<br>For now you can download Melia from <a href="https://github.com/Strenua/Melia">GitHub</a></h1>
   </div>
