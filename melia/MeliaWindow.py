@@ -25,13 +25,11 @@ import logging
 logger = logging.getLogger('melia')
 
 from melia_lib import Window
+from melia_lib import melia_dbus
 from melia.AboutMeliaDialog import AboutMeliaDialog
 from melia.PreferencesMeliaDialog import PreferencesMeliaDialog
 from melia.MeliaPanelDialog import MeliaPanelDialog
-
 from melia_lib.preferences import preferences
-
-
 
 def my_import(name):
     mod = __import__(name)
@@ -40,18 +38,37 @@ def my_import(name):
         mod = getattr(mod, comp)
     return mod
     
+global buttons
+buttons = []
 class Button(gtk.Button): # my cool buttons ;)
     def finish_initializing(self, window_title='wind0w'): 
+        global buttons
+        buttons += [self]
         # shorten the title
         if len(window_title) > 20: window_title = window_title[:19] + '...'
+        self.window_title = window_title
         # figure out the button style from config
-        if launcher_config.button_style == 'new': return # for now, i'll just do nothing here :P
+        if preferences['button_style'] == 0: return # for now, i'll just do nothing here :P
         
         else: 
             # set width
             self.set_size_request(200, 32)
             # add the label
             self.set_label(window_title)
+
+    def update_style(self):
+        # figure out the button style from config
+        if preferences['button_style'] == 0: 
+            self.set_size_request(int(preferences['launcher_width']), 48)
+            self.set_label('')        
+        
+        else: 
+            # set width
+            self.set_size_request(200, 32)
+            # add the label
+            self.set_label(self.window_title)
+            
+    
             
    
 # test couchdb...
@@ -72,10 +89,10 @@ class MeliaWindow(Window):
         
         #set the height/orientation/position
         #print dir(self.ui.melia_window)
-        if preferences['launcher_height'] == 'default': preferences['launcher_height'] = self.get_screen().get_height() - preferences['top_panel_height']
-        self.ui.melia_window.set_size_request(preferences['launcher_width'], preferences['launcher_height'])
-        self.move(0, preferences['top_panel_height'])
-        self.set_orientation(preferences['orientation'])
+        if preferences['launcher_height'] == 'default': preferences['launcher_height'] = float(self.get_screen().get_height() - int(preferences['top_panel_height']))
+        self.ui.melia_window.set_size_request(int(preferences['launcher_width']), int(preferences['launcher_height']))
+        self.move(0, int(preferences['top_panel_height']))
+        self.set_orientation()
                 
             
         # Code for other initialization actions should be added here.
@@ -90,11 +107,7 @@ class MeliaWindow(Window):
         
         # load all the custom quicklists
         self.qls = {}
-        for ql in os.listdir('quicklists/'):
-            if ql.endswith('.py') and not ql.startswith('_'):
-                qlm = my_import('quicklists.' + ql.split('.py')[0])
-                self.qls.update({ql.split('.py')[0]: (qlm.command, qlm.ql)})  
-                if 'empty_render' in dir(qlm): self.qls.update({ql.split('.py')[0]: (qlm.command, qlm.ql, qlm.empty_render)})  
+        self.update_qls() 
              
         home = os.getenv('HOME')
         l0 = os.listdir('/usr/share/applications')
@@ -209,13 +222,22 @@ class MeliaWindow(Window):
                     print win.get_class_group().get_name(), win.get_pid()
                    # showedwins += [win.get_pid()]
                    
+        melia_dbus.start_loop(self)
+                   
+                   
         
     def start_panel(self):
         ''
         #panel = MeliaPanelDialog()
         #panel.run()       
         
-
+    def update_qls(self):
+        for ql in os.listdir('quicklists/'):
+            if ql.endswith('.py') and not ql.startswith('_'):
+                qlm = my_import('quicklists.' + ql.split('.py')[0])
+                self.qls.update({ql.split('.py')[0]: (qlm.command, qlm.ql)})  
+                if 'empty_render' in dir(qlm): self.qls.update({ql.split('.py')[0]: (qlm.command, qlm.ql, qlm.empty_render)}) 
+                
     def on_winbtn_click(self, widget, data=None):
         print widget.get_label()
         
@@ -314,8 +336,9 @@ class MeliaWindow(Window):
         if '%s' in wid.command: os.system(wid.command % wid.empty_render)
         else: os.system(wid.command)
         
-    def set_orientation(self, orientation):
-        if orientation == 1: 
+    def set_orientation(self):
+        orientation = preferences['orientation']
+        if int(orientation) == 1: 
             self.ui.vbox1.set_orientation(gtk.ORIENTATION_HORIZONTAL)
             self.ui.topbox.set_orientation(gtk.ORIENTATION_HORIZONTAL)
             self.ui.bottombox.set_orientation(gtk.ORIENTATION_HORIZONTAL)
@@ -325,3 +348,13 @@ class MeliaWindow(Window):
             self.ui.topbox.set_orientation(gtk.ORIENTATION_VERTICAL)
             self.ui.bottombox.set_orientation(gtk.ORIENTATION_VERTICAL)
             self.move(preferences['launcher_x_pos'], preferences['launcher_y_pos'])
+            
+    def update_height(self):
+        self.set_size_request(int(preferences['launcher_width']), int(preferences['launcher_height']))
+        
+    def update_width(self):
+        self.set_size_request(int(preferences['launcher_width']), int(preferences['launcher_height']))
+        
+    def update_button_style(self):
+        for button in buttons:
+            button.update_style()

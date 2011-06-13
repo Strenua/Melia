@@ -25,8 +25,10 @@
 import gtk, gobject
 
 widget_methods = {
-    'example_entry': ['get_text', 'set_text', 'changed'],
-    'orientation': ['get_active', 'set_active', 'changed'],
+    'orientation': ['get_active', 'set_active', 'changed', 'set_orientation'], # Added another column here for the method (of the MeliaWindow) to be called for live updates
+    'launcher_height': ['get_value', 'set_value', 'value-changed', 'update_height'],
+    'launcher_width': ['get_value', 'set_value', 'value-changed', 'update_width'],
+    'button_style': ['get_active', 'set_active', 'changed', 'update_button_style'],
 }
 
 import gettext
@@ -53,13 +55,15 @@ class PreferencesMeliaDialog(PreferencesDialog):
         # Code for other initialization actions should be added here.
         
         # set up the combobox objects
-        renderer = gtk.CellRendererText()
-        self.ui.orientation.pack_start(renderer, False)
-        self.ui.orientation.add_attribute(renderer, 'text', 2)
         self.ui.liststore1.append(('vertical',))
         self.ui.liststore1.append(('horizontal',))
         self.ui.orientation.set_model(self.ui.liststore1)
         self.ui.orientation.show_all()
+        
+        self.ui.liststore2.append(('new',))
+        self.ui.liststore2.append(('old',))
+        self.ui.button_style.set_model(self.ui.liststore2)
+        self.ui.button_style.show_all()
         
         
         

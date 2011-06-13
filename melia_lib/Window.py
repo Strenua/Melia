@@ -10,6 +10,8 @@ logger = logging.getLogger('melia_lib')
 from . helpers import get_builder, show_uri, get_help_uri
 from . preferences import preferences
 
+from melia.PreferencesMeliaDialog import widget_methods
+
 # This class is meant to be subclassed by MeliaWindow.  It provides
 # common functions and some boilerplate.
 class Window(gtk.Window):
@@ -119,7 +121,19 @@ class Window(gtk.Window):
         logger.debug('main window received preferences changed')
         for key in data:
             logger.debug('preference changed: %s = %s' % (key, preferences[key]))
-            print 'preference changed: %s = %s' % (key, preferences[key])
+            try: update_method_name = widget_methods[key][3]
+            except: 
+                logger.warn('Cannot find %s in widget_methods, or it does not have a live update method' % key)
+                return
+            
+            try: update_method = getattr(self, update_method_name)
+            except: 
+                logger.warn('Live update method for %s does not seem to exist' % key)
+                return
+            
+            if 1: update_method()
+            #except: logger.warn('Error in %s function for updating %s' % (update_method_name, key))
+            
 
     def on_preferences_dialog_destroyed(self, widget, data=None):
         '''only affects gui

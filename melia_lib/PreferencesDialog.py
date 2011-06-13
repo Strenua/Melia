@@ -89,8 +89,12 @@ Please edit 'widget_methods' in %s"""
             logger.warn("""'%s' unknown signal name '%s'
 Please edit 'widget_methods' in %s"""
             % (key, self.widget_methods[key][2], self.__gtype_name__))
-        print widget, value
-        method(value)
+            
+        self.typify = None
+        try: method(value)
+        except TypeError:
+            self.typify = type(value)
+            method(str(value))
 
     def get_key_for_widget(self, widget):
         key = None
@@ -122,8 +126,12 @@ Please edit 'widget_methods' in %s"""
             return
 
         value=read_method()
+        if self.typify: 
+            try: value = self.typify(value)
+            except: pass
         logger.debug('set_preference: %s = %s' % (key, str(value)))
         preferences[key] = value
+        preferences.save()
 
     def on_btn_close_clicked(self, widget, data=None):
         self.destroy()

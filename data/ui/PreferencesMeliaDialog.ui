@@ -6,10 +6,17 @@
   <object class="GtkListStore" id="liststore1">
     <columns>
       <!-- column-name orientation -->
-      <column type="GtkCellRendererText"/>
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkListStore" id="liststore2">
+    <columns>
+      <!-- column-name gchararray1 -->
+      <column type="gchararray"/>
     </columns>
   </object>
   <object class="PreferencesMeliaDialog" id="preferences_melia_dialog">
+    <property name="width_request">426</property>
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Melia Preferences</property>
@@ -81,33 +88,12 @@
               </object>
             </child>
             <child>
-              <object class="GtkEntry" id="launcher_height">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="max_length">7</property>
-                <property name="invisible_char">•</property>
-                <property name="width_chars">7</property>
-                <property name="invisible_char_set">True</property>
-                <property name="primary_icon_activatable">False</property>
-                <property name="secondary_icon_activatable">False</property>
-                <property name="primary_icon_sensitive">True</property>
-                <property name="secondary_icon_sensitive">True</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkLabel" id="fg_color_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">Launcher _Height:</property>
                 <property name="use_underline">True</property>
-                <property name="mnemonic_widget">launcher_height</property>
               </object>
               <packing>
                 <property name="top_attach">1</property>
@@ -115,13 +101,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="icon_width_label">
+              <object class="GtkLabel" id="launcher_width_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">_Launcher Width:</property>
                 <property name="use_underline">True</property>
-                <property name="mnemonic_widget">icon_width</property>
               </object>
               <packing>
                 <property name="top_attach">2</property>
@@ -129,55 +114,14 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="opacity_label">
+              <object class="GtkLabel" id="button_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="xalign">0</property>
-                <property name="label" translatable="yes">_Background Opacity</property>
+                <property name="label" translatable="yes">_Button Style</property>
                 <property name="use_underline">True</property>
-                <property name="mnemonic_widget">opacity</property>
               </object>
               <packing>
-                <property name="top_attach">3</property>
-                <property name="bottom_attach">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkEntry" id="icon_width">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="max_length">7</property>
-                <property name="invisible_char">•</property>
-                <property name="width_chars">7</property>
-                <property name="invisible_char_set">True</property>
-                <property name="primary_icon_activatable">False</property>
-                <property name="secondary_icon_activatable">False</property>
-                <property name="primary_icon_sensitive">True</property>
-                <property name="secondary_icon_sensitive">True</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkEntry" id="opacity">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="max_length">4</property>
-                <property name="invisible_char">•</property>
-                <property name="width_chars">4</property>
-                <property name="invisible_char_set">True</property>
-                <property name="primary_icon_activatable">False</property>
-                <property name="secondary_icon_activatable">False</property>
-                <property name="primary_icon_sensitive">True</property>
-                <property name="secondary_icon_sensitive">True</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
                 <property name="top_attach">3</property>
                 <property name="bottom_attach">4</property>
               </packing>
@@ -187,6 +131,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="model">liststore1</property>
+                <property name="button_sensitivity">on</property>
                 <child>
                   <object class="GtkCellRendererText" id="cellrenderertext1"/>
                   <attributes>
@@ -197,6 +142,57 @@
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHScale" id="launcher_height">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="round_digits">1</property>
+                <property name="digits">0</property>
+                <property name="value_pos">left</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHScale" id="launcher_width">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <property name="value_pos">left</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBox" id="button_style">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">new = big square buttons without text
+old = short fat buttons with icons and text</property>
+                <property name="model">liststore2</property>
+                <child>
+                  <object class="GtkCellRendererText" id="cellrenderertext2"/>
+                  <attributes>
+                    <attribute name="text">0</attribute>
+                  </attributes>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
               </packing>
             </child>
           </object>

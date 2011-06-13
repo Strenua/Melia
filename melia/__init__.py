@@ -37,14 +37,16 @@ def main():
     'top_panel_height': 25,
     'launcher_x_pos': 0,
     'launcher_y_pos': 25,
-    'launcher_width': 48,
+    'launcher_width': 48.0,
     'launcher_height': 'default',
-    'button_style': 'new',
+    'button_style': 0, # 0 = new, 1 = old
     }
     preferences.update(default_preferences)
     # user's stored preferences are used for 2nd and subsequent sessions
     preferences.db_connect()
     preferences.load()
+    preferences.update(default_preferences)
+    preferences.save()
 
     # Run the application.    
     window = MeliaWindow.MeliaWindow()
