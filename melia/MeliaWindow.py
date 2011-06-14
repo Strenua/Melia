@@ -5,6 +5,7 @@
 import os
 import gettext
 import gconf
+import cairo
 from ConfigParser import ConfigParser
 from gettext import gettext as _
 gettext.textdomain('melia')
@@ -76,6 +77,14 @@ class Button(gtk.Button): # my cool buttons ;)
 # test couchdb...
 preferences.db_connect()
 preferences.load()
+
+def transparent_expose(widget, event):
+	cr = widget.window.cairo_create()
+	cr.set_operator(cairo.OPERATOR_CLEAR)
+	region = gtk.gdk.region_rectangle(event.area)
+	cr.region(region)
+	cr.fill()
+	return False
 
 # See melia_lib.Window.py for more details about how this class works
 class MeliaWindow(Window):
@@ -233,6 +242,26 @@ class MeliaWindow(Window):
         self.notification_in_progress = False
         self.notification_stack = {}
         
+           
+    def widgefy(self, widget, e=False):
+        
+        if e: widget.set_position(gtk.WIN_POS_CENTER)
+		if e: widget.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DOCK)
+		if e: widget.set_keep_below(True)
+		if e: widget.set_decorated(False)
+		if e: widget.stick()
+
+		screen = widget.get_screen()
+		rgba = screen.get_rgba_colormap()
+		widget.set_colormap(rgba)
+		widget.set_app_paintable(True)
+		widget.connect("expose-event", transparent_expose)
+		color = gtk.gdk.color_parse('#000')
+        widget.modify_text(gtk.STATE_NORMAL, color)  
+        widget.modify_font(color) 
+		widget.show()
+        
+        
     def start_panel(self):
         self.panel = MeliaPanelDialog()
         self.panel.show() 
@@ -242,9 +271,20 @@ class MeliaWindow(Window):
         self.panel.ui.dashbutton.set_size_request(int(preferences['launcher_width']), -1)
         self.dash = MeliaDashboardDialog()
         self.dash.hide()
+        #
+        self.desk = MeliaDashboardDialog()
+        self.desk.mode = 'desk'
+        self.widgefy(self.desk, True)
+        self.widgefy(self.desk.ui.vbox1)
+        self.widgefy(self.desk.ui.scrolledwindow1)
+        self.widgefy(self.desk.ui.viewport1)
+        self.widgefy(self.desk.ui.table3)
+        self.widgefy(self.desk.ui.entry1)
+        self.widgefy(self.desk.ui.media_apps_button)
+        #
         self.panel.ui.dashbutton.connect('toggled', self.show_dash)
         ### TODO: REMOVE THIS AND FIX THE IMAGE SETTER!
-        self.panel.ui.notification_icon.hide()
+        #self.panel.ui.notification_icon.hide()
         
         ###############################################
         
@@ -392,21 +432,18 @@ class MeliaWindow(Window):
             
             
     def show_notification(self, id, icon, summary, body, timeout):
+        #print 'ICON:', icon
         if timeout > 10000: timeout = 10000
         if self.notification_in_progress and self.notification_in_progress != id: self.notification_stack.update({id: (id, icon, summary, body, timeout)})
         else: 
             self.panel.ui.notification_area.set_label('%s: %s' % (summary, body))
-            print 'setting timeout to', timeout
-            gtk.timeout_add(timeout, self.notification_expire)
-            color = gtk.gdk.color_parse('#D00')
-            self.panel.ui.notification_area.modify_bg(gtk.STATE_NORMAL, color)
-            self.panel.ui.notification_area.show()
             if icon:
-                self.panel.ui.notification_icon = gtk.Image()
+                #self.panel.ui.notification_icon = gtk.Image()
                 self.panel.ui.notification_icon.set_from_icon_name(icon)
-               #self.panel.ui.notification_icon.show()
-            #self.ui.layout1.modify_bg(gtk.STATE_NORMAL, color)   
-            
+                self.panel.ui.notification_icon.show()
+
+            print 'setting timeout to', timeout 
+            gtk.timeout_add(timeout, self.notification_expire)
             self.notification_in_progress = id
         
     def notification_expire(self):
