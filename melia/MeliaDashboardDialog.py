@@ -6,6 +6,7 @@
 import gtk
 import dbus
 import os
+import subprocess
 
 from melia_lib.helpers import get_builder
 
@@ -67,6 +68,57 @@ class MeliaDashboardDialog(gtk.Window):
 		self.default_buttons = [self.ui.media_apps_button, self.ui.internet_apps_button, self.ui.more_apps_button, self.ui.find_files_button, self.ui.firefox_button, self.ui.shotwell_button, self.ui.evolution_button, self.ui.banshee_button]
 		# create an empty list for clearing other buttons
 		self.current_buttons = []
+		
+		gtk.timeout_add(100, self.init_bottom_toolbar)
+		
+		self.launcher_index = []
+		self.index_launchers()
+	
+	def index_launchers(self):
+	    self.launcher_index = []
+	    for desktop in os.listdir('/usr/share/applications/'):
+	        if desktop.endswith('.desktop'): 
+                cf = ConfigParser()
+                cf.read('/usr/share/applications/' + desktop)
+               # print '/usr/share/applications/' + desktop
+                try: items = cf.items('Desktop Entry')
+                except: raise NameError('no [Desktop Entry] section in %s' % '/usr/share/applications/' + desktop)
+                name, command, icon = False, False, False
+                for c in items:
+                    if c[0] == 'name': name = c[1]
+                    elif c[0] == 'icon': icon = c[1]
+                    elif c[0] == 'exec': command = c[1].replace('%U', '').replace('%u', '')
+                if icon and name and command:
+	                self.launcher_index += [(name, icon, command)]
+	            
+        for desktop in os.listdir(os.getenv('HOME') + '/.local/share/applications/'):
+	        if desktop.endswith('.desktop'): 
+                cf = ConfigParser()
+                cf.read(os.getenv('HOME') + '/.local/share/applications/' + desktop)
+               # print '~/.local/share/applications/' + desktop
+                try: items = cf.items('Desktop Entry')
+                except: logger.warn('no [Desktop Entry] section in %s' % os.getenv('HOME') + '/.local/share/applications/' + desktop)
+                name, command, icon = False, False, False
+                for c in items:
+                    if c[0] == 'name': name = c[1]
+                    elif c[0] == 'icon': icon = c[1]
+                    elif c[0] == 'exec': command = c[1].replace('%U', '').replace('%u', '')
+                if icon and name and command:
+                    print command
+	                self.launcher_index += [(name, icon, command)]
+		
+    def init_bottom_toolbar(self):
+        if self.mode == 'dash': return
+        
+		# add stuff to the bottom toolbar
+		button = gtk.Button()
+		button.set_label('About Melia')
+		im = gtk.Image()
+		im.set_from_icon_name('dialog-information', gtk.ICON_SIZE_LARGE_TOOLBAR)
+		button.set_image(im)
+		button.set_image_position(gtk.POS_TOP)
+		self.ui.bottom_toolbar.append_widget(button, 'About Melia', 'AbouuutMleiea')
+		self.ui.bottom_toolbar.show_all()
 
     def search(self, widget, data=None):
         self.query = widget.get_text()
@@ -92,6 +144,9 @@ class MeliaDashboardDialog(gtk.Window):
 	def prepare_and_handle_search_result(self, results):
 
 		formatted_results = []	
+		
+		for pr in self.launcher_index:
+		    if self.query.lower() in pr[0].lower(): formatted_results.append({'name': pr[0], 'icon': pr[1], 'path': pr[2]})
 
 		for result in results:
 			
@@ -148,7 +203,7 @@ class MeliaDashboardDialog(gtk.Window):
                     elif c[0] == 'icon': icon = c[1]
                     elif c[0] == 'exec': command = c[1].replace('%U', '').replace('%u', '')
                 if icon and name and command:
-                    img.set_from_icon_name(icon)
+                    img.set_from_icon_name(icon, gtk.ICON_SIZE_DIALOG)
                     btn.set_label(name)
                     btn.set_image(img)
                     btn.set_image_position(gtk.POS_TOP)
@@ -164,6 +219,11 @@ class MeliaDashboardDialog(gtk.Window):
                         btn.set_image(img)
                         btn.set_image_position(gtk.POS_TOP)
                     except: logger.warn('Failed to load image: %s' % res['path'].replace('///', '/'))
+                else:
+                    img.set_from_icon_name(res['icon'].replace('/', '-'), gtk.ICON_SIZE_DIALOG)
+                    btn.set_image(img)
+                    btn.set_image_position(gtk.POS_TOP)
+                    
             btn.set_size_request(128, 128) 
             btn.set_relief(gtk.RELIEF_HALF)
             img.set_size_request(48, 48) 
@@ -179,7 +239,8 @@ class MeliaDashboardDialog(gtk.Window):
                     
     def open_file(self, widget, data=None):
         if not os.path.exists(widget.command.replace('///', '/')): 
-            logger.warn('Attempt to open file %s failed, as it does not exist' % widget.command.replace('///', '/'))
+            logger.warn('Attempt to open file %s failed, as it does not exist. attempting to run it as a command' % widget.command.replace('///', '/'))
+            subprocess.call(widget.command.split())
             return
         logger.debug("running 'xdg-open %s'" % widget.command)
         os.system('xdg-open %s' % widget.command)

@@ -258,7 +258,7 @@ class MeliaWindow(Window):
 		widget.connect("expose-event", transparent_expose)
 		color = gtk.gdk.color_parse('#000')
         widget.modify_text(gtk.STATE_NORMAL, color)  
-        widget.modify_font(color) 
+        #widget.modify_font(color) 
 		widget.show()
         
         
