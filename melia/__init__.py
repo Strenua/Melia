@@ -40,6 +40,7 @@ def main():
     'launcher_width': 48.0,
     'launcher_height': 'default',
     'button_style': 0, # 0 = new, 1 = old
+    'panel_transparent': False,
     }
     preferences.update(default_preferences)
     # user's stored preferences are used for 2nd and subsequent sessions

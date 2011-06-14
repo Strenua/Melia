@@ -3,7 +3,9 @@
 # This file is in the public domain
 ### END LICENSE
 
+import os
 import gtk
+import cairo
 
 from melia_lib.helpers import get_builder
 
@@ -11,7 +13,24 @@ import gettext
 from gettext import gettext as _
 gettext.textdomain('melia')
 
-class MeliaPanelDialog(gtk.Dialog):
+from melia_lib.preferences import preferences
+preferences.db_connect()
+preferences.load()
+
+def set_indicator_menu_pos(menu, data=None):
+    print menu, data
+    return (1290, 25, True)
+
+
+def transparent_expose(widget, event):
+	cr = widget.window.cairo_create()
+	cr.set_operator(cairo.OPERATOR_CLEAR)
+	region = gtk.gdk.region_rectangle(event.area)
+	cr.region(region)
+	cr.fill()
+	return False
+	
+class MeliaPanelDialog(gtk.Window):
     __gtype_name__ = "MeliaPanelDialog"
 
     def __new__(cls):
@@ -36,6 +55,15 @@ class MeliaPanelDialog(gtk.Dialog):
         # Get a reference to the builder and set up the signals.
         self.builder = builder
         self.ui = builder.get_ui(self)
+        
+        self.ui.indicator_system.connect('toggled', self.indicator_system_toggled)
+        
+        if preferences['panel_transparent']:
+            screen = self.get_screen()
+            rgba = screen.get_rgba_colormap()
+            self.set_colormap(rgba)
+            self.set_app_paintable(True)
+            self.connect("expose-event", transparent_expose)
 
     def on_btn_ok_clicked(self, widget, data=None):
         """The user has elected to save the changes.
@@ -50,6 +78,30 @@ class MeliaPanelDialog(gtk.Dialog):
         Called before the dialog returns gtk.RESPONSE_CANCEL for run()
         """
         pass
+        
+    def indicator_system_toggled(self, widget, data=None):
+        item = gtk.MenuItem('Lock Screen')
+        #item.connect('activate', self.quicklaunch)
+        self.ui.indicator_system_menu.append(item)
+        self.ui.indicator_system_menu.append(gtk.SeparatorMenuItem())
+        item = gtk.MenuItem('Guest Session')
+        #item.connect('activate', self.quicklaunch)
+        self.ui.indicator_system_menu.append(item)
+        item = gtk.MenuItem('Switch From %s...' % os.getenv('LOGNAME'))
+        #item.connect('activate', self.quicklaunch)
+        self.ui.indicator_system_menu.append(item)
+        self.ui.indicator_system_menu.show_all()
+        self.ui.indicator_system_menu.popup(None, None, set_indicator_menu_pos, 0, gtk.get_current_event_time())
+        self.ui.indicator_system_menu.button = widget
+        self.ui.indicator_system_menu.connect('deactivate', self.indicator_untoggle)
+        print widget.get_pointer()
+        
+    def indicator_untoggle(self, widget, data=None): 
+        widget.button.set_state(gtk.STATE_NORMAL)
+        
+        
+    def load_indicator(self, indicator):
+        print indicator
 
 
 if __name__ == "__main__":

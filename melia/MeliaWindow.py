@@ -29,7 +29,9 @@ from melia_lib import melia_dbus
 from melia.AboutMeliaDialog import AboutMeliaDialog
 from melia.PreferencesMeliaDialog import PreferencesMeliaDialog
 from melia.MeliaPanelDialog import MeliaPanelDialog
+from melia.MeliaDashboardDialog import MeliaDashboardDialog
 from melia_lib.preferences import preferences
+from indicators import system
 
 def my_import(name):
     mod = __import__(name)
@@ -99,11 +101,11 @@ class MeliaWindow(Window):
         #color = gtk.gdk.color_parse('#000')
         #self.modify_bg(gtk.STATE_NORMAL, color)  
         #self.ui.layout1.modify_bg(gtk.STATE_NORMAL, color)        
-        client = gconf.client_get_default ();
+        #client = gconf.client_get_default ();
 
 
-        client.add_dir ("/apps/melia",
-                      gconf.CLIENT_PRELOAD_NONE)
+        #client.add_dir ("/apps/melia",
+        #              gconf.CLIENT_PRELOAD_NONE)
         
         # load all the custom quicklists
         self.qls = {}
@@ -223,13 +225,42 @@ class MeliaWindow(Window):
                    # showedwins += [win.get_pid()]
                    
         melia_dbus.start_loop(self)
-                   
-                   
+        self.get_toplevel().show() # must call show() before property_change()
+        
+        self.get_toplevel().window.property_change("_NET_WM_STRUT", 
+            "CARDINAL", 32, gtk.gdk.PROP_MODE_REPLACE, [48, 0, preferences['top_panel_height'], 0])       
+        self.move(0, int(preferences['top_panel_height']))  
+        self.notification_in_progress = False
+        self.notification_stack = {}
         
     def start_panel(self):
-        ''
-        #panel = MeliaPanelDialog()
-        #panel.run()       
+        self.panel = MeliaPanelDialog()
+        self.panel.show() 
+        # after the panel is up, load indicators
+        sysi = system.SystemIndicator()      
+        sysi.append_to_stack()
+        self.panel.ui.dashbutton.set_size_request(int(preferences['launcher_width']), -1)
+        self.dash = MeliaDashboardDialog()
+        self.dash.hide()
+        self.panel.ui.dashbutton.connect('toggled', self.show_dash)
+        ### TODO: REMOVE THIS AND FIX THE IMAGE SETTER!
+        self.panel.ui.notification_icon.hide()
+        
+        ###############################################
+        
+    def show_dash(self, widget, data=None):
+        if not widget.get_active(): 
+            self.dash.hide()
+        else:
+            self.dash.move(int(preferences['launcher_width']), int(preferences['top_panel_height']))
+            self.dash.show()
+            self.dash.move(int(preferences['launcher_width']), int(preferences['top_panel_height']))
+        #self.dash.connect('focus', self.hide_dash)
+        #self.dash.set_events(gtk.gdk.FOCUS_CHANGE_MASK)
+        
+    def hide_dash(self, widget, data=None):
+        self.dash.hide()
+        self.panel.ui.dashbutton.set_state(gtk.STATE_NORMAL)
         
     def update_qls(self):
         for ql in os.listdir('quicklists/'):
@@ -358,3 +389,32 @@ class MeliaWindow(Window):
     def update_button_style(self):
         for button in buttons:
             button.update_style()
+            
+            
+    def show_notification(self, id, icon, summary, body, timeout):
+        if timeout > 10000: timeout = 10000
+        if self.notification_in_progress and self.notification_in_progress != id: self.notification_stack.update({id: (id, icon, summary, body, timeout)})
+        else: 
+            self.panel.ui.notification_area.set_label('%s: %s' % (summary, body))
+            print 'setting timeout to', timeout
+            gtk.timeout_add(timeout, self.notification_expire)
+            color = gtk.gdk.color_parse('#D00')
+            self.panel.ui.notification_area.modify_bg(gtk.STATE_NORMAL, color)
+            self.panel.ui.notification_area.show()
+            if icon:
+                self.panel.ui.notification_icon = gtk.Image()
+                self.panel.ui.notification_icon.set_from_icon_name(icon)
+               #self.panel.ui.notification_icon.show()
+            #self.ui.layout1.modify_bg(gtk.STATE_NORMAL, color)   
+            
+            self.notification_in_progress = id
+        
+    def notification_expire(self):
+        print 'notification expiring'
+        self.notification_in_progress = None
+        self.panel.ui.notification_area.set_label('')
+        if self.notification_stack: 
+            for n in self.notification_stack.keys():
+                nf = self.notification_stack[n]
+                del(self.notification_stack[n])
+                self.show_notification(nf[0], nf[1], nf[2], nf[3], nf[4])
