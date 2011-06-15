@@ -21,9 +21,27 @@ from os.path import split
 from urllib2 import quote, splittype
 from ConfigParser import ConfigParser
 
+if os.path.exists('/usr/bin/plexydesk'): os.system('plexydesk &')
+else: 
+    a = raw_input('I suggest installing PlexyDesk to accompany Melia. Would you like to try installing it now? [Y/n]')
+    if a.lower() == 'y' or a == '': 
+        print 'Adding plexydesk nightly PPA...'
+        subprocess.call('sudo add-apt-repository ppa:plexydesk/plexydesk-dailybuild'.split())
+        print 'Updating software sources...'
+        subprocess.call('sudo apt-get update')
+        print 'If all of that was successful, now installing plexydesk'
+        subprocess.call('sudo apt-get install -y libqt4-declarative-folderlistmodel plexydesk')
+        print 'Done! Starting PlexyDesk!'
+        os.system('plexydesk &')
+        
+        
+    else: print 'Okay, then if you\'d ever like to, clone git://github.com/siraj/plexydesk.git'
+
+
 class MeliaDashboardDialog(gtk.Window):
     __gtype_name__ = "MeliaDashboardDialog"
     mode = 'dash'
+    parent = None
 
     def __new__(cls):
         """Special static method that's automatically called by Python when 
@@ -71,11 +89,11 @@ class MeliaDashboardDialog(gtk.Window):
 		
 		gtk.timeout_add(100, self.init_bottom_toolbar)
 		
-		self.launcher_index = []
-		self.index_launchers()
+		#self.parent.launcher_index = []
+		gtk.timeout_add(100, self.index_launchers)
 	
 	def index_launchers(self):
-	    self.launcher_index = []
+	    self.parent.launcher_index = []
 	    for desktop in os.listdir('/usr/share/applications/'):
 	        if desktop.endswith('.desktop'): 
                 cf = ConfigParser()
@@ -89,7 +107,7 @@ class MeliaDashboardDialog(gtk.Window):
                     elif c[0] == 'icon': icon = c[1]
                     elif c[0] == 'exec': command = c[1].replace('%U', '').replace('%u', '')
                 if icon and name and command:
-	                self.launcher_index += [(name, icon, command)]
+	                self.parent.launcher_index += [(name, icon, command)]
 	            
         for desktop in os.listdir(os.getenv('HOME') + '/.local/share/applications/'):
 	        if desktop.endswith('.desktop'): 
@@ -104,8 +122,7 @@ class MeliaDashboardDialog(gtk.Window):
                     elif c[0] == 'icon': icon = c[1]
                     elif c[0] == 'exec': command = c[1].replace('%U', '').replace('%u', '')
                 if icon and name and command:
-                    print command
-	                self.launcher_index += [(name, icon, command)]
+	                self.parent.launcher_index += [(name, icon, command)]
 		
     def init_bottom_toolbar(self):
         if self.mode == 'dash': return
@@ -117,9 +134,16 @@ class MeliaDashboardDialog(gtk.Window):
 		im.set_from_icon_name('dialog-information', gtk.ICON_SIZE_LARGE_TOOLBAR)
 		button.set_image(im)
 		button.set_image_position(gtk.POS_TOP)
+		button.connect('clicked', self.show_about_dialog)
 		self.ui.bottom_toolbar.append_widget(button, 'About Melia', 'AbouuutMleiea')
 		self.ui.bottom_toolbar.show_all()
-
+    
+   
+    def show_about_dialog(self, widget, data=None):
+        d = self.parent.AboutDialog()
+        d.run()
+        d.destroy()
+    
     def search(self, widget, data=None):
         self.query = widget.get_text()
         
@@ -145,7 +169,7 @@ class MeliaDashboardDialog(gtk.Window):
 
 		formatted_results = []	
 		
-		for pr in self.launcher_index:
+		for pr in self.parent.launcher_index:
 		    if self.query.lower() in pr[0].lower(): formatted_results.append({'name': pr[0], 'icon': pr[1], 'path': pr[2]})
 
 		for result in results:
@@ -184,7 +208,6 @@ class MeliaDashboardDialog(gtk.Window):
         col = 0
         row = 0
         for res in results:
-            print res['name']
             #if self.query.lower() not in res['path'].lower(): 
             # create the button
             btn = gtk.Button()

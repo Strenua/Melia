@@ -29,6 +29,8 @@ widget_methods = {
     'launcher_height': ['get_value', 'set_value', 'value-changed', 'update_height'],
     'launcher_width': ['get_value', 'set_value', 'value-changed', 'update_width'],
     'button_style': ['get_active', 'set_active', 'changed', 'update_button_style'],
+    'panel_transparent': ['get_active', 'set_active', 'toggled', 'set_transparent'],
+    'desktop_dash': ['get_active', 'set_active', 'toggled', 'show_deskdash'],
 }
 
 import gettext

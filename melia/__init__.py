@@ -42,6 +42,7 @@ def main():
     'button_style': 0, # 0 = new, 1 = old
     'panel_transparent': False,
     'dash_button_font_color': '#000',
+    'desktop_dash': True,
     }
     preferences.update(default_preferences)
     # user's stored preferences are used for 2nd and subsequent sessions

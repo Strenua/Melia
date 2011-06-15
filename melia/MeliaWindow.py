@@ -119,7 +119,7 @@ class MeliaWindow(Window):
         # load all the custom quicklists
         self.qls = {}
         self.update_qls() 
-             
+        self.btns = []  
         home = os.getenv('HOME')
         l0 = os.listdir('/usr/share/applications')
         l1 = os.listdir(home + '/.local/share/applications')
@@ -164,6 +164,8 @@ class MeliaWindow(Window):
                     btn.win = None
                     self.ui.topbox.pack_start(btn)
                     btn.show()
+                    self.btns.append(btn)
+                    
                 else: 
                     print swc, command, icon, name
                 
@@ -184,6 +186,7 @@ class MeliaWindow(Window):
         
         #self.classes = {'File Manager': self.ui.Home}
         self.wins = {}
+        #self.btns = []
         for win in getwins():
             #if x > 15: 
             #    print 'DEBUG: Max window limit exceeded!'
@@ -202,8 +205,8 @@ class MeliaWindow(Window):
                     btn.win_is_open = True
                     print win.get_class_group().get_name(), win.get_pid()
                 else:
-                    
                     btn = Button()
+                    btn.set_size_request(0, 0)
                     btn.finish_initializing(win.get_name())
                     img = gtk.Image()
                    # print dir(win.get_class_group().get_icon())
@@ -230,6 +233,7 @@ class MeliaWindow(Window):
                     btn.show()
                     #self.classes.update({win.get_class_group().get_name(): btn})
                     self.wins.update({win.get_xid(): btn})
+                    self.btns.append(btn)
                     print win.get_class_group().get_name(), win.get_pid()
                    # showedwins += [win.get_pid()]
                    
@@ -260,7 +264,20 @@ class MeliaWindow(Window):
         widget.modify_text(gtk.STATE_NORMAL, color)  
         #widget.modify_font(color) 
 		widget.show()
-        
+    def show_deskdash(self):
+        if preferences['desktop_dash']:
+            self.desk = MeliaDashboardDialog()
+            self.desk.parent = self
+            self.desk.mode = 'desk'
+            self.widgefy(self.desk, True)
+            self.widgefy(self.desk.ui.vbox1)
+            self.widgefy(self.desk.ui.scrolledwindow1)
+            self.widgefy(self.desk.ui.viewport1)
+            self.widgefy(self.desk.ui.table3)
+            self.widgefy(self.desk.ui.entry1)
+            self.widgefy(self.desk.ui.media_apps_button) 
+        else: 
+            self.desk.destroy()   
         
     def start_panel(self):
         self.panel = MeliaPanelDialog()
@@ -271,16 +288,9 @@ class MeliaWindow(Window):
         self.panel.ui.dashbutton.set_size_request(int(preferences['launcher_width']), -1)
         self.dash = MeliaDashboardDialog()
         self.dash.hide()
+        self.dash.parent = self
         #
-        self.desk = MeliaDashboardDialog()
-        self.desk.mode = 'desk'
-        self.widgefy(self.desk, True)
-        self.widgefy(self.desk.ui.vbox1)
-        self.widgefy(self.desk.ui.scrolledwindow1)
-        self.widgefy(self.desk.ui.viewport1)
-        self.widgefy(self.desk.ui.table3)
-        self.widgefy(self.desk.ui.entry1)
-        self.widgefy(self.desk.ui.media_apps_button)
+        if preferences['desktop_dash']: self.show_deskdash()
         #
         self.panel.ui.dashbutton.connect('toggled', self.show_dash)
         ### TODO: REMOVE THIS AND FIX THE IMAGE SETTER!
@@ -313,6 +323,7 @@ class MeliaWindow(Window):
         print widget.get_label()
         
     def on_click(self, widget, event):
+        print 'x, y:', self.get_button_position(widget)
         if event.button == 3:
             self.ui.quicklist = gtk.Menu() # clear the menu each time
             print 'right-clicked', widget.appname
@@ -329,7 +340,9 @@ class MeliaWindow(Window):
             self.ui.quicklist.append(item)
             self.ui.quicklist.button = widget
             self.ui.quicklist.show_all()
-            self.ui.quicklist.popup(None, None, None, event.button, event.time)
+            self.ui.quicklist.btn = widget
+            self.ui.quicklist.popup(None, None, self.set_ql_pos, event.button, event.time)
+            
             print 'BLABLA:', self.ui.quicklist.menu_get_for_attach_widget()
         elif event.button == 1:
             print 'clicked', widget.get_label()
@@ -357,7 +370,9 @@ class MeliaWindow(Window):
                 btn.win_is_open = True
                 print win.get_class_group().get_name(), win.get_pid()
             else:
+                self.btncount += 1
                 btn = Button()
+                btn.set_size_request(0, 0)
                 img = gtk.Image()
                 img.set_from_pixbuf(win.get_icon())
                 btn.set_image(img)
@@ -380,9 +395,11 @@ class MeliaWindow(Window):
                 #self.classes.update({win.get_class_group().get_name(): btn})
                 self.wins.update({win.get_xid(): btn})
                 print win.get_class_group().get_name(), win.get_pid()
+                self.btns.append(btn)
                 
     def remove_window(self, screen, win):
         if win.get_xid() in self.wins.keys():
+            self.btncount -= 1
             print 'removing', win.get_name()
             btn = self.wins[win.get_xid()]
             if btn.get_label(): # there's more than one
@@ -429,7 +446,10 @@ class MeliaWindow(Window):
     def update_button_style(self):
         for button in buttons:
             button.update_style()
-            
+    
+    def set_transparent(self): # make the panel transparent
+        self.widgefy(self.panel)
+        self.widgefy(self.panel.ui.layout1)     
             
     def show_notification(self, id, icon, summary, body, timeout):
         #print 'ICON:', icon
@@ -455,3 +475,14 @@ class MeliaWindow(Window):
                 nf = self.notification_stack[n]
                 del(self.notification_stack[n])
                 self.show_notification(nf[0], nf[1], nf[2], nf[3], nf[4])
+                
+                
+    def get_button_position(self, button):
+        wx, wy = self.get_position()
+        bx = 0
+        by = ((self.btns.index(button) * 40) + (4 * self.btns.index(button))) + preferences['top_panel_height']
+        return bx, by
+        
+    def set_ql_pos(self, menu, data=None):
+        x, y = self.get_button_position(menu.btn)
+        return x + int(preferences['launcher_width']), y, True
