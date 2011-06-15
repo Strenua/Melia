@@ -58,6 +58,8 @@ class Button(gtk.Button): # my cool buttons ;)
             self.set_size_request(200, 32)
             # add the label
             self.set_label(window_title)
+            
+        self.set_relief(gtk.RELIEF_NONE)
 
     def update_style(self):
         # figure out the button style from config
@@ -376,7 +378,7 @@ class MeliaWindow(Window):
                 img = gtk.Image()
                 img.set_from_pixbuf(win.get_icon())
                 btn.set_image(img)
-                btn.set_relief(gtk.RELIEF_NONE)
+                
                 btn.win_is_open = True
                 btn.connect('clicked', self.minmaxer)
                 btn.win = win
