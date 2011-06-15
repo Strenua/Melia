@@ -80,6 +80,12 @@ class MeliaPanelDialog(gtk.Window):
         pass
         
     def indicator_system_toggled(self, widget, data=None):
+        widget.set_size_request(0, 0)
+
+        if self.ui.indicator_system_menu.get_children(): 
+            self.ui.indicator_system_menu.popup(None, None, set_indicator_menu_pos, 0, gtk.get_current_event_time())
+            return
+        
         item = gtk.MenuItem('Lock Screen')
         #item.connect('activate', self.quicklaunch)
         self.ui.indicator_system_menu.append(item)

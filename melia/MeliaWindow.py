@@ -372,7 +372,6 @@ class MeliaWindow(Window):
                 btn.win_is_open = True
                 print win.get_class_group().get_name(), win.get_pid()
             else:
-                self.btncount += 1
                 btn = Button()
                 btn.set_size_request(0, 0)
                 img = gtk.Image()
@@ -401,9 +400,9 @@ class MeliaWindow(Window):
                 
     def remove_window(self, screen, win):
         if win.get_xid() in self.wins.keys():
-            self.btncount -= 1
             print 'removing', win.get_name()
             btn = self.wins[win.get_xid()]
+            self.btns.pop(self.btns.index(btn))
             if btn.get_label(): # there's more than one
                 print 'theres more than one'
             else: # remove the button

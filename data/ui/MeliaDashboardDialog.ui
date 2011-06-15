@@ -38,7 +38,7 @@
     <property name="pixel_size">128</property>
     <property name="icon_name">applications-multimedia</property>
   </object>
-  <object class="MeliaDashboardDialog" id="melia_dashboard_dialog">
+  <object class="GtkWindow" id="melia_dashboard_dialog">
     <property name="width_request">1200</property>
     <property name="height_request">600</property>
     <property name="can_focus">True</property>

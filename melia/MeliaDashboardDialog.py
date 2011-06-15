@@ -131,7 +131,7 @@ class MeliaDashboardDialog(gtk.Window):
 		button = gtk.Button()
 		button.set_label('About Melia')
 		im = gtk.Image()
-		im.set_from_icon_name('dialog-information', gtk.ICON_SIZE_LARGE_TOOLBAR)
+		im.set_from_file('melia_logo_r2-64.png')
 		button.set_image(im)
 		button.set_image_position(gtk.POS_TOP)
 		button.connect('clicked', self.show_about_dialog)
