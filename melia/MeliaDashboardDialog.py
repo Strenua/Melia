@@ -21,22 +21,9 @@ from os.path import split
 from urllib2 import quote, splittype
 from ConfigParser import ConfigParser
 
-if os.path.exists('/usr/bin/plexydesk'): os.system('plexydesk &')
-else: 
-    a = raw_input('I suggest installing PlexyDesk to accompany Melia. Would you like to try installing it now? [Y/n]')
-    if a.lower() == 'y' or a == '': 
-        print 'Adding plexydesk nightly PPA...'
-        subprocess.call('sudo add-apt-repository ppa:plexydesk/plexydesk-dailybuild'.split())
-        print 'Updating software sources...'
-        subprocess.call('sudo apt-get update')
-        print 'If all of that was successful, now installing plexydesk'
-        subprocess.call('sudo apt-get install -y libqt4-declarative-folderlistmodel plexydesk')
-        print 'Done! Starting PlexyDesk!'
-        os.system('plexydesk &')
-        
-        
-    else: print 'Okay, then if you\'d ever like to, clone git://github.com/siraj/plexydesk.git'
-
+from melia_lib.preferences import preferences
+preferences.db_connect()
+preferences.load()
 
 class MeliaDashboardDialog(gtk.Window):
     __gtype_name__ = "MeliaDashboardDialog"
@@ -87,10 +74,26 @@ class MeliaDashboardDialog(gtk.Window):
 		# create an empty list for clearing other buttons
 		self.current_buttons = []
 		
-		gtk.timeout_add(100, self.init_bottom_toolbar)
+		gtk.timeout_add(10, self.init_bottom_toolbar)
 		
 		#self.parent.launcher_index = []
-		gtk.timeout_add(100, self.index_launchers)
+		gtk.timeout_add(10, self.index_launchers)
+		
+		if preferences['custom_colors']:
+		    color = gtk.gdk.color_parse('#3C3B37')
+            self.modify_bg(gtk.STATE_NORMAL, color) 
+            self.ui.scrolledwindow1.modify_bg(gtk.STATE_NORMAL, color) 
+            self.ui.viewport1.modify_bg(gtk.STATE_NORMAL, color) 
+            e = self.ui.entry1
+            map = e.get_colormap()
+            colour = map.alloc_color("#3C3B37")
+            style = e.get_style().copy()
+            style.bg[gtk.STATE_NORMAL] = colour
+            e.set_style(style)
+                
+            #self.ui.entry1.modify_bg(gtk.STATE_NORMAL, color) 
+            
+
 	
 	def index_launchers(self):
 	    self.parent.launcher_index = []
@@ -123,6 +126,8 @@ class MeliaDashboardDialog(gtk.Window):
                     elif c[0] == 'exec': command = c[1].replace('%U', '').replace('%u', '')
                 if icon and name and command:
 	                self.parent.launcher_index += [(name, icon, command)]
+	                
+
 		
     def init_bottom_toolbar(self):
         if self.mode == 'dash': return
@@ -248,7 +253,7 @@ class MeliaDashboardDialog(gtk.Window):
                     btn.set_image_position(gtk.POS_TOP)
                     
             btn.set_size_request(128, 128) 
-            btn.set_relief(gtk.RELIEF_HALF)
+            btn.set_relief(gtk.RELIEF_NONE)
             img.set_size_request(48, 48) 
             img.set_pixel_size(48)  
             btn.connect('clicked', self.open_file)       

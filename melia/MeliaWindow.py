@@ -109,8 +109,9 @@ class MeliaWindow(Window):
                 
             
         # Code for other initialization actions should be added here.
-        #color = gtk.gdk.color_parse('#000')
-        #self.modify_bg(gtk.STATE_NORMAL, color)  
+        if preferences['custom_colors']:
+            color = gtk.gdk.color_parse('#3C3B37')
+            self.modify_bg(gtk.STATE_NORMAL, color)  
         #self.ui.layout1.modify_bg(gtk.STATE_NORMAL, color)        
         #client = gconf.client_get_default ();
 
@@ -122,12 +123,13 @@ class MeliaWindow(Window):
         self.qls = {}
         self.update_qls() 
         self.btns = []  
+        #self.ui.Trash. #TODO: add the trash button to self.btns
         home = os.getenv('HOME')
         l0 = os.listdir('/usr/share/applications')
         l1 = os.listdir(home + '/.local/share/applications')
         for i in launcher_config.pinned.keys():
             if launcher_config.pinned[i] + '.desktop' in l0:
-                print '[INFO] Adding %s from pinstack' % launcher_config.pinned[i]
+                logger.debug('Adding %s from pinstack' % launcher_config.pinned[i])
                 cf = ConfigParser()
                 cf.read('/usr/share/applications/%s.desktop' % launcher_config.pinned[i])
                 items = cf.items('Desktop Entry')
@@ -169,11 +171,10 @@ class MeliaWindow(Window):
                     self.btns.append(btn)
                     
                 else: 
-                    print swc, command, icon, name
+                    logger.warn('Could not find necessary information for .desktop file. swc: %s, command: %s, icon: %s, name: %s' % (swc, command, icon, name))
                 
                 
             else: 
-                print '[DEBUG] No such launcher: %s' % launcher_config.pinned[i] 
                 logger.debug('No such launcher: %s' % launcher_config.pinned[i])
         gtk.timeout_add(100, self.start_panel)
 
@@ -190,64 +191,67 @@ class MeliaWindow(Window):
         self.wins = {}
         #self.btns = []
         for win in getwins():
-            #if x > 15: 
-            #    print 'DEBUG: Max window limit exceeded!'
-            #    break
-            if win.get_window_type().value_nick == "normal" and win.is_on_workspace(screen.get_active_workspace()) and not win.is_skip_tasklist():
-                xid = None
-                for winxid in self.wins.keys():
-                    if wnck.window_get(winxid).get_class_group().get_name() == win.get_class_group().get_name():
-                        xid = winxid
-                if xid:
-                    btn = self.wins[xid]
-                    label = btn.get_label()
-                    if label: newlabel = str(int(label) + 1)
-                    else: newlabel = '2'
-                    #btn.set_label(newlabel)
-                    btn.win_is_open = True
-                    print win.get_class_group().get_name(), win.get_pid()
-                else:
-                    btn = Button()
-                    btn.set_size_request(0, 0)
-                    btn.finish_initializing(win.get_name())
-                    img = gtk.Image()
-                   # print dir(win.get_class_group().get_icon())
-                    img.set_from_pixbuf(win.get_class_group().get_icon())
-                    btn.set_image(img)
-                    btn.set_relief(gtk.RELIEF_NONE)
-                    btn.win_is_open = True
-                    btn.connect('clicked', self.minmaxer)
-                    btn.list = {}
-                    
-                    btn.empty_render = ''
-                    
-                    # check for an imported quicklist
-                    sc = win.get_application().get_name().lower().replace(' ', '_').replace('-', '_')
-                    if sc in self.qls.keys():
-                        if self.qls[sc][0]: btn.command = self.qls[sc][0]
-                        btn.list = self.qls[sc][1]
-                        if len(self.qls[sc]) > 2: btn.empty_render = self.qls[sc][2]
-                    
-                    btn.appname = win.get_name()
-                    btn.connect('button-press-event', self.on_click)
-                    btn.win = win
-                    self.ui.topbox.pack_start(btn)
-                    btn.show()
-                    #self.classes.update({win.get_class_group().get_name(): btn})
-                    self.wins.update({win.get_xid(): btn})
-                    self.btns.append(btn)
-                    print win.get_class_group().get_name(), win.get_pid()
-                   # showedwins += [win.get_pid()]
+            self.add_window(screen, win)
                    
         melia_dbus.start_loop(self)
         self.get_toplevel().show() # must call show() before property_change()
-        
-        self.get_toplevel().window.property_change("_NET_WM_STRUT", 
-            "CARDINAL", 32, gtk.gdk.PROP_MODE_REPLACE, [48, 0, preferences['top_panel_height'], 0])       
+        if not preferences['autohide_launcher']:
+            self.get_toplevel().window.property_change("_NET_WM_STRUT", 
+                "CARDINAL", 32, gtk.gdk.PROP_MODE_REPLACE, [48, 0, preferences['top_panel_height'], 0])       
         self.move(0, int(preferences['top_panel_height']))  
         self.notification_in_progress = False
         self.notification_stack = {}
+        if preferences['autohide_launcher']:
+            gtk.timeout_add(4000, self.start_autohide)
+            
+            ahwin = gtk.Window()
+            ahwin.set_size_request(10, int(preferences['launcher_height']))
+            ahwin.move(int(preferences['launcher_x_pos']), int(preferences['launcher_y_pos']))
+            ahwin.set_decorated(False)
+            self.widgefy(ahwin)
+            ahwin.show()
+            ahwin.connect('enter-notify-event', self.ah_show)
+            ahwin.move(int(preferences['launcher_x_pos']), int(preferences['launcher_y_pos']))
+            ahwin.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DOCK)
+            #self.widgefy(ahwin)
+            
+            self.connect('leave-notify-event', self.start_autohide)
+        #screen.connect('MOTION_LEFT', self.ah_show)
         
+        
+    
+    #### AUTOHIDE FUNCTIONS ####
+    def start_autohide(self, w=None, d=None):
+        self.autohide_move_count = 0
+        gtk.timeout_add(7, self.do_hide)
+        #self.connect(gtk.
+    
+    def do_hide(self):
+        self.autohide_move_count += 1
+        x, y = self.get_position()
+        self.move(x - 1, y)
+        if self.autohide_move_count <= preferences['launcher_width'] + 14: return True
+        else:
+            # make sure its in the right position
+            self.move(0 - int(preferences['launcher_width']), int(preferences['top_panel_height']))
+            return False
+        
+    def do_unhide(self):
+        self.autohide_move_count += 1
+        x, y = self.get_position()
+        self.move(x + 1, y)
+        if self.autohide_move_count <= preferences['launcher_width'] + 14: return True
+        else:
+            # make sure its in the right position
+            self.move(0, int(preferences['top_panel_height']))
+            return False
+    
+    def ah_show(self, widget, data=None):
+        self.autohide_move_count = 0
+        gtk.timeout_add(7, self.do_unhide)
+        #gtk.timeout_add(4500, self.start_autohide)
+        
+    ############################
            
     def widgefy(self, widget, e=False):
         
@@ -297,6 +301,7 @@ class MeliaWindow(Window):
         self.panel.ui.dashbutton.connect('toggled', self.show_dash)
         ### TODO: REMOVE THIS AND FIX THE IMAGE SETTER!
         #self.panel.ui.notification_icon.hide()
+        self.panel.ui.notification_icon.hide()
         
         ###############################################
         
@@ -304,6 +309,7 @@ class MeliaWindow(Window):
         if not widget.get_active(): 
             self.dash.hide()
         else:
+            self.desk.parent = self
             self.dash.move(int(preferences['launcher_width']), int(preferences['top_panel_height']))
             self.dash.show()
             self.dash.move(int(preferences['launcher_width']), int(preferences['top_panel_height']))
@@ -325,10 +331,10 @@ class MeliaWindow(Window):
         print widget.get_label()
         
     def on_click(self, widget, event):
-        print 'x, y:', self.get_button_position(widget)
+        logger.debug('clicked button at x, y:', self.get_button_position(widget))
         if event.button == 3:
             self.ui.quicklist = gtk.Menu() # clear the menu each time
-            print 'right-clicked', widget.appname
+            logger.debug('right-clicked', widget.appname)
             for i in widget.list.keys():
                 item = gtk.MenuItem(i)
                 item.command = widget.list[i]
@@ -345,19 +351,19 @@ class MeliaWindow(Window):
             self.ui.quicklist.btn = widget
             self.ui.quicklist.popup(None, None, self.set_ql_pos, event.button, event.time)
             
-            print 'BLABLA:', self.ui.quicklist.menu_get_for_attach_widget()
+            #logger.debug('BLABLA:', self.ui.quicklist.menu_get_for_attach_widget())
         elif event.button == 1:
-            print 'clicked', widget.get_label()
+            logger.debug('clicked', widget.get_label())
         
             
     def quicklaunch(self, widget, data=None):
-        print 'Running', widget.command
+        logger.debug('Running', widget.command)
         if '%s' in widget.get_parent().button.command: os.system(widget.get_parent().button.command % widget.command)
         else: os.system(widget.command)
         
         
     def add_window(self, screen, win):
-        print 'adding', win.get_name()
+        logger.debug('adding', win.get_name())
         if win.get_window_type().value_nick == "normal" and win.is_on_workspace(screen.get_active_workspace()) and not win.is_skip_tasklist():
             xid = None
             for winxid in self.wins.keys():
@@ -370,14 +376,15 @@ class MeliaWindow(Window):
                 else: newlabel = '2'
                 btn.set_label(newlabel)
                 btn.win_is_open = True
-                print win.get_class_group().get_name(), win.get_pid()
+                #print win.get_class_group().get_name(), win.get_pid()
             else:
                 btn = Button()
                 btn.set_size_request(0, 0)
                 img = gtk.Image()
                 img.set_from_pixbuf(win.get_icon())
                 btn.set_image(img)
-                
+                btn.set_relief(gtk.RELIEF_NONE)
+                                
                 btn.win_is_open = True
                 btn.connect('clicked', self.minmaxer)
                 btn.win = win
@@ -392,25 +399,31 @@ class MeliaWindow(Window):
                         
                 btn.appname = win.get_name()
                 btn.connect('button-press-event', self.on_click)
-                btn.show()
+                #btn.show()
                 #self.classes.update({win.get_class_group().get_name(): btn})
                 self.wins.update({win.get_xid(): btn})
-                print win.get_class_group().get_name(), win.get_pid()
+                #print win.get_class_group().get_name(), win.get_pid()
                 self.btns.append(btn)
+                #style = btn.get_style().copy()
+                #style.bg[gtk.STATE_NORMAL] = gtk.gdk.color_parse('#F07746')
+                #print str(style.props)
+                #btn.set_style(style)
+                btn.show()
                 
     def remove_window(self, screen, win):
         if win.get_xid() in self.wins.keys():
-            print 'removing', win.get_name()
+            logger.debug('removing', win.get_name())
             btn = self.wins[win.get_xid()]
             self.btns.pop(self.btns.index(btn))
             if btn.get_label(): # there's more than one
-                print 'theres more than one'
+                btn.set_label(str(int(button.get_label() - 1)))
             else: # remove the button
                 btn.destroy()
             self.wins.pop(win.get_xid())
         
     def minmaxer(self, widget, event=None):
         win = widget.win
+        #print dir(win)
         if not win.is_minimized():
             win.minimize()
         else: 
@@ -460,6 +473,7 @@ class MeliaWindow(Window):
             self.panel.ui.notification_area.set_label('%s: %s' % (summary, body))
             if icon:
                 #self.panel.ui.notification_icon = gtk.Image()
+                print icon
                 self.panel.ui.notification_icon.set_from_icon_name(icon)
                 self.panel.ui.notification_icon.show()
 

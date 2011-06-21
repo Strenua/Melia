@@ -43,6 +43,8 @@ def main():
     'panel_transparent': False,
     'dash_button_font_color': '#000',
     'desktop_dash': True,
+    'custom_colors': True, # use custom (non-themey) colors for the panel/launcher?
+    'autohide_launcher': False,
     }
     preferences.update(default_preferences)
     # user's stored preferences are used for 2nd and subsequent sessions

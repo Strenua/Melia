@@ -64,6 +64,16 @@ class MeliaPanelDialog(gtk.Window):
             self.set_colormap(rgba)
             self.set_app_paintable(True)
             self.connect("expose-event", transparent_expose)
+            
+        if preferences['custom_colors']:
+            color = gtk.gdk.color_parse('#3C3B37')
+            self.modify_bg(gtk.STATE_NORMAL, color) 
+            self.ui.layout1.modify_bg(gtk.STATE_NORMAL, color) 
+            self.ui.layout2.modify_bg(gtk.STATE_NORMAL, color) 
+            self.ui.layout3.modify_bg(gtk.STATE_NORMAL, color) 
+            self.ui.layout4.modify_bg(gtk.STATE_NORMAL, color) 
+            self.ui.layout5.modify_bg(gtk.STATE_NORMAL, color) 
+            self.ui.layout6.modify_bg(gtk.STATE_NORMAL, color) 
 
     def on_btn_ok_clicked(self, widget, data=None):
         """The user has elected to save the changes.
