@@ -1,7 +1,7 @@
 [Desktop Entry]
 _Name=Melia
-_Comment=Melia application
-Categories=GNOME;Utility;
+_Comment=Melia Desktop Shell
+Categories=GNOME;
 Exec=melia
 Icon=melia
 Terminal=false

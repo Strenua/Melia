@@ -1,6 +1,17 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 ### BEGIN LICENSE
-# This file is in the public domain
+# Copyright (C) 2011 <Michael Smith> <crazedpsyc@lavabit.com>
+# This program is free software: you can redistribute it and/or modify it 
+# under the terms of the GNU General Public License version 3, as published 
+# by the Free Software Foundation.
+# 
+# This program is distributed in the hope that it will be useful, but 
+# WITHOUT ANY WARRANTY; without even the implied warranties of 
+# MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR 
+# PURPOSE.  See the GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License along 
+# with this program.  If not, see <http://www.gnu.org/licenses/>.
 ### END LICENSE
 
 import gtk
@@ -78,18 +89,6 @@ class MeliaDashboardDialog(gtk.Window):
 		
 		#self.parent.launcher_index = []
 		gtk.timeout_add(10, self.index_launchers)
-		
-		if preferences['custom_colors']:
-		    color = gtk.gdk.color_parse('#3C3B37')
-            self.modify_bg(gtk.STATE_NORMAL, color) 
-            self.ui.scrolledwindow1.modify_bg(gtk.STATE_NORMAL, color) 
-            self.ui.viewport1.modify_bg(gtk.STATE_NORMAL, color) 
-            e = self.ui.entry1
-            map = e.get_colormap()
-            colour = map.alloc_color("#3C3B37")
-            style = e.get_style().copy()
-            style.bg[gtk.STATE_NORMAL] = colour
-            e.set_style(style)
                 
             #self.ui.entry1.modify_bg(gtk.STATE_NORMAL, color) 
             
@@ -136,7 +135,7 @@ class MeliaDashboardDialog(gtk.Window):
 		button = gtk.Button()
 		button.set_label('About Melia')
 		im = gtk.Image()
-		im.set_from_file('melia_logo_r2-64.png')
+		im.set_from_file('data/media/melia_logo_r2-64.png')
 		button.set_image(im)
 		button.set_image_position(gtk.POS_TOP)
 		button.connect('clicked', self.show_about_dialog)

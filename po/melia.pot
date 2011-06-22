@@ -1,0 +1,118 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-06-21 16:08-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Code for other initialization actions should be added here.
+#: ../data/ui/MeliaPanel.ui.h:1
+msgid "Melia Panel"
+msgstr ""
+
+#: ../data/ui/MeliaPanel.ui.h:2
+msgid "power"
+msgstr ""
+
+#: ../melia.desktop.in.h:1
+msgid "Melia"
+msgstr ""
+
+#: ../melia.desktop.in.h:2
+msgid "Melia Desktop Shell"
+msgstr ""
+
+#. os.system("dbus-send --print-reply --dest=org.strenua.Melia /org/strenua/Melia/MeliaIF org.strenua.Melia.MeliaIF.load_indicator string:'%s'" % __name__)
+#: ../data/ui/PreferencesMeliaDialog.ui.h:1
+msgid "Dash on Desktop"
+msgstr ""
+
+#: ../data/ui/PreferencesMeliaDialog.ui.h:2
+msgid "Launcher _Height:"
+msgstr ""
+
+#: ../data/ui/PreferencesMeliaDialog.ui.h:3
+msgid "Launcher _Orientation:"
+msgstr ""
+
+#: ../data/ui/PreferencesMeliaDialog.ui.h:4
+msgid "Melia Preferences"
+msgstr ""
+
+#: ../data/ui/PreferencesMeliaDialog.ui.h:5
+msgid "Should the panel be transparent?"
+msgstr ""
+
+#: ../data/ui/PreferencesMeliaDialog.ui.h:6
+msgid "Show a magical Dash on the desktop"
+msgstr ""
+
+#: ../data/ui/PreferencesMeliaDialog.ui.h:7
+msgid "Transparent Panel"
+msgstr ""
+
+#: ../data/ui/PreferencesMeliaDialog.ui.h:8
+msgid "_Button Style:"
+msgstr ""
+
+#: ../data/ui/PreferencesMeliaDialog.ui.h:9
+msgid "_Launcher Width:"
+msgstr ""
+
+#: ../data/ui/PreferencesMeliaDialog.ui.h:10
+msgid ""
+"new = big square buttons without text\n"
+"old = short fat buttons with icons and text"
+msgstr ""
+
+#: ../melia/__init__.py:34
+msgid "Show debug messages (-vv debugs melia_lib also)"
+msgstr ""
+
+#: ../data/ui/MeliaDashboardDialog.ui.h:1
+msgid "Browse the Web"
+msgstr ""
+
+#: ../data/ui/MeliaDashboardDialog.ui.h:2
+msgid "Check Email"
+msgstr ""
+
+#: ../data/ui/MeliaDashboardDialog.ui.h:3
+msgid "Find Files"
+msgstr ""
+
+#: ../data/ui/MeliaDashboardDialog.ui.h:4
+msgid "Internet Apps"
+msgstr ""
+
+#: ../data/ui/MeliaDashboardDialog.ui.h:5
+msgid "Listen to Music"
+msgstr ""
+
+#: ../data/ui/MeliaDashboardDialog.ui.h:6
+msgid "Media Apps"
+msgstr ""
+
+#: ../data/ui/MeliaDashboardDialog.ui.h:7
+msgid "More Apps"
+msgstr ""
+
+#: ../data/ui/MeliaDashboardDialog.ui.h:8
+msgid "View Photos"
+msgstr ""
+
+#: ../data/ui/MeliaWindow.ui.h:1
+msgid "MeliaTB"
+msgstr ""

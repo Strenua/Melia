@@ -1,6 +1,17 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 ### BEGIN LICENSE
-# This file is in the public domain
+# Copyright (C) 2011 <Michael Smith> <crazedpsyc@lavabit.com>
+# This program is free software: you can redistribute it and/or modify it 
+# under the terms of the GNU General Public License version 3, as published 
+# by the Free Software Foundation.
+# 
+# This program is distributed in the hope that it will be useful, but 
+# WITHOUT ANY WARRANTY; without even the implied warranties of 
+# MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR 
+# PURPOSE.  See the GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License along 
+# with this program.  If not, see <http://www.gnu.org/licenses/>.
 ### END LICENSE
 import os
 import gettext
@@ -110,8 +121,7 @@ class MeliaWindow(Window):
             
         # Code for other initialization actions should be added here.
         if preferences['custom_colors']:
-            color = gtk.gdk.color_parse('#3C3B37')
-            self.modify_bg(gtk.STATE_NORMAL, color)  
+            gtk.rc_parse('data/ui/melia-quiet.rc')
         #self.ui.layout1.modify_bg(gtk.STATE_NORMAL, color)        
         #client = gconf.client_get_default ();
 
@@ -201,6 +211,7 @@ class MeliaWindow(Window):
         self.move(0, int(preferences['top_panel_height']))  
         self.notification_in_progress = False
         self.notification_stack = {}
+        self.keep_launcher = False
         if preferences['autohide_launcher']:
             gtk.timeout_add(4000, self.start_autohide)
             
@@ -222,6 +233,9 @@ class MeliaWindow(Window):
     
     #### AUTOHIDE FUNCTIONS ####
     def start_autohide(self, w=None, d=None):
+        if self.keep_launcher and d != True: return False
+        #print self.keep_launcher, d
+        self.keep_launcher = False
         self.autohide_move_count = 0
         gtk.timeout_add(7, self.do_hide)
         #self.connect(gtk.
@@ -313,6 +327,7 @@ class MeliaWindow(Window):
             self.dash.move(int(preferences['launcher_width']), int(preferences['top_panel_height']))
             self.dash.show()
             self.dash.move(int(preferences['launcher_width']), int(preferences['top_panel_height']))
+            if preferences['autohide_launcher']: self.dash.move(0, int(preferences['top_panel_height']))
         #self.dash.connect('focus', self.hide_dash)
         #self.dash.set_events(gtk.gdk.FOCUS_CHANGE_MASK)
         
@@ -321,9 +336,9 @@ class MeliaWindow(Window):
         self.panel.ui.dashbutton.set_state(gtk.STATE_NORMAL)
         
     def update_qls(self):
-        for ql in os.listdir('quicklists/'):
+        for ql in os.listdir('melia/quicklists/'):
             if ql.endswith('.py') and not ql.startswith('_'):
-                qlm = my_import('quicklists.' + ql.split('.py')[0])
+                qlm = my_import('melia.quicklists.' + ql.split('.py')[0])
                 self.qls.update({ql.split('.py')[0]: (qlm.command, qlm.ql)})  
                 if 'empty_render' in dir(qlm): self.qls.update({ql.split('.py')[0]: (qlm.command, qlm.ql, qlm.empty_render)}) 
                 
@@ -350,6 +365,8 @@ class MeliaWindow(Window):
             self.ui.quicklist.show_all()
             self.ui.quicklist.btn = widget
             self.ui.quicklist.popup(None, None, self.set_ql_pos, event.button, event.time)
+            self.ui.quicklist.connect('deactivate', self.start_autohide, True)
+            self.keep_launcher = True
             
             #logger.debug('BLABLA:', self.ui.quicklist.menu_get_for_attach_widget())
         elif event.button == 1:
@@ -468,14 +485,15 @@ class MeliaWindow(Window):
     def show_notification(self, id, icon, summary, body, timeout):
         #print 'ICON:', icon
         if timeout > 10000: timeout = 10000
+        elif timeout < 1000: timeout = 1000
         if self.notification_in_progress and self.notification_in_progress != id: self.notification_stack.update({id: (id, icon, summary, body, timeout)})
         else: 
             self.panel.ui.notification_area.set_label('%s: %s' % (summary, body))
-            if icon:
+            #if icon:
                 #self.panel.ui.notification_icon = gtk.Image()
-                print icon
-                self.panel.ui.notification_icon.set_from_icon_name(icon)
-                self.panel.ui.notification_icon.show()
+               # print icon
+            #    self.panel.ui.notification_icon.set_from_icon_name(icon)
+            #    self.panel.ui.notification_icon.show()
 
             print 'setting timeout to', timeout 
             gtk.timeout_add(timeout, self.notification_expire)

@@ -1,0 +1,13 @@
+# ==============================================================================
+# MELIA SPECIFIC SETTINGS
+# ==============================================================================
+
+widget "*GtkHButtonBox*"    style "dark"
+widget "*GtkVButtonBox*"    style "dark"
+widget "*MeliaWindow*"        style "dark"
+widget "*GtkLayout*"        style "dark"
+widget "*GtkVBox*"          style "dark"
+widget "*GtkHBox*"          style "dark"
+widget "*GtkButton*"        style "dark"
+widget "*Melia*Dialog*"        style "dark"
+widget "*GtkEntry*"        style "dark"
