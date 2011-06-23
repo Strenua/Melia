@@ -20,6 +20,9 @@ class Indicator(gtk.ToggleButton):
         gtk.ToggleButton.__init__(self)
         if icon: self.set_icon(icon)
         self.set_relief(gtk.RELIEF_NONE)
+        
+    def finit(self):
+        return
     
     def set_icon(self, icon):
         self.img = gtk.Image()
@@ -29,15 +32,24 @@ class Indicator(gtk.ToggleButton):
     def set_menu(self, menu):
         self._menu = menu
         self.connect('toggled', self.open_menu)
-        
-    def open_menu(self, widget):
-        if not self._menu: raise TypeError('No menu specified for %s indicator! Please use Indicator.set_menu(menu)' % self.__name__)
-        self._menu.popup(None, None, self.get_menu_position, 0, gtk.get_current_event_time())
-        self._menu.button = widget
         self._menu.connect('deactivate', self.indicator_untoggle)
         
+    def open_menu(self, widget):
+        if not self._menu:
+            raise NameError('No menu specified for %s indicator! Please use Indicator.set_menu(menu)' % self.__name__)
+            return
+        #if not self.get_state() == gtk.STATE_ACTIVE: self.set_state(gtk.STATE_ACTIVE)
+        self._menu.popup(None, None, self.get_menu_position, 0, gtk.get_current_event_time())
+        self._menu.button = widget
+        #self.activate()
+        win = self.get_toplevel()
+        win.active_indicator = self._menu
+        
     def indicator_untoggle(self, widget):
-        widget.button.set_state(gtk.STATE_NORMAL)
+        self._menu.hide()
+        if not self.get_state() == gtk.STATE_NORMAL: self.set_state(gtk.STATE_NORMAL)
+        win = self.get_toplevel()
+        win.active_indicator = None
         
     def get_menu_position(self, w=None):
         '''Return a three-tuple of the screen coordinates of the Indicator's button, and True'''

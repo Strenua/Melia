@@ -24,6 +24,9 @@ import gettext
 from gettext import gettext as _
 gettext.textdomain('melia')
 
+import logging
+logger = logging.getLogger('melia')
+
 from melia_lib.preferences import preferences
 
 def set_indicator_menu_pos(menu, data=None):
@@ -83,38 +86,31 @@ class MeliaPanelDialog(gtk.Window):
             self.set_colormap(rgba)
             self.set_app_paintable(True)
             self.connect("expose-event", transparent_expose)
-            
+        
+        self.left_button = None 
+        self.active_indicator = None   
         for indicator in preferences['indicators']:
             i = my_import('indicators.' + indicator)
             if hasattr(i, 'button'): 
                 btn = i.button()
                 btn.finit()
+                btn.connect('leave-notify-event', self.leave_indicator)
                 self.ui.indicator_box.add(btn)
             else: logger.warn('Indicator %s does not appear to have a button' % indicator)
         self.ui.indicator_box.show_all()
             
 
-    def on_btn_ok_clicked(self, widget, data=None):
-        """The user has elected to save the changes.
-
-        Called before the dialog returns gtk.RESONSE_OK from run().
-        """
-        pass
-
-    def on_btn_cancel_clicked(self, widget, data=None):
-        """The user has elected cancel changes.
-
-        Called before the dialog returns gtk.RESPONSE_CANCEL for run()
-        """
-        pass
-
+    def leave_indicator(self, widget, data=None):
+        if self.active_indicator: 
+        #    print 'ok...'
+        #    self.left_button = widget
+             self.active_indicator.deactivate()
+             self.active_indicator = None
+        #print 'well...', self.active_indicator
         
     def indicator_untoggle(self, widget, data=None): 
         widget.button.set_state(gtk.STATE_NORMAL)
-        
-        
-    def load_indicator(self, indicator):
-        print indicator
+        self.active_indicator = None
 
 
 if __name__ == "__main__":

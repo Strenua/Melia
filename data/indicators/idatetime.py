@@ -16,7 +16,6 @@ class button(indicator.Indicator):
         self.set_menu(menu)
         #self.set_icon('system-shutdown')
     def update_time(self):
-        print 'tick'
         months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Nov', 'Dec']
         sdtf = ' %d %H:%M'
         sdt = time.strftime(sdtf)

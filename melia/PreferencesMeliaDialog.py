@@ -52,6 +52,7 @@ import logging
 logger = logging.getLogger('melia')
 
 from melia_lib.PreferencesDialog import PreferencesDialog
+from melia_lib.preferences import preferences
 
 class PreferencesMeliaDialog(PreferencesDialog):
     __gtype_name__ = "PreferencesMeliaDialog"
@@ -59,6 +60,9 @@ class PreferencesMeliaDialog(PreferencesDialog):
     def finish_initializing(self, builder): # pylint: disable=E1002
         """Set up the preferences dialog"""
         super(PreferencesMeliaDialog, self).finish_initializing(builder)
+
+        preferences.db_connect()
+        preferences.load()
 
         # populate the dialog from the preferences dictionary
         # using the methods from widget_methods
@@ -77,6 +81,11 @@ class PreferencesMeliaDialog(PreferencesDialog):
         self.ui.liststore2.append(('old',))
         self.ui.button_style.set_model(self.ui.liststore2)
         self.ui.button_style.show_all()
+        
+        for i in preferences['indicators']:
+            #self.ui.liststore3.append(('hello',))
+            ''
+        self.ui.treeview1.set_model(self.ui.liststore3)
         
         
         

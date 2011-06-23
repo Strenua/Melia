@@ -55,7 +55,7 @@ def main():
     'desktop_dash': True,
     'custom_colors': True, # use quiet mode (dark theme)?
     'autohide_launcher': False,
-    'indicators': ['idatetime', 'system'],
+    'indicators': ['battery', 'idatetime', 'system'],
     }
     preferences.update(default_preferences)
     # user's stored preferences are used for 2nd and subsequent sessions
