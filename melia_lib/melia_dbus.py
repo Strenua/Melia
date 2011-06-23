@@ -6,13 +6,12 @@ import random
 
 global window
 window = None
-def start_loop(wind0w):
+def init(wind0w):
     global window
     window = wind0w
-    #loop.run()
+    
     
 # start dbus main loop
-DBusGMainLoop(set_as_default=True)
 
 # set some dbus options
 DBUS_BUSNAME = "org.strenua.Melia"
@@ -32,9 +31,7 @@ class MeliaObject(dbus.service.Object):
     #    window.panel.load_indicator(indicator)
 
 
-session_bus = dbus.SessionBus()
-busname = dbus.service.BusName(DBUS_BUSNAME, bus=session_bus)
-eo = MeliaObject(object_path=DBUS_PATH, bus_name=busname)
+
 
 
 
@@ -82,13 +79,25 @@ class NotificationObject(dbus.service.Object):
         return id
         
 
-session_bus = dbus.SessionBus()
-busname = dbus.service.BusName(DBUS_BUSNAME, bus=session_bus)
-eo = NotificationObject(object_path=DBUS_PATH, bus_name=busname)
 #loop = gobject.MainLoop()
 #######################################################################
 
+def run():
+    DBusGMainLoop(set_as_default=True)
+    DBUS_BUSNAME = "org.strenua.Melia"
+    DBUS_IFACE = 'org.strenua.Melia.MeliaIF'
+    DBUS_PATH = '/org/strenua/Melia/MeliaIF'
+    session_bus0 = dbus.SessionBus()
+    busname0 = dbus.service.BusName(DBUS_BUSNAME, bus=session_bus0)
+    eo0 = MeliaObject(object_path=DBUS_PATH, bus_name=busname0)
+    DBUS_BUSNAME = "org.freedesktop.Notifications"
+    DBUS_IFACE = 'org.freedesktop.Notifications'
+    DBUS_PATH = '/org/freedesktop/Notifications'
+    session_bus1 = dbus.SessionBus()
+    busname1 = dbus.service.BusName(DBUS_BUSNAME, bus=session_bus1)
+    eo1 = NotificationObject(object_path=DBUS_PATH, bus_name=busname1)
 
+#run()
     
 def stop_loop():
     loop.quit()

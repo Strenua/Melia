@@ -33,8 +33,6 @@ from urllib2 import quote, splittype
 from ConfigParser import ConfigParser
 
 from melia_lib.preferences import preferences
-preferences.db_connect()
-preferences.load()
 
 class MeliaDashboardDialog(gtk.Window):
     __gtype_name__ = "MeliaDashboardDialog"
@@ -67,6 +65,9 @@ class MeliaDashboardDialog(gtk.Window):
         self.ui.entry1.connect('changed', self.search)
         
         bus = dbus.SessionBus()
+        
+        preferences.db_connect()
+        preferences.load()
         
         if bus.request_name('org.freedesktop.Tracker1') == dbus.bus.REQUEST_NAME_REPLY_IN_QUEUE:
             tracker_object = bus.get_object('org.freedesktop.Tracker1', '/org/freedesktop/Tracker1/Resources')

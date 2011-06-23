@@ -24,7 +24,7 @@ import gtk
 
 from melia import MeliaWindow, MeliaPanelDialog
 
-from melia_lib import set_up_logging, preferences, get_version
+from melia_lib import set_up_logging, preferences, get_version, melia_dbus
 
 def parse_options():
     """Support for command line options"""
@@ -46,15 +46,16 @@ def main():
     'example_entry': 'I remember stuff',
     'orientation': 0, # 0=vertical 1=horizontal
     'top_panel_height': 25,
-    'launcher_x_pos': 0,
-    'launcher_y_pos': 25,
+    'launcher_x_pos': 0.0,
+    'launcher_y_pos': 25.0,
     'launcher_width': 48.0,
     'launcher_height': 'default',
     'button_style': 0, # 0 = new, 1 = old
-    'panel_transparent': False,
+    'panel_transparent': False, # do not enable this
     'desktop_dash': True,
-    'custom_colors': True, # use custom (non-themey) colors for the panel/launcher?
+    'custom_colors': True, # use quiet mode (dark theme)?
     'autohide_launcher': False,
+    'indicators': ['idatetime', 'system'],
     }
     preferences.update(default_preferences)
     # user's stored preferences are used for 2nd and subsequent sessions
@@ -66,10 +67,10 @@ def main():
     # Run the application.    
     window = MeliaWindow.MeliaWindow()
     window.show()
-    
-    # THIS THING IS B0RK3D!!!! (FIXME)    
-    #panel = MeliaPanelDialog.MeliaPanelDialog()
-    #panel.show()
+
+    melia_dbus.init(window)
+    #melia_dbus.run()
+
     gtk.main()
     
     preferences.save()

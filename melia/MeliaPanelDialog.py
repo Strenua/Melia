@@ -25,8 +25,6 @@ from gettext import gettext as _
 gettext.textdomain('melia')
 
 from melia_lib.preferences import preferences
-preferences.db_connect()
-preferences.load()
 
 def set_indicator_menu_pos(menu, data=None):
     print menu, data
@@ -40,6 +38,14 @@ def transparent_expose(widget, event):
 	cr.region(region)
 	cr.fill()
 	return False
+	
+def my_import(name):
+    mod = __import__(name)
+    components = name.split('.')
+    for comp in components[1:]:
+        mod = getattr(mod, comp)
+    return mod
+    
 	
 class MeliaPanelDialog(gtk.Window):
     __gtype_name__ = "MeliaPanelDialog"
@@ -67,14 +73,25 @@ class MeliaPanelDialog(gtk.Window):
         self.builder = builder
         self.ui = builder.get_ui(self)
         
-        self.ui.indicator_system.connect('toggled', self.indicator_system_toggled)
-        
+       
+        preferences.db_connect()
+        preferences.load()
+
         if preferences['panel_transparent']:
             screen = self.get_screen()
             rgba = screen.get_rgba_colormap()
             self.set_colormap(rgba)
             self.set_app_paintable(True)
             self.connect("expose-event", transparent_expose)
+            
+        for indicator in preferences['indicators']:
+            i = my_import('indicators.' + indicator)
+            if hasattr(i, 'button'): 
+                btn = i.button()
+                btn.finit()
+                self.ui.indicator_box.add(btn)
+            else: logger.warn('Indicator %s does not appear to have a button' % indicator)
+        self.ui.indicator_box.show_all()
             
 
     def on_btn_ok_clicked(self, widget, data=None):
@@ -90,29 +107,7 @@ class MeliaPanelDialog(gtk.Window):
         Called before the dialog returns gtk.RESPONSE_CANCEL for run()
         """
         pass
-        
-    def indicator_system_toggled(self, widget, data=None):
-        widget.set_size_request(0, 0)
 
-        if self.ui.indicator_system_menu.get_children(): 
-            self.ui.indicator_system_menu.popup(None, None, set_indicator_menu_pos, 0, gtk.get_current_event_time())
-            return
-        
-        item = gtk.MenuItem('Lock Screen')
-        #item.connect('activate', self.quicklaunch)
-        self.ui.indicator_system_menu.append(item)
-        self.ui.indicator_system_menu.append(gtk.SeparatorMenuItem())
-        item = gtk.MenuItem('Guest Session')
-        #item.connect('activate', self.quicklaunch)
-        self.ui.indicator_system_menu.append(item)
-        item = gtk.MenuItem('Switch From %s...' % os.getenv('LOGNAME'))
-        #item.connect('activate', self.quicklaunch)
-        self.ui.indicator_system_menu.append(item)
-        self.ui.indicator_system_menu.show_all()
-        self.ui.indicator_system_menu.popup(None, None, set_indicator_menu_pos, 0, gtk.get_current_event_time())
-        self.ui.indicator_system_menu.button = widget
-        self.ui.indicator_system_menu.connect('deactivate', self.indicator_untoggle)
-        print widget.get_pointer()
         
     def indicator_untoggle(self, widget, data=None): 
         widget.button.set_state(gtk.STATE_NORMAL)

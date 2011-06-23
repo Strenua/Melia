@@ -14,6 +14,7 @@
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 ### END LICENSE
 import os
+import sys
 import gettext
 import gconf
 import cairo
@@ -32,18 +33,19 @@ def getwins():
     wins = screen.get_windows()
     return wins
     
-import launcher_config
+from melia import launcher_config
 import logging
 logger = logging.getLogger('melia')
 
 from melia_lib import Window
 from melia_lib import melia_dbus
+from melia_lib import meliaconfig
 from melia.AboutMeliaDialog import AboutMeliaDialog
 from melia.PreferencesMeliaDialog import PreferencesMeliaDialog
 from melia.MeliaPanelDialog import MeliaPanelDialog
 from melia.MeliaDashboardDialog import MeliaDashboardDialog
 from melia_lib.preferences import preferences
-from indicators import system
+#from indicators import system
 
 def my_import(name):
     mod = __import__(name)
@@ -62,7 +64,7 @@ class Button(gtk.Button): # my cool buttons ;)
         if len(window_title) > 20: window_title = window_title[:19] + '...'
         self.window_title = window_title
         # figure out the button style from config
-        if preferences['button_style'] == 0: return # for now, i'll just do nothing here :P
+        if preferences['button_style'] < 1: return # for now, i'll just do nothing here :P
         
         else: 
             # set width
@@ -74,8 +76,8 @@ class Button(gtk.Button): # my cool buttons ;)
 
     def update_style(self):
         # figure out the button style from config
-        if preferences['button_style'] == 0: 
-            self.set_size_request(int(preferences['launcher_width']), 48)
+        if preferences['button_style'] < 1: 
+            self.set_size_request(int(preferences['launcher_width']), preferences['launcher_width'])
             self.set_label('')        
         
         else: 
@@ -85,12 +87,6 @@ class Button(gtk.Button): # my cool buttons ;)
             self.set_label(self.window_title)
             
     
-            
-   
-# test couchdb...
-preferences.db_connect()
-preferences.load()
-
 def transparent_expose(widget, event):
 	cr = widget.window.cairo_create()
 	cr.set_operator(cairo.OPERATOR_CLEAR)
@@ -99,10 +95,14 @@ def transparent_expose(widget, event):
 	cr.fill()
 	return False
 
+DATA_DIR = meliaconfig.__melia_data_directory__
+sys.path += [DATA_DIR]
+import indicators
+
 # See melia_lib.Window.py for more details about how this class works
 class MeliaWindow(Window):
     __gtype_name__ = "MeliaWindow"
-    
+    melia_dbus.run()
     def finish_initializing(self, builder): # pylint: disable=E1002
         """Set up the main window"""
         super(MeliaWindow, self).finish_initializing(builder)
@@ -111,17 +111,22 @@ class MeliaWindow(Window):
         self.PreferencesDialog = PreferencesMeliaDialog
         #self.MeliaPanel = MeliaPanelDialog
         
+        # connect to couchdb
+        preferences.db_connect()
+        preferences.load()
+        
         #set the height/orientation/position
         #print dir(self.ui.melia_window)
-        if preferences['launcher_height'] == 'default': preferences['launcher_height'] = float(self.get_screen().get_height() - int(preferences['top_panel_height']))
+        if preferences['launcher_height'] == 'default': 
+            preferences['launcher_height'] = float(self.get_screen().get_height() - int(preferences['top_panel_height']))
         self.ui.melia_window.set_size_request(int(preferences['launcher_width']), int(preferences['launcher_height']))
-        self.move(0, int(preferences['top_panel_height']))
+        self.move(int(preferences['launcher_x_pos']), int(preferences['launcher_y_pos']))
         self.set_orientation()
                 
             
         # Code for other initialization actions should be added here.
         if preferences['custom_colors']:
-            gtk.rc_parse('data/ui/melia-quiet.rc')
+            gtk.rc_parse(DATA_DIR + 'ui/melia-quiet.rc')
         #self.ui.layout1.modify_bg(gtk.STATE_NORMAL, color)        
         #client = gconf.client_get_default ();
 
@@ -162,6 +167,7 @@ class MeliaWindow(Window):
                     btn.win_is_open = False
                     btn.connect('clicked', self.launcher)
                     btn.list = {}
+                    btn.set_size_request(int(preferences['launcher_width']), 48)
                     
                     btn.command = command
                     btn.empty_render = ''
@@ -203,7 +209,8 @@ class MeliaWindow(Window):
         for win in getwins():
             self.add_window(screen, win)
                    
-        melia_dbus.start_loop(self)
+        #melia_dbus.init(self)
+        #melia_dbus.run()
         self.get_toplevel().show() # must call show() before property_change()
         if not preferences['autohide_launcher']:
             self.get_toplevel().window.property_change("_NET_WM_STRUT", 
@@ -228,6 +235,9 @@ class MeliaWindow(Window):
             
             self.connect('leave-notify-event', self.start_autohide)
         #screen.connect('MOTION_LEFT', self.ah_show)
+        
+        # save changes to preferences
+        preferences.save()
         
         
     
@@ -268,7 +278,6 @@ class MeliaWindow(Window):
     ############################
            
     def widgefy(self, widget, e=False):
-        
         if e: widget.set_position(gtk.WIN_POS_CENTER)
 		if e: widget.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DOCK)
 		if e: widget.set_keep_below(True)
@@ -303,8 +312,7 @@ class MeliaWindow(Window):
         self.panel = MeliaPanelDialog()
         self.panel.show() 
         # after the panel is up, load indicators
-        sysi = system.SystemIndicator()      
-        sysi.append_to_stack()
+        
         self.panel.ui.dashbutton.set_size_request(int(preferences['launcher_width']), -1)
         self.dash = MeliaDashboardDialog()
         self.dash.hide()
@@ -336,9 +344,9 @@ class MeliaWindow(Window):
         self.panel.ui.dashbutton.set_state(gtk.STATE_NORMAL)
         
     def update_qls(self):
-        for ql in os.listdir('melia/quicklists/'):
+        for ql in os.listdir(DATA_DIR + 'quicklists/'):
             if ql.endswith('.py') and not ql.startswith('_'):
-                qlm = my_import('melia.quicklists.' + ql.split('.py')[0])
+                qlm = my_import('quicklists.' + ql.split('.py')[0])
                 self.qls.update({ql.split('.py')[0]: (qlm.command, qlm.ql)})  
                 if 'empty_render' in dir(qlm): self.qls.update({ql.split('.py')[0]: (qlm.command, qlm.ql, qlm.empty_render)}) 
                 
@@ -365,7 +373,7 @@ class MeliaWindow(Window):
             self.ui.quicklist.show_all()
             self.ui.quicklist.btn = widget
             self.ui.quicklist.popup(None, None, self.set_ql_pos, event.button, event.time)
-            self.ui.quicklist.connect('deactivate', self.start_autohide, True)
+            if preferences['autohide_launcher']: self.ui.quicklist.connect('deactivate', self.start_autohide, True)
             self.keep_launcher = True
             
             #logger.debug('BLABLA:', self.ui.quicklist.menu_get_for_attach_widget())
@@ -396,9 +404,13 @@ class MeliaWindow(Window):
                 #print win.get_class_group().get_name(), win.get_pid()
             else:
                 btn = Button()
-                btn.set_size_request(0, 0)
+                btn.set_size_request(preferences['launcher_width'], preferences['launcher_width'])
                 img = gtk.Image()
-                img.set_from_pixbuf(win.get_icon())
+                icon = win.get_icon()
+                #icon.scale(icon, preferences['launcher_width'], preferences['launcher_width'], preferences['launcher_width'], preferences['launcher_width'], 0, 0, 5, 5, 0)
+                img.set_from_pixbuf(icon)
+                img.set_size_request(preferences['launcher_width'], preferences['launcher_width'])
+                img.set_pixel_size(preferences['launcher_width'] - 5)
                 btn.set_image(img)
                 btn.set_relief(gtk.RELIEF_NONE)
                                 
@@ -469,9 +481,11 @@ class MeliaWindow(Window):
             self.move(preferences['launcher_x_pos'], preferences['launcher_y_pos'])
             
     def update_height(self):
+        #if preferences['launcher_height'] == 'default': preferences['launcher_height'] = float(self.get_screen().get_height() - int(preferences['top_panel_height']))
         self.set_size_request(int(preferences['launcher_width']), int(preferences['launcher_height']))
         
     def update_width(self):
+        #if preferences['launcher_height'] == 'default': preferences['launcher_height'] = float(self.get_screen().get_height() - int(preferences['top_panel_height']))
         self.set_size_request(int(preferences['launcher_width']), int(preferences['launcher_height']))
         
     def update_button_style(self):
@@ -479,9 +493,10 @@ class MeliaWindow(Window):
             button.update_style()
     
     def set_transparent(self): # make the panel transparent
-        self.widgefy(self.panel)
-        self.widgefy(self.panel.ui.layout1)     
-            
+        md = gtk.MessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, "Sorry, Melia does not fully support panel transparency at this point, so it has been disabled")
+        md.run()
+        md.destroy()
+        
     def show_notification(self, id, icon, summary, body, timeout):
         #print 'ICON:', icon
         if timeout > 10000: timeout = 10000
@@ -513,9 +528,13 @@ class MeliaWindow(Window):
     def get_button_position(self, button):
         wx, wy = self.get_position()
         bx = 0
-        by = ((self.btns.index(button) * 40) + (4 * self.btns.index(button))) + preferences['top_panel_height']
+        #bsrx, bsry = button.get_size_request()
+        #if bsry < 2: # ignore it and guess based on button style
+        if preferences['button_style'] < 1: bsry = 45
+        elif preferences['button_style'] == 1: bsry = 28
+        by = ((self.btns.index(button) * bsry) + (4 * self.btns.index(button))) + wy
         return bx, by
         
     def set_ql_pos(self, menu, data=None):
         x, y = self.get_button_position(menu.btn)
-        return x + int(preferences['launcher_width']), y, True
+        return x + int(preferences['launcher_width'] + preferences['launcher_x_pos']), y, True
