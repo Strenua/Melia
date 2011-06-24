@@ -2,15 +2,7 @@ import os
 import gtk
 import gobject
 
-def calculate_screen_pos(window_pos, window_size):
-    x = window_pos[0] + window_size[0]
-    y = window_pos[1] + window_size[1]
-    return x, y    
 
-def set_indicator_menu_pos(menu, data=None):
-    print menu, data
-    return (1290, 25, True)
-    
 class Indicator(gtk.ToggleButton):
     '''A class for Melia indicator applets'''
     _menu = None
@@ -54,8 +46,9 @@ class Indicator(gtk.ToggleButton):
     def get_menu_position(self, w=None):
         '''Return a three-tuple of the screen coordinates of the Indicator's button, and True'''
         tl = self.get_toplevel()
-        x, y = calculate_screen_pos(tl.get_position(), tl.get_size())
-        return (x, y, True)
+        indicators = tl.indicators[::-1]
+        x, y = self.calculate_screen_pos(tl.get_position(), tl.get_size(), indicators)
+        return x, y, True
         
     def construct_and_append(self, menu, items):
         '''Take a list of strs, create menu items from them, and return the items'''
@@ -67,3 +60,13 @@ class Indicator(gtk.ToggleButton):
                 menu.append(item)
             out += [item]
         return out
+        
+
+    def calculate_screen_pos(self, window_pos, window_size, indicators):
+        x = (window_pos[0] + window_size[0]) - (indicators.index(self) * 102)
+        x -= 102
+        y = (window_pos[1] + window_size[1]) + 1
+        print x, y
+        return x, y   
+        
+        

@@ -452,11 +452,13 @@ class MeliaWindow(Window):
         
     def minmaxer(self, widget, event=None):
         win = widget.win
-        #print dir(win)
-        if not win.is_minimized():
+        for d in dir(win):
+            if 'active' in d: print d
+        if not win.is_minimized() and win.is_active():
             win.minimize()
-        else: 
-            win.unminimize(gtk.get_current_event_time())
+        elif not win.is_minimized() and not win.is_active(): 
+            ''#win.make_active()
+        else: win.unminimize(gtk.get_current_event_time())
 
     def unautohide(self, wid, e):
         print 'Unautohiding (fakishly)'

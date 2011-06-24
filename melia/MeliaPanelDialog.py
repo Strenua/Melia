@@ -88,7 +88,8 @@ class MeliaPanelDialog(gtk.Window):
             self.connect("expose-event", transparent_expose)
         
         self.left_button = None 
-        self.active_indicator = None   
+        self.active_indicator = None  
+        self.indicators = [] 
         for indicator in preferences['indicators']:
             i = my_import('indicators.' + indicator)
             if hasattr(i, 'button'): 
@@ -96,6 +97,7 @@ class MeliaPanelDialog(gtk.Window):
                 btn.finit()
                 btn.connect('leave-notify-event', self.leave_indicator)
                 self.ui.indicator_box.add(btn)
+                self.indicators.append(btn)
             else: logger.warn('Indicator %s does not appear to have a button' % indicator)
         self.ui.indicator_box.show_all()
             
