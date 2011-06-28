@@ -167,7 +167,8 @@ class MeliaWindow(Window):
                     btn.win_is_open = False
                     btn.connect('clicked', self.launcher)
                     btn.list = {}
-                    btn.set_size_request(int(preferences['launcher_width']), 48)
+                    if preferences['orientation'] == 0: btn.set_size_request(int(preferences['launcher_width']), int(preferences['launcher_width']))
+                    else: btn.set_size_request(int(preferences['launcher_height']), int(preferences['launcher_height']))
                     
                     btn.command = command
                     btn.empty_render = ''
@@ -212,10 +213,12 @@ class MeliaWindow(Window):
         #melia_dbus.init(self)
         #melia_dbus.run()
         self.get_toplevel().show() # must call show() before property_change()
+        if preferences['orientation'] == 0: screenshove = [int(preferences['launcher_width']), 0, int(preferences['top_panel_height']), 0]
+        else: screenshove = [0, 0, int(preferences['top_panel_height']), int(preferences['launcher_width'])]
         if not preferences['autohide_launcher']:
             self.get_toplevel().window.property_change("_NET_WM_STRUT", 
-                "CARDINAL", 32, gtk.gdk.PROP_MODE_REPLACE, [48, 0, preferences['top_panel_height'], 0])       
-        self.move(0, int(preferences['top_panel_height']))  
+                "CARDINAL", 32, gtk.gdk.PROP_MODE_REPLACE, screenshove)       
+        #self.move(0, int(preferences['launcher_y_pos']))  
         self.notification_in_progress = False
         self.notification_stack = {}
         self.keep_launcher = False
@@ -313,7 +316,8 @@ class MeliaWindow(Window):
         self.panel.show() 
         # after the panel is up, load indicators
         
-        self.panel.ui.dashbutton.set_size_request(int(preferences['launcher_width']), -1)
+        if preferences['orientation'] == 0: self.panel.ui.dashbutton.set_size_request(int(preferences['launcher_width']), -1)
+        else: self.panel.ui.dashbutton.set_size_request(48, -1)
         self.dash = MeliaDashboardDialog()
         self.dash.hide()
         self.dash.parent = self
@@ -334,8 +338,12 @@ class MeliaWindow(Window):
             self.desk.parent = self
             self.dash.move(int(preferences['launcher_width']), int(preferences['top_panel_height']))
             self.dash.show()
-            self.dash.move(int(preferences['launcher_width']), int(preferences['top_panel_height']))
+            if preferences['orientation'] == 0: self.dash.move(int(preferences['launcher_width']), int(preferences['top_panel_height']))
+            else: self.dash.move(0, int(preferences['top_panel_height']))
             if preferences['autohide_launcher']: self.dash.move(0, int(preferences['top_panel_height']))
+            self.dash.set_can_focus(True)
+            self.dash.ui.entry1.set_can_focus(True)
+            self.dash.ui.entry1.activate()
         #self.dash.connect('focus', self.hide_dash)
         #self.dash.set_events(gtk.gdk.FOCUS_CHANGE_MASK)
         
@@ -404,13 +412,20 @@ class MeliaWindow(Window):
                 #print win.get_class_group().get_name(), win.get_pid()
             else:
                 btn = Button()
-                btn.set_size_request(preferences['launcher_width'], preferences['launcher_width'])
+
                 img = gtk.Image()
                 icon = win.get_icon()
                 #icon.scale(icon, preferences['launcher_width'], preferences['launcher_width'], preferences['launcher_width'], preferences['launcher_width'], 0, 0, 5, 5, 0)
                 img.set_from_pixbuf(icon)
-                img.set_size_request(preferences['launcher_width'], preferences['launcher_width'])
-                img.set_pixel_size(preferences['launcher_width'] - 5)
+                
+                if preferences['orientation'] == 0: 
+                    btn.set_size_request(int(preferences['launcher_width']), int(preferences['launcher_width']))
+                    img.set_size_request(int(preferences['launcher_width']), int(preferences['launcher_width']))
+                    img.set_pixel_size(int(preferences['launcher_width']) - 5)
+                else: 
+                    btn.set_size_request(int(preferences['launcher_height']), int(preferences['launcher_height']))
+                    img.set_size_request(int(preferences['launcher_height']), int(preferences['launcher_height']))
+                    img.set_pixel_size(int(preferences['launcher_height']) - 5)
                 btn.set_image(img)
                 btn.set_relief(gtk.RELIEF_NONE)
                                 
@@ -452,12 +467,10 @@ class MeliaWindow(Window):
         
     def minmaxer(self, widget, event=None):
         win = widget.win
-        for d in dir(win):
-            if 'active' in d: print d
         if not win.is_minimized() and win.is_active():
             win.minimize()
         elif not win.is_minimized() and not win.is_active(): 
-            ''#win.make_active()
+            win.activate(gtk.get_current_event_time())
         else: win.unminimize(gtk.get_current_event_time())
 
     def unautohide(self, wid, e):
@@ -532,11 +545,29 @@ class MeliaWindow(Window):
         bx = 0
         #bsrx, bsry = button.get_size_request()
         #if bsry < 2: # ignore it and guess based on button style
-        if preferences['button_style'] < 1: bsry = 45
+        if preferences['button_style'] < 1: bsry = preferences['launcher_width'] - 3 ########## ########### TODO TODO FIXME: Make sure this works, if not switch to 45
         elif preferences['button_style'] == 1: bsry = 28
         by = ((self.btns.index(button) * bsry) + (4 * self.btns.index(button))) + wy
         return bx, by
         
     def set_ql_pos(self, menu, data=None):
         x, y = self.get_button_position(menu.btn)
-        return x + int(preferences['launcher_width'] + preferences['launcher_x_pos']), y, True
+        
+        if preferences['orientation'] == 0: x += int(preferences['launcher_width'] + preferences['launcher_x_pos'])
+        else:
+            wx, wy = self.get_position()
+            
+            menuheight = 0
+            for c in menu.get_children():
+                if type(c) == gtk.SeparatorMenuItem: 
+                    menuheight += 4
+                else: menuheight += 17
+            y = wy - preferences['launcher_height'] - menuheight
+            
+            if preferences['button_style'] < 1: bsrx = 81
+            elif preferences['button_style'] == 1: bsrx = 240
+            x = ((self.btns.index(menu.btn) * bsrx) + (4 * self.btns.index(menu.btn))) + wx
+            
+        print x, y
+        return x, y, True
+        

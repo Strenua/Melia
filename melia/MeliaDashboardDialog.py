@@ -90,6 +90,7 @@ class MeliaDashboardDialog(gtk.Window):
 		
 		#self.parent.launcher_index = []
 		gtk.timeout_add(10, self.index_launchers)
+		self.ui.entry1.set_activates_default(True)
                 
             #self.ui.entry1.modify_bg(gtk.STATE_NORMAL, color) 
             

@@ -44,12 +44,12 @@ def main():
     # set some values for our first session
     default_preferences = {
     'example_entry': 'I remember stuff',
-    'orientation': 0, # 0=vertical 1=horizontal
+    'orientation': 1, # 0=vertical 1=horizontal
     'top_panel_height': 25,
     'launcher_x_pos': 0.0,
-    'launcher_y_pos': 25.0,
-    'launcher_width': 48.0,
-    'launcher_height': 'default',
+    'launcher_y_pos': 768.0 - 48.0,
+    'launcher_width': 1366.0,
+    'launcher_height': 48.0,
     'button_style': 0, # 0 = new, 1 = old
     'panel_transparent': False, # do not enable this
     'desktop_dash': True,
