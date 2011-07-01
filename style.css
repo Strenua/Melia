@@ -74,7 +74,7 @@ img:active {
     position: fixed;
     cursor: pointer;
     top: 2%;
-    max-width: auto;
+    max-width: 14%;
     box-shadow: none;
 }
 
@@ -114,5 +114,18 @@ nav div.active:hover {
     background: #464553 url(triangle.png) no-repeat left;
 }
 
-
+#h0 {
+    -moz-transition-duration: 1s;
+    -webkit-transition-duration: 1s;
+    -o-transition-duration: 1s;
+}
+#h1 {
+    -moz-transition-duration: 1s;
+    -webkit-transition-duration: 1s;
+    -o-transition-duration: 1s;
+    opacity: 0;
+    position: fixed;
+    bottom: 5px;
+    left: 5px;
+}
 

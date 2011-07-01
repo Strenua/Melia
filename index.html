@@ -30,9 +30,13 @@
     }
     function imgMouseOver() {
         document.getElementById('header').style.height = '10%';
+        document.getElementById('h0').style.opacity = '0';
+        document.getElementById('h1').style.opacity = '1';
     }
     function imgMouseOut() {
         document.getElementById('header').style.height = '20%';
+        document.getElementById('h0').style.opacity = '1';
+        document.getElementById('h1').style.opacity = '0';
     }
   </script><!-- zyxwvutsrqponmlkjihgfedcba -->
   <link  href="http://fonts.googleapis.com/css?family=Ubuntu:300,300italic,regular,italic,500,500italic,bold,bolditalic" rel="stylesheet" type="text/css" >
@@ -43,28 +47,25 @@
     </style>
 </head>
 <body>
-  <a href="no-logo.html"><img id="logo" src="no-logo.png" /></a>
+  <a href="."><img id="logo" src="melia_logo_r1.png" /></a>
   <div id="header">
     <h1>Melia</h1>
-    <h4>The desktop that will make you happy</h4>
+    <h4 id="h0">The desktop that will make you happy</h4>
   </div>
   <nav>
     <div id="home" class="active" onclick="changePage('home', this)">Home</div>
     <div id="peek" onclick="changePage('peek', this)">Take a Peek</div>
     <div id="test" onclick="changePage('test', this)">Test Drive</div>
+    <h5 id="h1">Click an image to zoom</h5>
   </nav>
   <div id="home-body" class="bodypart"><h1>This website is under development</h1></div>
   <div id="peek-body" class="bodypart gone"><h1>Please Report Bugs to <a href="mailto:crazedpsyc@duckduckgo.com">Me</a></h1>
     <br><br>
-    <img src="https://github.com/Strenua/Melia/raw/master/melia.png" onmouseover="imgMouseOver()" onmouseout="imgMouseOut()" />
+    <img src="screenshots/Screenshot.png" onmouseover="imgMouseOver()" onmouseout="imgMouseOut()" />
     <br><br>
-    <img src="https://github.com/Strenua/Melia/raw/master/melia-plexydesk2.png" onmouseover="imgMouseOver()" onmouseout="imgMouseOut()" />
+    <img src="screenshots/Screenshot-1.png" onmouseover="imgMouseOver()" onmouseout="imgMouseOut()" />
     <br><br>
-    <img src="https://github.com/Strenua/Melia/raw/master/melia-horiz.png" onmouseover="imgMouseOver()" onmouseout="imgMouseOut()" />
-    <br><br>
-    <img src="https://github.com/Strenua/Melia/raw/master/melia-horiz-2.png" onmouseover="imgMouseOver()" onmouseout="imgMouseOut()" />
-    <br><br>
-    <img src="https://github.com/Strenua/Melia/raw/master/melia-horiz-3.png" onmouseover="imgMouseOver()" onmouseout="imgMouseOut()" />
+    <img src="screenshots/melia-dash-deskmode.png" onmouseover="imgMouseOver()" onmouseout="imgMouseOut()" />
   </div>
   <div id="test-body" class="bodypart gone"><h1>Come back soon!<br>For now you can download Melia from <a href="https://github.com/Strenua/Melia">GitHub</a></h1>
   </div>
