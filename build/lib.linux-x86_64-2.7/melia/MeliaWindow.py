@@ -109,20 +109,14 @@ DATA_DIR = meliaconfig.__melia_data_directory__
 sys.path += [DATA_DIR]
 import indicators
 
-try:
-    if 'run' not in sys.argv and 'melia' not in sys.argv: exit()
-    for e in os.environ:
-        if 'root' in os.getenv(e): exit()
-except: pass
-
 # See melia_lib.Window.py for more details about how this class works
 class MeliaWindow(Window):
     __gtype_name__ = "MeliaWindow"
-    print 'Here?'
     melia_dbus.run()   
     def finish_initializing(self, builder): # pylint: disable=E1002
         """Set up the main window"""
         super(MeliaWindow, self).finish_initializing(builder)
+        melia_dbus.init(self)
         self.AboutDialog = AboutMeliaDialog
         self.PreferencesDialog = PreferencesMeliaDialog
         #self.MeliaPanel = MeliaPanelDialog

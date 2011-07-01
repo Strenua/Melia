@@ -3,8 +3,7 @@ from dbus.mainloop.glib import DBusGMainLoop
 from dbus.service import method, signal
 import gtk
 import random
-global alreadyran
-alreadyran = False
+
 global window
 window = None
 def init(wind0w):
@@ -84,8 +83,6 @@ class NotificationObject(dbus.service.Object):
 #######################################################################
 
 def run():
-    global alreadyran
-    if alreadyran: return
     d = DBusGMainLoop(set_as_default=True)
     dbus.set_default_main_loop(d)
     DBUS_BUSNAME = "org.strenua.Melia"
@@ -100,7 +97,6 @@ def run():
     session_bus1 = dbus.SessionBus()
     busname1 = dbus.service.BusName(DBUS_BUSNAME, bus=session_bus1)
     eo1 = NotificationObject(object_path=DBUS_PATH, bus_name=busname1)
-    alreadyran = True
 
 #run()
     

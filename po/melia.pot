@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-22 11:42-0600\n"
+"POT-Creation-Date: 2011-07-01 15:25-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,6 +35,310 @@ msgstr ""
 
 #: ../data/ui/MeliaPanel.ui.h:2
 msgid "power"
+msgstr ""
+
+#: ../data/indicators/weather.py:439
+msgid "Unknown error occurred while picking up weather data"
+msgstr ""
+
+#: ../data/indicators/weather.py:523
+msgid "Tornado"
+msgstr ""
+
+#: ../data/indicators/weather.py:524
+msgid "Tropical storm"
+msgstr ""
+
+#: ../data/indicators/weather.py:525
+msgid "Hurricane"
+msgstr ""
+
+#: ../data/indicators/weather.py:526
+msgid "Severe thunderstorms"
+msgstr ""
+
+#: ../data/indicators/weather.py:527
+msgid "Thunderstorms"
+msgstr ""
+
+#: ../data/indicators/weather.py:528
+msgid "Mixed rain and snow"
+msgstr ""
+
+#. Use American meaning of sleet - see http://en.wikipedia.org/wiki/Sleet
+#: ../data/indicators/weather.py:530
+msgid "Mixed rain and sleet"
+msgstr ""
+
+#: ../data/indicators/weather.py:531
+msgid "Mixed snow and sleet"
+msgstr ""
+
+#: ../data/indicators/weather.py:532
+msgid "Freezing drizzle"
+msgstr ""
+
+#: ../data/indicators/weather.py:533
+msgid "Drizzle"
+msgstr ""
+
+#: ../data/indicators/weather.py:534
+msgid "Freezing rain"
+msgstr ""
+
+#: ../data/indicators/weather.py:535 ../data/indicators/weather.py:536
+msgid "Showers"
+msgstr ""
+
+#: ../data/indicators/weather.py:537
+msgid "Snow flurries"
+msgstr ""
+
+#: ../data/indicators/weather.py:538
+msgid "Light snow showers"
+msgstr ""
+
+#: ../data/indicators/weather.py:539
+msgid "Blowing snow"
+msgstr ""
+
+#: ../data/indicators/weather.py:540
+msgid "Snow"
+msgstr ""
+
+#: ../data/indicators/weather.py:541
+msgid "Hail"
+msgstr ""
+
+#: ../data/indicators/weather.py:542
+msgid "Sleet"
+msgstr ""
+
+#: ../data/indicators/weather.py:543
+msgid "Dust"
+msgstr ""
+
+#: ../data/indicators/weather.py:544
+msgid "Foggy"
+msgstr ""
+
+#: ../data/indicators/weather.py:545
+msgid "Haze"
+msgstr ""
+
+#: ../data/indicators/weather.py:546
+msgid "Smoky"
+msgstr ""
+
+#: ../data/indicators/weather.py:547
+msgid "Blustery"
+msgstr ""
+
+#: ../data/indicators/weather.py:548
+msgid "Windy"
+msgstr ""
+
+#: ../data/indicators/weather.py:549
+msgid "Cold"
+msgstr ""
+
+#: ../data/indicators/weather.py:550
+msgid "Cloudy"
+msgstr ""
+
+#: ../data/indicators/weather.py:551 ../data/indicators/weather.py:552
+msgid "Mostly cloudy"
+msgstr ""
+
+#: ../data/indicators/weather.py:553 ../data/indicators/weather.py:554
+#: ../data/indicators/weather.py:568
+msgid "Partly cloudy"
+msgstr ""
+
+#: ../data/indicators/weather.py:555
+msgid "Clear"
+msgstr ""
+
+#: ../data/indicators/weather.py:556
+msgid "Sunny"
+msgstr ""
+
+#: ../data/indicators/weather.py:557 ../data/indicators/weather.py:558
+msgid "Fair"
+msgstr ""
+
+#: ../data/indicators/weather.py:559
+msgid "Mixed rain and hail"
+msgstr ""
+
+#: ../data/indicators/weather.py:560
+msgid "Hot"
+msgstr ""
+
+#: ../data/indicators/weather.py:561
+msgid "Isolated thunderstorms"
+msgstr ""
+
+#: ../data/indicators/weather.py:562 ../data/indicators/weather.py:563
+msgid "Scattered thunderstorms"
+msgstr ""
+
+#: ../data/indicators/weather.py:564
+msgid "Scattered showers"
+msgstr ""
+
+#: ../data/indicators/weather.py:565 ../data/indicators/weather.py:567
+msgid "Heavy snow"
+msgstr ""
+
+#: ../data/indicators/weather.py:566
+msgid "Scattered snow showers"
+msgstr ""
+
+#: ../data/indicators/weather.py:569
+msgid "Thundershowers"
+msgstr ""
+
+#: ../data/indicators/weather.py:570
+msgid "Snow showers"
+msgstr ""
+
+#: ../data/indicators/weather.py:571
+msgid "Isolated thundershowers"
+msgstr ""
+
+#: ../data/indicators/weather.py:572 ../data/indicators/weather.py:685
+msgid "Unknown condition"
+msgstr ""
+
+#: ../data/indicators/weather.py:695
+msgid "Humidity"
+msgstr ""
+
+#: ../data/indicators/weather.py:714
+msgid "Pressure"
+msgstr ""
+
+#: ../data/indicators/weather.py:740
+msgid "Temperature"
+msgstr ""
+
+#: ../data/indicators/weather.py:764 ../data/indicators/weather.py:765
+#: ../data/indicators/weather.py:766
+msgid "Unknown"
+msgstr ""
+
+#: ../data/indicators/weather.py:773
+msgid "Wind"
+msgstr ""
+
+#: ../data/indicators/weather.py:800
+msgid "Sunrise"
+msgstr ""
+
+#: ../data/indicators/weather.py:804
+msgid "Sunset"
+msgstr ""
+
+#. Short wind direction - north
+#: ../data/indicators/weather.py:817
+msgid "N"
+msgstr ""
+
+#: ../data/indicators/weather.py:819
+msgid "NE"
+msgstr ""
+
+#: ../data/indicators/weather.py:821
+msgid "E"
+msgstr ""
+
+#: ../data/indicators/weather.py:823
+msgid "SE"
+msgstr ""
+
+#: ../data/indicators/weather.py:825
+msgid "S"
+msgstr ""
+
+#: ../data/indicators/weather.py:827
+msgid "SW"
+msgstr ""
+
+#: ../data/indicators/weather.py:829
+msgid "W"
+msgstr ""
+
+#: ../data/indicators/weather.py:831
+msgid "NW"
+msgstr ""
+
+#: ../data/indicators/weather.py:1005
+msgid "Set Up Weather..."
+msgstr ""
+
+#: ../data/indicators/weather.py:1107
+msgid "Forecast"
+msgstr ""
+
+#. #Preferences
+#: ../data/indicators/weather.py:1113
+msgid "Preferences..."
+msgstr ""
+
+#. #About
+#: ../data/indicators/weather.py:1119
+msgid "About..."
+msgstr ""
+
+#: ../data/indicators/weather.py:1220
+msgid "Refreshing, please wait"
+msgstr ""
+
+#: ../data/indicators/weather.py:1222 ../data/indicators/weather.py:1224
+#: ../data/indicators/weather.py:1226
+msgid "Refresh"
+msgstr ""
+
+#: ../data/indicators/weather.py:1224
+msgid "just now"
+msgstr ""
+
+#: ../data/indicators/weather.py:1226
+#, python-format
+msgid "%d min. ago"
+msgstr ""
+
+#: ../data/indicators/weather.py:1366
+msgid "Severe weather alert"
+msgstr ""
+
+#: ../data/indicators/weather.py:1384
+msgid "Weather Indicator"
+msgstr ""
+
+#: ../data/indicators/weather.py:1396
+msgid "translator-credits"
+msgstr ""
+
+#: ../data/indicators/weather.py:1630
+msgid "Weather Forecast for "
+msgstr ""
+
+#: ../data/indicators/weather.py:1681
+msgid "High"
+msgstr ""
+
+#: ../data/indicators/weather.py:1683
+msgid "Low"
+msgstr ""
+
+#: ../data/indicators/weather.py:1784
+msgid "Label:"
+msgstr ""
+
+#: ../data/indicators/weather.py:1874
+msgid "Another instance of this program is already running"
 msgstr ""
 
 #: ../data/ui/MeliaDashboardDialog.ui.h:1
@@ -74,27 +378,27 @@ msgid "Show debug messages (-vv debugs melia_lib also)"
 msgstr ""
 
 #: ../data/ui/PreferencesMeliaDialog.ui.h:1
-msgid "Dash on Desktop"
+msgid "Autohide Launcher"
 msgstr ""
 
 #: ../data/ui/PreferencesMeliaDialog.ui.h:2
-msgid "Launcher _Height:"
+msgid "Dash on Desktop"
 msgstr ""
 
 #: ../data/ui/PreferencesMeliaDialog.ui.h:3
-msgid "Launcher _Orientation:"
+msgid "Launcher _Height:"
 msgstr ""
 
 #: ../data/ui/PreferencesMeliaDialog.ui.h:4
-msgid "Melia Preferences"
+msgid "Launcher _Orientation:"
 msgstr ""
 
 #: ../data/ui/PreferencesMeliaDialog.ui.h:5
-msgid "Should the panel be transparent?"
+msgid "Melia Preferences"
 msgstr ""
 
 #: ../data/ui/PreferencesMeliaDialog.ui.h:6
-msgid "Show a magical Dash on the desktop"
+msgid "Quiet Mode"
 msgstr ""
 
 #: ../data/ui/PreferencesMeliaDialog.ui.h:7
@@ -110,7 +414,5 @@ msgid "_Launcher Width:"
 msgstr ""
 
 #: ../data/ui/PreferencesMeliaDialog.ui.h:10
-msgid ""
-"new = big square buttons without text\n"
-"old = short fat buttons with icons and text"
+msgid "hello"
 msgstr ""
