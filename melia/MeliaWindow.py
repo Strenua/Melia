@@ -72,7 +72,8 @@ class Button(gtk.Button): # my cool buttons ;)
             # add the label
             self.set_label(window_title)
             
-        self.set_relief(gtk.RELIEF_NONE)
+        if preferences['button_relief'] == 0: self.set_relief(gtk.RELIEF_NONE)
+        elif preferences['button_relief'] == 1: self.set_relief(gtk.RELIEF_HALF)
 
     def update_style(self):
         # figure out the button style from config
@@ -85,7 +86,16 @@ class Button(gtk.Button): # my cool buttons ;)
             self.set_size_request(200, 32)
             # add the label
             self.set_label(self.window_title)
-            
+    def notify(self):
+        self.ncount = 0
+        gtk.timeout_add(500, self.toggle)
+        
+    def toggle(self):
+        if self.get_state() == gtk.STATE_PRELIGHT: self.set_state(gtk.STATE_SELECTED)
+        else: self.set_state(gtk.STATE_PRELIGHT)
+        if self.ncount >= 9: self.set_state(gtk.STATE_NORMAL)
+        self.ncount += 1
+        return self.ncount < 10
     
 def transparent_expose(widget, event):
 	cr = widget.window.cairo_create()
@@ -102,7 +112,7 @@ import indicators
 # See melia_lib.Window.py for more details about how this class works
 class MeliaWindow(Window):
     __gtype_name__ = "MeliaWindow"
-    melia_dbus.run()
+    #melia_dbus.run()
     def finish_initializing(self, builder): # pylint: disable=E1002
         """Set up the main window"""
         super(MeliaWindow, self).finish_initializing(builder)
@@ -120,6 +130,7 @@ class MeliaWindow(Window):
         if preferences['launcher_height'] == 'default': 
             preferences['launcher_height'] = float(self.get_screen().get_height() - int(preferences['top_panel_height']))
         self.ui.melia_window.set_size_request(int(preferences['launcher_width']), int(preferences['launcher_height']))
+        self.move(int(preferences['launcher_x_pos']), int(preferences['launcher_y_pos']))
         self.move(int(preferences['launcher_x_pos']), int(preferences['launcher_y_pos']))
         self.set_orientation()
                 
@@ -163,7 +174,7 @@ class MeliaWindow(Window):
                     img.set_from_icon_name(icon, gtk.ICON_SIZE_DND)
                     
                     btn.set_image(img)
-                    btn.set_relief(gtk.RELIEF_NONE)
+                    #btn.set_relief(gtk.RELIEF_NONE)
                     btn.win_is_open = False
                     btn.connect('clicked', self.launcher)
                     btn.list = {}
@@ -186,6 +197,7 @@ class MeliaWindow(Window):
                     self.ui.topbox.pack_start(btn)
                     btn.show()
                     self.btns.append(btn)
+                    
                     
                 else: 
                     logger.warn('Could not find necessary information for .desktop file. swc: %s, command: %s, icon: %s, name: %s' % (swc, command, icon, name))
@@ -219,6 +231,7 @@ class MeliaWindow(Window):
             self.get_toplevel().window.property_change("_NET_WM_STRUT", 
                 "CARDINAL", 32, gtk.gdk.PROP_MODE_REPLACE, screenshove)       
         #self.move(0, int(preferences['launcher_y_pos']))  
+        self.move(int(preferences['launcher_x_pos']), int(preferences['launcher_y_pos']))
         self.notification_in_progress = False
         self.notification_stack = {}
         self.keep_launcher = False
@@ -292,8 +305,8 @@ class MeliaWindow(Window):
 		widget.set_colormap(rgba)
 		widget.set_app_paintable(True)
 		widget.connect("expose-event", transparent_expose)
-		color = gtk.gdk.color_parse('#000')
-        widget.modify_text(gtk.STATE_NORMAL, color)  
+		#color = gtk.gdk.color_parse('#000')
+        #widget.modify_text(gtk.STATE_NORMAL, color)  
         #widget.modify_font(color) 
 		widget.show()
     def show_deskdash(self):
@@ -399,9 +412,11 @@ class MeliaWindow(Window):
         logger.debug('adding', win.get_name())
         if win.get_window_type().value_nick == "normal" and win.is_on_workspace(screen.get_active_workspace()) and not win.is_skip_tasklist():
             xid = None
-            for winxid in self.wins.keys():
-                if wnck.window_get(winxid).get_class_group().get_name() == win.get_class_group().get_name():
-                    xid = winxid
+            try: 
+                for winxid in self.wins.keys():
+                    if wnck.window_get(winxid).get_class_group().get_name() == win.get_class_group().get_name():
+                        xid = winxid
+            except AttributeError: logger.warn('Cannot get window class')
             if xid:
                 btn = self.wins[xid]
                 label = btn.get_label()
@@ -419,15 +434,15 @@ class MeliaWindow(Window):
                 img.set_from_pixbuf(icon)
                 
                 if preferences['orientation'] == 0: 
-                    btn.set_size_request(int(preferences['launcher_width']), int(preferences['launcher_width']))
+                    btn.set_size_request(int(preferences['launcher_width']) - 10, int(preferences['launcher_width']))
                     img.set_size_request(int(preferences['launcher_width']), int(preferences['launcher_width']))
                     img.set_pixel_size(int(preferences['launcher_width']) - 5)
                 else: 
-                    btn.set_size_request(int(preferences['launcher_height']), int(preferences['launcher_height']))
+                    btn.set_size_request(int(preferences['launcher_height']) - 5, int(preferences['launcher_height']))
                     img.set_size_request(int(preferences['launcher_height']), int(preferences['launcher_height']))
-                    img.set_pixel_size(int(preferences['launcher_height']) - 5)
+                    img.set_pixel_size(int(preferences['launcher_height']) - 10)
                 btn.set_image(img)
-                btn.set_relief(gtk.RELIEF_NONE)
+                #btn.set_relief(gtk.RELIEF_NONE)
                                 
                 btn.win_is_open = True
                 btn.connect('clicked', self.minmaxer)
@@ -453,16 +468,17 @@ class MeliaWindow(Window):
                 #print str(style.props)
                 #btn.set_style(style)
                 btn.show()
+                btn.notify()
                 
     def remove_window(self, screen, win):
         if win.get_xid() in self.wins.keys():
             logger.debug('removing', win.get_name())
             btn = self.wins[win.get_xid()]
-            self.btns.pop(self.btns.index(btn))
             if btn.get_label(): # there's more than one
                 btn.set_label(str(int(button.get_label() - 1)))
             else: # remove the button
                 btn.destroy()
+                self.btns.pop(self.btns.index(btn))
             self.wins.pop(win.get_xid())
         
     def minmaxer(self, widget, event=None):
@@ -545,7 +561,7 @@ class MeliaWindow(Window):
         bx = 0
         #bsrx, bsry = button.get_size_request()
         #if bsry < 2: # ignore it and guess based on button style
-        if preferences['button_style'] < 1: bsry = preferences['launcher_width'] - 3 ########## ########### TODO TODO FIXME: Make sure this works, if not switch to 45
+        if preferences['button_style'] < 1: bsry = preferences['launcher_width'] - 4 ########## ########### TODO TODO FIXME: Make sure this works, if not switch to 45
         elif preferences['button_style'] == 1: bsry = 28
         by = ((self.btns.index(button) * bsry) + (4 * self.btns.index(button))) + wy
         return bx, by
@@ -570,4 +586,5 @@ class MeliaWindow(Window):
             
         print x, y
         return x, y, True
+
         

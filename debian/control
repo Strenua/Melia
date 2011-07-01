@@ -1,0 +1,36 @@
+Source: melia
+Section: python
+Priority: extra
+Build-Depends: cdbs (>= 0.4.43),
+ debhelper (>= 6),
+ python,
+ python-support (>= 0.6.4),
+ python-distutils-extra (>= 2.10)
+Maintainer: Michael Smith <crazedpsyc@duckduckgo.com>
+Standards-Version: 3.8.3
+XS-Python-Version: current
+
+Package: melia
+Architecture: all
+XB-Python-Version: ${python:Versions}
+Depends: ${misc:Depends},
+ ${python:Depends},
+ melia,
+ python-dbus,
+ python-desktopcouch-records,
+ python-gconf,
+ python-wnck,
+ python-cairo,
+ python-gobject,
+ python-launchpad-integration,
+ python-gtk2,
+ yelp
+Description: A magical desktop shell for lawn gnomes and housecats... Oh, and big-twoleg-giants
+ Melia is a magical desktop shell for strange, mystical creatures; a copy
+ of which was stolen from a drunken gnome named Glog. The thief spirited
+ it away to the humans, who were amazed because of its three dimensional
+ two dimensionality, and its 'purdyness'. Don't worry, the gnomes have
+ now reluctantly signed a contract making it perfectly legal (and free)
+ to distribute! A little-known fact is that the gnomes write everything
+ in Python now, because they forced their mortal enemies, the snakes, to
+ give it to them after a particularly devastating war.
