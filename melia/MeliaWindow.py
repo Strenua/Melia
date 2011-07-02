@@ -536,11 +536,12 @@ class MeliaWindow(Window):
         
     def show_notification(self, id, icon, summary, body, timeout):
         #print 'ICON:', icon
-        if timeout > 10000: timeout = 10000
-        elif timeout < 1000: timeout = 1000
+        if timeout > 15000: timeout = 15000
+        elif timeout < 5000: timeout = 5000
         if self.notification_in_progress and self.notification_in_progress != id: self.notification_stack.update({id: (id, icon, summary, body, timeout)})
         else: 
             self.panel.ui.notification_area.set_label('%s: %s' % (summary, body))
+            self.panel.ui.layout1.set_state(gtk.STATE_SELECTED)
             #if icon:
                 #self.panel.ui.notification_icon = gtk.Image()
                # print icon

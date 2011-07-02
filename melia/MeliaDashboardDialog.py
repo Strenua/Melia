@@ -269,7 +269,7 @@ class MeliaDashboardDialog(gtk.Window):
     def open_file(self, widget, data=None):
         if not os.path.exists(widget.command.replace('///', '/')): 
             logger.warn('Attempt to open file %s failed, as it does not exist. attempting to run it as a command' % widget.command.replace('///', '/'))
-            subprocess.call(widget.command.split())
+            os.system(widget.command + ' &')
             return
         logger.debug("running 'xdg-open %s'" % widget.command)
         os.system('xdg-open %s' % widget.command)

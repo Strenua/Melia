@@ -21,6 +21,10 @@ style "darkbutton" = "dark" {
 		#text_shade = 1.04
 	}
 }
+style "darklabel" = "dark" {
+    bg[SELECTED] = "#4087FF"
+    fg[SELECTED] = "#000000"
+}
 
 
 widget "*Button*"           style "darkbutton"
@@ -35,5 +39,6 @@ widget "*Melia*Dialog*"     style "dark"
 widget "*GtkEntry*"         style "dark"
 widget "*GtkMessageDialog*" style "dark"
 widget "*GtkLayout*"        style "dark"
+widget "*GtkLabel*"        style "darklabel"
 
 
