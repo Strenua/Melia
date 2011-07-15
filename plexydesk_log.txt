@@ -1,0 +1,394 @@
+Debug:Read:  QHash(("themepack", QVariant(QString, "default") ) ( "CurrentWallpaper" ,  QVariant(QString, "/usr//share/plexy/themepack/default/resources/default.png") ) ( "proxyOn" ,  QVariant(QString, "false") ) ( "proxyURL" ,  QVariant(QString, "") ) ( "proxyPasswd" ,  QVariant(QString, "") ) ( "proxyUser" ,  QVariant(QString, "") ) ( "proxyPort" ,  QVariant(QString, "0") ) ( "openGL" ,  QVariant(QString, "") ) ( "iconTheme" ,  QVariant(QString, "default") ) )  
+Debug:PlexyDesk::Config::Config(const QString&, const QString&, QObject*) QHash(("themepack", QVariant(QString, "default") ) ( "CurrentWallpaper" ,  QVariant(QString, "/usr//share/plexy/themepack/default/resources/default.png") ) ( "proxyOn" ,  QVariant(QString, "false") ) ( "proxyURL" ,  QVariant(QString, "") ) ( "proxyPasswd" ,  QVariant(QString, "") ) ( "proxyUser" ,  QVariant(QString, "") ) ( "proxyPort" ,  QVariant(QString, "0") ) ( "openGL" ,  QVariant(QString, "") ) ( "iconTheme" ,  QVariant(QString, "default") ) )  
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "default" 
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "/usr/share/plexy/themepack/default/main.cfg" 
+Debug:DesktopView::DesktopView(QGraphicsScene*, QWidget*) "/usr//share/plexy/themepack/default/resources/default.png" 
+Debug:void PlexyDesk::Config::setWallpaper(const QString&) "/usr//share/plexy/themepack/default/resources/default.png" 
+Debug:PluginLoader::load Loading.. CpuInterface(0x1884aa0) "plexycpu" 
+
+Debug:PluginLoader::load Loading.. ClockInterface(0x18857e0) "plexyclock" 
+
+Debug:PluginLoader::load Loading.. ClassicBackdrop(0x18847c0) "classicbackdrop" 
+
+Debug:DesktopView::DesktopView(QGraphicsScene*, QWidget*) Supports Composite Ext: Yes 
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "default" 
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "/usr/share/plexy/themepack/default/main.cfg" 
+Debug:void PlexyDesk::Config::setWallpaper(const QString&) "/usr//share/plexy/themepack/default/resources/default.png" 
+Debug:void BgPlugin::changeWallpaperItem() Wallpaper Changed 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "folderview" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "main" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "photo" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "plexyclock" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "weather" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "welcome" 
+Debug:void DesktopView::setThemePack(const QString&) "plexyclock" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "87" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 1131 :  35 
+Debug:void DesktopView::addExtension(const QString&, const QString&, const QPoint&, PlexyDesk::DesktopWidget::State) "plexyclock" "Widgets" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "folderview" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "main" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "photo" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "plexyclock" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "weather" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "welcome" 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "folderview" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "folderview" : "folderview.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/folderview/folderview.qml" 
+
+Warning:QDeclarativeExpression: Expression "(function $folder() { return folderView.home })" depends on non-NOTIFYable properties: Warning:    Support::homeDebug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "0" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 0 :  35 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "photo" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "photo" : "photoElement.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/photo/photoElement.qml" 
+
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "77" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 1001 :  315 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "weather" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "weather" : "weather.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/weather/weather.qml" 
+
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "file:///usr/share/plexy/themepack/default/weather/weather.qml:2:11: Expected token `numeric literal'" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "file:///usr/share/plexy/themepack/default/weather/weather.qml:2:11: Expected a qualified name id" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "90" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 1170 :  280 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "welcome" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "welcome" : "welcome.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/welcome/welcome.qml" 
+
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "3" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 39 :  469 
+Debug:virtual void DesktopView::dragEnterEvent(QDragEnterEvent*)  QUrl( "///home/mike/git/Melia/data/ui/plexydesk_deskwidget.qml" )  
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "///home/mike/git/Melia/data/ui/plexydesk_deskwidget.qml" 
+
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "file:///home/mike/git/Melia/: File not found" 
+Debug:virtual void DesktopView::dragEnterEvent(QDragEnterEvent*)  QUrl( "///home/mike/git/Melia/data/ui/plexydesk_deskwidget.qml" )  
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "///home/mike/git/Melia/data/ui/plexydesk_deskwidget.qml" 
+
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "file:///home/mike/git/Melia/: File not found" 
+Debug:Read:  QHash(("themepack", QVariant(QString, "default") ) ( "CurrentWallpaper" ,  QVariant(QString, "/usr//share/plexy/themepack/default/resources/default.png") ) ( "proxyOn" ,  QVariant(QString, "false") ) ( "proxyURL" ,  QVariant(QString, "") ) ( "proxyPasswd" ,  QVariant(QString, "") ) ( "proxyUser" ,  QVariant(QString, "") ) ( "proxyPort" ,  QVariant(QString, "0") ) ( "openGL" ,  QVariant(QString, "") ) ( "iconTheme" ,  QVariant(QString, "default") ) )  
+Debug:PlexyDesk::Config::Config(const QString&, const QString&, QObject*) QHash(("themepack", QVariant(QString, "default") ) ( "CurrentWallpaper" ,  QVariant(QString, "/usr//share/plexy/themepack/default/resources/default.png") ) ( "proxyOn" ,  QVariant(QString, "false") ) ( "proxyURL" ,  QVariant(QString, "") ) ( "proxyPasswd" ,  QVariant(QString, "") ) ( "proxyUser" ,  QVariant(QString, "") ) ( "proxyPort" ,  QVariant(QString, "0") ) ( "openGL" ,  QVariant(QString, "") ) ( "iconTheme" ,  QVariant(QString, "default") ) )  
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "default" 
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "/usr/share/plexy/themepack/default/main.cfg" 
+Debug:DesktopView::DesktopView(QGraphicsScene*, QWidget*) "/usr//share/plexy/themepack/default/resources/default.png" 
+Debug:void PlexyDesk::Config::setWallpaper(const QString&) "/usr//share/plexy/themepack/default/resources/default.png" 
+Debug:PluginLoader::load Loading.. CpuInterface(0x25235a0) "plexycpu" 
+
+Debug:PluginLoader::load Loading.. ClockInterface(0x25234c0) "plexyclock" 
+
+Debug:PluginLoader::load Loading.. ClassicBackdrop(0x25235c0) "classicbackdrop" 
+
+Debug:DesktopView::DesktopView(QGraphicsScene*, QWidget*) Supports Composite Ext: Yes 
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "default" 
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "/usr/share/plexy/themepack/default/main.cfg" 
+Debug:void PlexyDesk::Config::setWallpaper(const QString&) "/usr//share/plexy/themepack/default/resources/default.png" 
+Debug:void BgPlugin::changeWallpaperItem() Wallpaper Changed 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "folderview" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "main" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "photo" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "plexyclock" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "weather" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "welcome" 
+Debug:void DesktopView::setThemePack(const QString&) "plexyclock" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "87" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 1131 :  35 
+Debug:void DesktopView::addExtension(const QString&, const QString&, const QPoint&, PlexyDesk::DesktopWidget::State) "plexyclock" "Widgets" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "folderview" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "main" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "photo" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "plexyclock" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "weather" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "welcome" 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "folderview" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "folderview" : "folderview.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/folderview/folderview.qml" 
+
+Warning:QDeclarativeExpression: Expression "(function $folder() { return folderView.home })" depends on non-NOTIFYable properties: Warning:    Support::homeDebug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "0" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 0 :  35 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "photo" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "photo" : "photoElement.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/photo/photoElement.qml" 
+
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "77" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 1001 :  315 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "weather" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "weather" : "weather.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/weather/weather.qml" 
+
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "file:///usr/share/plexy/themepack/default/weather/weather.qml:2:11: Expected token `numeric literal'" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "file:///usr/share/plexy/themepack/default/weather/weather.qml:2:11: Expected a qualified name id" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "90" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 1170 :  280 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "welcome" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "welcome" : "welcome.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/welcome/welcome.qml" 
+
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "3" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 39 :  469 
+Debug:virtual void DesktopView::dragEnterEvent(QDragEnterEvent*)  QUrl( "///home/mike/git/Melia/data/ui/plexydesk_deskwidget.qml" )  
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "///home/mike/git/Melia/data/ui/plexydesk_deskwidget.qml" 
+
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "file:///home/mike/git/Melia/: File not found" 
+Debug:Read:  QHash(("themepack", QVariant(QString, "default") ) ( "CurrentWallpaper" ,  QVariant(QString, "/usr//share/plexy/themepack/default/resources/default.png") ) ( "proxyOn" ,  QVariant(QString, "false") ) ( "proxyURL" ,  QVariant(QString, "") ) ( "proxyPasswd" ,  QVariant(QString, "") ) ( "proxyUser" ,  QVariant(QString, "") ) ( "proxyPort" ,  QVariant(QString, "0") ) ( "openGL" ,  QVariant(QString, "") ) ( "iconTheme" ,  QVariant(QString, "default") ) )  
+Debug:PlexyDesk::Config::Config(const QString&, const QString&, QObject*) QHash(("themepack", QVariant(QString, "default") ) ( "CurrentWallpaper" ,  QVariant(QString, "/usr//share/plexy/themepack/default/resources/default.png") ) ( "proxyOn" ,  QVariant(QString, "false") ) ( "proxyURL" ,  QVariant(QString, "") ) ( "proxyPasswd" ,  QVariant(QString, "") ) ( "proxyUser" ,  QVariant(QString, "") ) ( "proxyPort" ,  QVariant(QString, "0") ) ( "openGL" ,  QVariant(QString, "") ) ( "iconTheme" ,  QVariant(QString, "default") ) )  
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "default" 
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "/usr/share/plexy/themepack/default/main.cfg" 
+Debug:DesktopView::DesktopView(QGraphicsScene*, QWidget*) "/usr//share/plexy/themepack/default/resources/default.png" 
+Debug:void PlexyDesk::Config::setWallpaper(const QString&) "/usr//share/plexy/themepack/default/resources/default.png" 
+Debug:PluginLoader::load Loading.. CpuInterface(0xf314e0) "plexycpu" 
+
+Debug:PluginLoader::load Loading.. ClockInterface(0xf31400) "plexyclock" 
+
+Debug:PluginLoader::load Loading.. ClassicBackdrop(0xf31500) "classicbackdrop" 
+
+Debug:DesktopView::DesktopView(QGraphicsScene*, QWidget*) Supports Composite Ext: Yes 
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "default" 
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "/usr/share/plexy/themepack/default/main.cfg" 
+Debug:void PlexyDesk::Config::setWallpaper(const QString&) "/usr//share/plexy/themepack/default/resources/default.png" 
+Debug:void BgPlugin::changeWallpaperItem() Wallpaper Changed 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "folderview" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "main" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "photo" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "plexyclock" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "weather" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "welcome" 
+Debug:void DesktopView::setThemePack(const QString&) "plexyclock" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "87" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 1131 :  35 
+Debug:void DesktopView::addExtension(const QString&, const QString&, const QPoint&, PlexyDesk::DesktopWidget::State) "plexyclock" "Widgets" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "folderview" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "main" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "photo" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "plexyclock" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "weather" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "welcome" 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "folderview" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "folderview" : "folderview.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/folderview/folderview.qml" 
+
+Warning:QDeclarativeExpression: Expression "(function $folder() { return folderView.home })" depends on non-NOTIFYable properties: Warning:    Support::homeDebug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "0" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 0 :  35 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "photo" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "photo" : "photoElement.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/photo/photoElement.qml" 
+
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "77" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 1001 :  315 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "weather" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "weather" : "weather.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/weather/weather.qml" 
+
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "file:///usr/share/plexy/themepack/default/weather/weather.qml:2:11: Expected token `numeric literal'" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "file:///usr/share/plexy/themepack/default/weather/weather.qml:2:11: Expected a qualified name id" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "90" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 1170 :  280 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "welcome" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "welcome" : "welcome.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/welcome/welcome.qml" 
+
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "3" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 39 :  469 
+Debug:virtual void DesktopView::dragEnterEvent(QDragEnterEvent*)  QUrl( "///home/mike/git/Melia/data/ui/plexydesk_deskwidget.qml" )  
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "///home/mike/git/Melia/data/ui/plexydesk_deskwidget.qml" 
+
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "file:///home/mike/git/Melia/: File not found" 
+Debug:Read:  QHash(("themepack", QVariant(QString, "default") ) ( "CurrentWallpaper" ,  QVariant(QString, "/usr//share/plexy/themepack/default/resources/default.png") ) ( "proxyOn" ,  QVariant(QString, "false") ) ( "proxyURL" ,  QVariant(QString, "") ) ( "proxyPasswd" ,  QVariant(QString, "") ) ( "proxyUser" ,  QVariant(QString, "") ) ( "proxyPort" ,  QVariant(QString, "0") ) ( "openGL" ,  QVariant(QString, "") ) ( "iconTheme" ,  QVariant(QString, "default") ) )  
+Debug:PlexyDesk::Config::Config(const QString&, const QString&, QObject*) QHash(("themepack", QVariant(QString, "default") ) ( "CurrentWallpaper" ,  QVariant(QString, "/usr//share/plexy/themepack/default/resources/default.png") ) ( "proxyOn" ,  QVariant(QString, "false") ) ( "proxyURL" ,  QVariant(QString, "") ) ( "proxyPasswd" ,  QVariant(QString, "") ) ( "proxyUser" ,  QVariant(QString, "") ) ( "proxyPort" ,  QVariant(QString, "0") ) ( "openGL" ,  QVariant(QString, "") ) ( "iconTheme" ,  QVariant(QString, "default") ) )  
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "default" 
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "/usr/share/plexy/themepack/default/main.cfg" 
+Debug:DesktopView::DesktopView(QGraphicsScene*, QWidget*) "/usr//share/plexy/themepack/default/resources/default.png" 
+Debug:void PlexyDesk::Config::setWallpaper(const QString&) "/usr//share/plexy/themepack/default/resources/default.png" 
+Debug:PluginLoader::load Loading.. CpuInterface(0x13b4270) "plexycpu" 
+
+Debug:PluginLoader::load Loading.. ClockInterface(0x13b4fb0) "plexyclock" 
+
+Debug:PluginLoader::load Loading.. ClassicBackdrop(0x13b3f90) "classicbackdrop" 
+
+Debug:DesktopView::DesktopView(QGraphicsScene*, QWidget*) Supports Composite Ext: Yes 
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "default" 
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "/usr/share/plexy/themepack/default/main.cfg" 
+Debug:void PlexyDesk::Config::setWallpaper(const QString&) "/usr//share/plexy/themepack/default/resources/default.png" 
+Debug:void BgPlugin::changeWallpaperItem() Wallpaper Changed 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "folderview" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "main" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "photo" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "plexyclock" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "weather" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "welcome" 
+Debug:void DesktopView::setThemePack(const QString&) "plexyclock" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "87" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 1131 :  35 
+Debug:void DesktopView::addExtension(const QString&, const QString&, const QPoint&, PlexyDesk::DesktopWidget::State) "plexyclock" "Widgets" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "folderview" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "main" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "photo" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "plexyclock" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "weather" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "welcome" 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "folderview" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "folderview" : "folderview.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/folderview/folderview.qml" 
+
+Warning:QDeclarativeExpression: Expression "(function $folder() { return folderView.home })" depends on non-NOTIFYable properties: Warning:    Support::homeDebug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "0" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 0 :  35 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "photo" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "photo" : "photoElement.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/photo/photoElement.qml" 
+
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "77" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 1001 :  315 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "weather" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "weather" : "weather.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/weather/weather.qml" 
+
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "file:///usr/share/plexy/themepack/default/weather/weather.qml:2:11: Expected token `numeric literal'" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "file:///usr/share/plexy/themepack/default/weather/weather.qml:2:11: Expected a qualified name id" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "90" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 1170 :  280 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "welcome" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "welcome" : "welcome.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/welcome/welcome.qml" 
+
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "3" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 39 :  469 
+Debug:virtual void DesktopView::dragEnterEvent(QDragEnterEvent*)  QUrl( "///home/mike/git/Melia/data/ui/plexydesk_deskwidget.qml" )  
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "///home/mike/git/Melia/data/ui/plexydesk_deskwidget.qml" 
+
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "file:///home/mike/git/Melia/: File not found" 
+Debug:Read:  QHash(("themepack", QVariant(QString, "default") ) ( "CurrentWallpaper" ,  QVariant(QString, "/usr//share/plexy/themepack/default/resources/default.png") ) ( "proxyOn" ,  QVariant(QString, "false") ) ( "proxyURL" ,  QVariant(QString, "") ) ( "proxyPasswd" ,  QVariant(QString, "") ) ( "proxyUser" ,  QVariant(QString, "") ) ( "proxyPort" ,  QVariant(QString, "0") ) ( "openGL" ,  QVariant(QString, "") ) ( "iconTheme" ,  QVariant(QString, "default") ) )  
+Debug:PlexyDesk::Config::Config(const QString&, const QString&, QObject*) QHash(("themepack", QVariant(QString, "default") ) ( "CurrentWallpaper" ,  QVariant(QString, "/usr//share/plexy/themepack/default/resources/default.png") ) ( "proxyOn" ,  QVariant(QString, "false") ) ( "proxyURL" ,  QVariant(QString, "") ) ( "proxyPasswd" ,  QVariant(QString, "") ) ( "proxyUser" ,  QVariant(QString, "") ) ( "proxyPort" ,  QVariant(QString, "0") ) ( "openGL" ,  QVariant(QString, "") ) ( "iconTheme" ,  QVariant(QString, "default") ) )  
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "default" 
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "/usr/share/plexy/themepack/default/main.cfg" 
+Debug:DesktopView::DesktopView(QGraphicsScene*, QWidget*) "/usr//share/plexy/themepack/default/resources/default.png" 
+Debug:void PlexyDesk::Config::setWallpaper(const QString&) "/usr//share/plexy/themepack/default/resources/default.png" 
+Debug:PluginLoader::load Loading.. CpuInterface(0x283b4e0) "plexycpu" 
+
+Debug:PluginLoader::load Loading.. ClockInterface(0x283b400) "plexyclock" 
+
+Debug:PluginLoader::load Loading.. ClassicBackdrop(0x283b500) "classicbackdrop" 
+
+Debug:DesktopView::DesktopView(QGraphicsScene*, QWidget*) Supports Composite Ext: Yes 
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "default" 
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "/usr/share/plexy/themepack/default/main.cfg" 
+Debug:void PlexyDesk::Config::setWallpaper(const QString&) "/usr//share/plexy/themepack/default/resources/default.png" 
+Debug:void BgPlugin::changeWallpaperItem() Wallpaper Changed 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "folderview" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "main" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "photo" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "plexyclock" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "weather" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "welcome" 
+Debug:void DesktopView::setThemePack(const QString&) "plexyclock" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "87" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 1131 :  35 
+Debug:void DesktopView::addExtension(const QString&, const QString&, const QPoint&, PlexyDesk::DesktopWidget::State) "plexyclock" "Widgets" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "folderview" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "main" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "photo" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "plexyclock" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "weather" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "welcome" 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "folderview" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "folderview" : "folderview.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/folderview/folderview.qml" 
+
+Warning:QDeclarativeExpression: Expression "(function $folder() { return folderView.home })" depends on non-NOTIFYable properties: Warning:    Support::homeDebug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "0" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 0 :  35 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "photo" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "photo" : "photoElement.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/photo/photoElement.qml" 
+
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "77" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 1001 :  315 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "weather" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "weather" : "weather.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/weather/weather.qml" 
+
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "file:///usr/share/plexy/themepack/default/weather/weather.qml:2:11: Expected token `numeric literal'" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "file:///usr/share/plexy/themepack/default/weather/weather.qml:2:11: Expected a qualified name id" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "90" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 1170 :  280 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "welcome" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "welcome" : "welcome.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/welcome/welcome.qml" 
+
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "3" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 39 :  469 
+Debug:Read:  QHash(("themepack", QVariant(QString, "default") ) ( "CurrentWallpaper" ,  QVariant(QString, "/usr//share/plexy/themepack/default/resources/default.png") ) ( "proxyOn" ,  QVariant(QString, "false") ) ( "proxyURL" ,  QVariant(QString, "") ) ( "proxyPasswd" ,  QVariant(QString, "") ) ( "proxyUser" ,  QVariant(QString, "") ) ( "proxyPort" ,  QVariant(QString, "0") ) ( "openGL" ,  QVariant(QString, "") ) ( "iconTheme" ,  QVariant(QString, "default") ) )  
+Debug:PlexyDesk::Config::Config(const QString&, const QString&, QObject*) QHash(("themepack", QVariant(QString, "default") ) ( "CurrentWallpaper" ,  QVariant(QString, "/usr//share/plexy/themepack/default/resources/default.png") ) ( "proxyOn" ,  QVariant(QString, "false") ) ( "proxyURL" ,  QVariant(QString, "") ) ( "proxyPasswd" ,  QVariant(QString, "") ) ( "proxyUser" ,  QVariant(QString, "") ) ( "proxyPort" ,  QVariant(QString, "0") ) ( "openGL" ,  QVariant(QString, "") ) ( "iconTheme" ,  QVariant(QString, "default") ) )  
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "default" 
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "/usr/share/plexy/themepack/default/main.cfg" 
+Debug:DesktopView::DesktopView(QGraphicsScene*, QWidget*) "/usr//share/plexy/themepack/default/resources/default.png" 
+Debug:void PlexyDesk::Config::setWallpaper(const QString&) "/usr//share/plexy/themepack/default/resources/default.png" 
+Debug:PluginLoader::load Loading.. CpuInterface(0x22e0520) "plexycpu" 
+
+Debug:PluginLoader::load Loading.. ClockInterface(0x22e1260) "plexyclock" 
+
+Debug:PluginLoader::load Loading.. ClassicBackdrop(0x22e0240) "classicbackdrop" 
+
+Debug:DesktopView::DesktopView(QGraphicsScene*, QWidget*) Supports Composite Ext: Yes 
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "default" 
+Debug:ThemepackLoader::ThemepackLoader(const QString&, QObject*) "/usr/share/plexy/themepack/default/main.cfg" 
+Debug:void PlexyDesk::Config::setWallpaper(const QString&) "/usr//share/plexy/themepack/default/resources/default.png" 
+Debug:void BgPlugin::changeWallpaperItem() Wallpaper Changed 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "folderview" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "main" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "photo" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "plexyclock" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "weather" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "welcome" 
+Debug:void DesktopView::setThemePack(const QString&) "plexyclock" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "87" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 1131 :  35 
+Debug:void DesktopView::addExtension(const QString&, const QString&, const QPoint&, PlexyDesk::DesktopWidget::State) "plexyclock" "Widgets" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "folderview" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "main" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "photo" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "plexyclock" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "weather" 
+Debug:QStringList ThemepackLoader::widgets(const QString&) "welcome" 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "folderview" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "folderview" : "folderview.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/folderview/folderview.qml" 
+
+Warning:QDeclarativeExpression: Expression "(function $folder() { return folderView.home })" depends on non-NOTIFYable properties: Warning:    Support::homeDebug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "0" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 0 :  35 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "photo" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "photo" : "photoElement.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/photo/photoElement.qml" 
+
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "77" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 1001 :  315 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "weather" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "weather" : "weather.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/weather/weather.qml" 
+
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "file:///usr/share/plexy/themepack/default/weather/weather.qml:2:11: Expected token `numeric literal'" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "file:///usr/share/plexy/themepack/default/weather/weather.qml:2:11: Expected a qualified name id" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "90" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 1170 :  280 
+Debug:void DesktopView::setThemePack(const QString&) Loading qml  "welcome" 
+Debug:QString ThemepackLoader::qmlFilesFromTheme(const QString&) "welcome" : "welcome.qml" 
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "/usr/share/plexy/themepack/default/welcome/welcome.qml" 
+
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) Parsed Value "3" 
+Debug:QPoint ThemepackLoader::widgetPos(const QString&) 39 :  469 
+Debug:virtual void DesktopView::dragEnterEvent(QDragEnterEvent*)  QUrl( "///home/mike/git/Melia/data/ui/plexydesk_deskwidget.qml" )  
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "///home/mike/git/Melia/data/ui/plexydesk_deskwidget.qml" 
+
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "file:///home/mike/git/Melia/: File not found" 
+Debug:virtual void DesktopView::dragEnterEvent(QDragEnterEvent*)  QUrl( "///home/mike/git/Melia/data/ui/plexydesk_deskwidget.qml" )  
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "///home/mike/git/Melia/data/ui/plexydesk_deskwidget.qml" 
+
+Debug:void PlexyDesk::DesktopWidget::qmlFromUrl(const QUrl&) "file:///home/mike/git/Melia/: File not found" 
+Debug:void PlexyDesk::Config::changeLayer() 
+Debug:void BgPlugin::changeWallpaperItem() Wallpaper Changed 
+Debug:void PlexyDesk::Config::changeLayer() 
+Debug:void BgPlugin::changeWallpaperItem() Wallpaper Changed 
+Debug:void PlexyDesk::Config::changeLayer() 
+Debug:void BgPlugin::changeWallpaperItem() Wallpaper Changed 
+Debug:void PlexyDesk::Config::changeLayer() 
+Debug:void BgPlugin::changeWallpaperItem() Wallpaper Changed 
+Debug:void PlexyDesk::Config::changeLayer() 
+Debug:void BgPlugin::changeWallpaperItem() Wallpaper Changed 
+Debug:void PlexyDesk::Config::changeLayer() 
+Debug:void BgPlugin::changeWallpaperItem() Wallpaper Changed 

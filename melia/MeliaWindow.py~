@@ -33,6 +33,7 @@ def getwins():
     wins = screen.get_windows()
     return wins
     
+from melia import launcher_config
 import logging
 logger = logging.getLogger('melia')
 

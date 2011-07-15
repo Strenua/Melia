@@ -58,7 +58,7 @@ def main():
     'indicators': ['battery', 'idatetime', 'system'],
     'button_relief': 0,
     'pinned': {
-        0: 'nautilus-home',
+        0: 'nautilus',
         1: 'mozilla-firefox',
         2: 'gedit'
         }

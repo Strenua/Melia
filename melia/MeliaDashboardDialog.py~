@@ -97,7 +97,7 @@ class MeliaDashboardDialog(gtk.Window):
         dashx = (screenx - preferences['launcher_width']) / 1.2
         dashy = (screenx - preferences['top_panel_height']) / 2.0
         self.set_size_request(int(round(dashx)), int(round(dashy)))
-        self.ui.bottom_toolbar.connect('drag-motion', self.drag_motion)
+        self.connect('drag-motion', self.drag_motion)
 
 	
 	def drag_motion(widget, drag_context, x, y, timestamp):

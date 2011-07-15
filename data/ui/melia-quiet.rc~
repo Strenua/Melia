@@ -2,9 +2,9 @@
 # MELIA SPECIFIC SETTINGS
 # ==============================================================================
 style "dark" = "window" {
-    fg[NORMAL] = "#EEE"
-    fg[PRELIGHT] = "#EEE"
-    fg[ACTIVE] = "#EEE"
+    fg[NORMAL] = "#FFF"
+    fg[PRELIGHT] = "#FFF"
+    fg[ACTIVE] = "#FFF"
     fg[SELECTED] = "#222"    
         
     bg[NORMAL] = shade (1.0, "#3c3b37")
