@@ -4,7 +4,7 @@ import gtk
 import time, datetime
 from melia_lib import indicator
 
-class button(indicator.Indicator):
+class menu(indicator.Indicator):
     def finit(self):
         menu = gtk.Menu()
         self.dt = self.construct_and_append(menu, ['Date, Time [loading...]'])

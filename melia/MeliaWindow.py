@@ -13,6 +13,11 @@
 # You should have received a copy of the GNU General Public License along 
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 ### END LICENSE
+### TODO[s]:
+# Support libindicate
+# Support Unity quicklists
+# 
+###
 import os
 import sys
 import gettext
@@ -53,6 +58,7 @@ def my_import(name):
         mod = getattr(mod, comp)
     return mod
     
+print 'PID:', os.getpid()
 global buttons
 buttons = []
 class Button(gtk.Button): # my cool buttons ;)
@@ -69,8 +75,7 @@ class Button(gtk.Button): # my cool buttons ;)
             # set width
             self.set_size_request(200, 32)
             # add the label
-            self.set_label(window_title)
-            
+            self.set_label(window_title)    
         if preferences['button_relief'] == 0: self.set_relief(gtk.RELIEF_NONE)
         elif preferences['button_relief'] == 1: self.set_relief(gtk.RELIEF_HALF)
 
@@ -117,7 +122,6 @@ except: pass
 # See melia_lib.Window.py for more details about how this class works
 class MeliaWindow(Window):
     __gtype_name__ = "MeliaWindow"
-    print 'Here?'
     melia_dbus.run()   
     def finish_initializing(self, builder): # pylint: disable=E1002
         """Set up the main window"""
@@ -210,7 +214,7 @@ class MeliaWindow(Window):
                 
             else: 
                 logger.debug('No such launcher: %s' % preferences['pinned'][i])
-        gtk.timeout_add(100, self.start_panel)
+        gtk.timeout_add(10, self.start_panel)
 
         self.ui.Trash.command = 'nautilus trash:///'
         self.ui.Trash.list = {'Empty Trash': 'rm -rf %s/.local/share/Trash/info/* && rm -rf %s/.local/share/Trash/files/*' % (os.getenv('HOME'), os.getenv('HOME'))}
@@ -231,7 +235,8 @@ class MeliaWindow(Window):
         #melia_dbus.run()
         self.get_toplevel().show() # must call show() before property_change()
         if preferences['orientation'] == 0: screenshove = [int(preferences['launcher_width']), 0, int(preferences['top_panel_height']), 0]
-        else: screenshove = [0, 0, int(preferences['top_panel_height']), int(preferences['launcher_width'])]
+        else: screenshove = [0, 0, int(preferences['top_panel_height']), int(preferences['launcher_height'])]
+        print screenshove
         if not preferences['autohide_launcher']:
             self.get_toplevel().window.property_change("_NET_WM_STRUT", 
                 "CARDINAL", 32, gtk.gdk.PROP_MODE_REPLACE, screenshove)       
@@ -256,6 +261,10 @@ class MeliaWindow(Window):
             
             self.connect('leave-notify-event', self.start_autohide)
         #screen.connect('MOTION_LEFT', self.ah_show)
+        self.launcher = self
+        
+        # load extensions... after a 150ms delay just to be safe
+        gtk.timeout_add(150, self.load_extensions)
         
         # save changes to preferences
         preferences.save()
@@ -297,7 +306,8 @@ class MeliaWindow(Window):
         #gtk.timeout_add(4500, self.start_autohide)
         
     ############################
-           
+        
+    #### DESKTOP/DASH FUNCTIONS ####   
     def widgefy(self, widget, e=False):
         if e: widget.set_position(gtk.WIN_POS_CENTER)
 		if e: widget.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DOCK)
@@ -327,12 +337,33 @@ class MeliaWindow(Window):
             self.widgefy(self.desk.ui.entry1)
             self.widgefy(self.desk.ui.media_apps_button) 
         else: 
-            self.desk.destroy()   
+            self.desk.destroy() 
+            
+    def show_dash(self, widget, data=None):
+        if not widget.get_active(): 
+            self.dash.hide()
+        else:
+            if hasattr(self, 'desk'): self.desk.parent = self
+            self.dash.move(int(preferences['launcher_width']), int(preferences['top_panel_height']))
+            self.dash.show()
+            if preferences['orientation'] == 0: self.dash.move(int(preferences['launcher_width']), int(preferences['top_panel_height']))
+            else: self.dash.move(0, int(preferences['top_panel_height']))
+            if preferences['autohide_launcher']: self.dash.move(0, int(preferences['top_panel_height']))
+            self.dash.set_can_focus(True)
+            self.dash.ui.entry1.set_can_focus(True)
+            self.dash.ui.entry1.activate()
+        #self.dash.connect('focus', self.hide_dash)
+        #self.dash.set_events(gtk.gdk.FOCUS_CHANGE_MASK)
         
+    def hide_dash(self, widget, data=None):
+        self.dash.hide()
+        self.panel.ui.dashbutton.set_state(gtk.STATE_NORMAL)  
+    ########################################
+    
+    #### PANEL FUNCTIONS ####  
     def start_panel(self):
         self.panel = MeliaPanelDialog()
         self.panel.show() 
-        # after the panel is up, load indicators
         
         if preferences['orientation'] == 0: self.panel.ui.dashbutton.set_size_request(int(preferences['launcher_width']), -1)
         else: self.panel.ui.dashbutton.set_size_request(48, -1)
@@ -347,28 +378,9 @@ class MeliaWindow(Window):
         #self.panel.ui.notification_icon.hide()
         self.panel.ui.notification_icon.hide()
         
-        ###############################################
-        
-    def show_dash(self, widget, data=None):
-        if not widget.get_active(): 
-            self.dash.hide()
-        else:
-            self.desk.parent = self
-            self.dash.move(int(preferences['launcher_width']), int(preferences['top_panel_height']))
-            self.dash.show()
-            if preferences['orientation'] == 0: self.dash.move(int(preferences['launcher_width']), int(preferences['top_panel_height']))
-            else: self.dash.move(0, int(preferences['top_panel_height']))
-            if preferences['autohide_launcher']: self.dash.move(0, int(preferences['top_panel_height']))
-            self.dash.set_can_focus(True)
-            self.dash.ui.entry1.set_can_focus(True)
-            self.dash.ui.entry1.activate()
-        #self.dash.connect('focus', self.hide_dash)
-        #self.dash.set_events(gtk.gdk.FOCUS_CHANGE_MASK)
-        
-    def hide_dash(self, widget, data=None):
-        self.dash.hide()
-        self.panel.ui.dashbutton.set_state(gtk.STATE_NORMAL)
-        
+    ###############################################
+    
+    #### LAUNCHER BUTTONS/QUICKLISTS ####    
     def update_qls(self):
         for ql in os.listdir(DATA_DIR + '/quicklists/'):
             if ql.endswith('.py') and not ql.startswith('_'):
@@ -406,13 +418,43 @@ class MeliaWindow(Window):
         elif event.button == 1:
             logger.debug('clicked', widget.get_label())
         
+    def get_button_position(self, button):
+        wx, wy = self.get_position()
+        bx = 0
+        #bsrx, bsry = button.get_size_request()
+        #if bsry < 2: # ignore it and guess based on button style
+        if preferences['button_style'] < 1: bsry = preferences['launcher_width'] - 4
+        elif preferences['button_style'] == 1: bsry = 28
+        by = ((self.btns.index(button) * bsry) + (4 * self.btns.index(button))) + wy
+        return bx, by
+        
+    def set_ql_pos(self, menu, data=None):
+        x, y = self.get_button_position(menu.btn)
+        
+        if preferences['orientation'] == 0: x += int(preferences['launcher_width'] + preferences['launcher_x_pos'])
+        else:
+            wx, wy = self.get_position()
             
+            menuheight = 0
+            for c in menu.get_children():
+                if type(c) == gtk.SeparatorMenuItem: 
+                    menuheight += 4
+                else: menuheight += 17
+            y = wy - preferences['launcher_height'] - menuheight
+            
+            if preferences['button_style'] < 1: bsrx = 81
+            elif preferences['button_style'] == 1: bsrx = 240
+            x = ((self.btns.index(menu.btn) * bsrx) + (4 * self.btns.index(menu.btn))) + wx
+            
+        print x, y
+        return x, y, True
+                
     def quicklaunch(self, widget, data=None):
         logger.debug('Running', widget.command)
         if '%s' in widget.get_parent().button.command: os.system(widget.get_parent().button.command % widget.command)
         else: os.system(widget.command)
         
-        
+    # add a launcher button    
     def add_window(self, screen, win):
         logger.debug('adding', win.get_name())
         if win.get_window_type().value_nick == "normal" and win.is_on_workspace(screen.get_active_workspace()) and not win.is_skip_tasklist():
@@ -432,7 +474,7 @@ class MeliaWindow(Window):
                 #print win.get_class_group().get_name(), win.get_pid()
             else:
                 btn = Button()
-
+                btn.finish_initializing()
                 img = gtk.Image()
                 icon = win.get_icon()
                 #icon.scale(icon, preferences['launcher_width'], preferences['launcher_width'], preferences['launcher_width'], preferences['launcher_width'], 0, 0, 5, 5, 0)
@@ -493,16 +535,14 @@ class MeliaWindow(Window):
         elif not win.is_minimized() and not win.is_active(): 
             win.activate(gtk.get_current_event_time())
         else: win.unminimize(gtk.get_current_event_time())
-
-    def unautohide(self, wid, e):
-        print 'Unautohiding (fakishly)'
-        
-        
+    # launcher for quicklists    
     def launcher(self, wid, e=None):
         print 'Launching ' + wid.command
         if '%s' in wid.command: os.system(wid.command % wid.empty_render)
         else: os.system(wid.command)
-        
+    ######################################
+    
+    #### PREFERENCE LIVE-UPDATE FUNCTIONS ####
     def set_orientation(self):
         orientation = preferences['orientation']
         if int(orientation) == 1: 
@@ -521,18 +561,22 @@ class MeliaWindow(Window):
         self.set_size_request(int(preferences['launcher_width']), int(preferences['launcher_height']))
         
     def update_width(self):
-        #if preferences['launcher_height'] == 'default': preferences['launcher_height'] = float(self.get_screen().get_height() - int(preferences['top_panel_height']))
+        #if preferences['launcher_height'] == 'default': preferences['launcher_height'] = float(self.get_screen().get_height() - int(preferences['top_panel_height']))O
         self.set_size_request(int(preferences['launcher_width']), int(preferences['launcher_height']))
         
     def update_button_style(self):
         for button in buttons:
             button.update_style()
     
+    # FIXME: panel does not go completely transparent... :\
     def set_transparent(self): # make the panel transparent
         md = gtk.MessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, "Sorry, Melia does not fully support panel transparency at this point, so it has been disabled")
         md.run()
         md.destroy()
-        
+    ##########################################
+    
+    #### NOTIFICATION FUNCTIONS ####
+    # TODO: Move this to MeliaPanelDialog.py
     def show_notification(self, id, icon, summary, body, timeout):
         #print 'ICON:', icon
         if timeout > 15000: timeout = 15000
@@ -561,36 +605,18 @@ class MeliaWindow(Window):
                 del(self.notification_stack[n])
                 self.show_notification(nf[0], nf[1], nf[2], nf[3], nf[4])
                 
-                
-    def get_button_position(self, button):
-        wx, wy = self.get_position()
-        bx = 0
-        #bsrx, bsry = button.get_size_request()
-        #if bsry < 2: # ignore it and guess based on button style
-        if preferences['button_style'] < 1: bsry = preferences['launcher_width'] - 4 ########## ########### TODO TODO FIXME: Make sure this works, if not switch to 45
-        elif preferences['button_style'] == 1: bsry = 28
-        by = ((self.btns.index(button) * bsry) + (4 * self.btns.index(button))) + wy
-        return bx, by
-        
-    def set_ql_pos(self, menu, data=None):
-        x, y = self.get_button_position(menu.btn)
-        
-        if preferences['orientation'] == 0: x += int(preferences['launcher_width'] + preferences['launcher_x_pos'])
-        else:
-            wx, wy = self.get_position()
+    ##########################################            
+    
+    #### EXTENSION MANAGEMENT ####
+    # After *everything*, load extensions so they can modify whatever they want
+    
+    def load_extensions(self):
+        for extension in preferences['extensions']:
+            #try: 
+                em = my_import('extensions.' + extension)
+                em.main(self)
+            #except: 
+            #    logger.warn('Failed to load extension: ' + extension)
             
-            menuheight = 0
-            for c in menu.get_children():
-                if type(c) == gtk.SeparatorMenuItem: 
-                    menuheight += 4
-                else: menuheight += 17
-            y = wy - preferences['launcher_height'] - menuheight
-            
-            if preferences['button_style'] < 1: bsrx = 81
-            elif preferences['button_style'] == 1: bsrx = 240
-            x = ((self.btns.index(menu.btn) * bsrx) + (4 * self.btns.index(menu.btn))) + wx
-            
-        print x, y
-        return x, y, True
 
         

@@ -3,15 +3,15 @@ import gtk
 import gobject
 
 
-class Indicator(gtk.ToggleButton):
+class Indicator(gtk.ImageMenuItem):
     '''A class for Melia indicator applets'''
-    _menu = None
+    _submenu = None
     
     def __init__(self, icon=None, menu=None):
         '''Initialize a Melia indicator applet'''
-        gtk.ToggleButton.__init__(self)
-        if icon: self.set_icon(icon)
-        self.set_relief(gtk.RELIEF_NONE)
+        gtk.ImageMenuItem.__init__(self, '')
+        if icon: self.set_image(gtk.image_new_from_icon_name(icon))
+        self.finit()
         
     def finit(self):
         return
@@ -22,33 +22,19 @@ class Indicator(gtk.ToggleButton):
         self.set_image(self.img)
         
     def set_menu(self, menu):
-        self._menu = menu
-        self.connect('toggled', self.open_menu)
-        self._menu.connect('deactivate', self.indicator_untoggle)
+        self._submenu = menu
+        self.set_submenu(menu)
         
-    def open_menu(self, widget):
-        if not self._menu:
-            raise NameError('No menu specified for %s indicator! Please use Indicator.set_menu(menu)' % self.__name__)
+    def open_submenu(self, widget):
+        if not self._submenu:
+            raise NameError('No menu specified for %s indicator! Please use Indicator.set_submenu(menu)' % self.__name__)
             return
         #if not self.get_state() == gtk.STATE_ACTIVE: self.set_state(gtk.STATE_ACTIVE)
-        self._menu.popup(None, None, self.get_menu_position, 0, gtk.get_current_event_time())
-        self._menu.button = widget
+        self._submenu.popup(None, None, self.get_submenu_position, 0, gtk.get_current_event_time())
+        self._submenu.button = widget
         #self.activate()
         win = self.get_toplevel()
-        win.active_indicator = self._menu
-        
-    def indicator_untoggle(self, widget):
-        self._menu.hide()
-        if not self.get_state() == gtk.STATE_NORMAL: self.set_state(gtk.STATE_NORMAL)
-        win = self.get_toplevel()
-        win.active_indicator = None
-        
-    def get_menu_position(self, w=None):
-        '''Return a three-tuple of the screen coordinates of the Indicator's button, and True'''
-        tl = self.get_toplevel()
-        indicators = tl.indicators[::-1]
-        x, y = self.calculate_screen_pos(tl.get_position(), tl.get_size(), indicators)
-        return x, y, True
+        win.active_indicator = self._submenu
         
     def construct_and_append(self, menu, items):
         '''Take a list of strs, create menu items from them, and return the items'''

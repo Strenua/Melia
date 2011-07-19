@@ -90,18 +90,19 @@ class MeliaPanelDialog(gtk.Window):
         self.left_button = None 
         self.active_indicator = None  
         self.indicators = [] 
+
         for indicator in preferences['indicators']:
-            try:
+            #try:
                 i = my_import('indicators.' + indicator)
-                if hasattr(i, 'button'): 
-                    btn = i.button()
-                    btn.finit()
-                    btn.connect('leave-notify-event', self.leave_indicator)
-                    self.ui.indicator_box.add(btn)
-                    self.indicators.append(btn)
-                else: logger.warn('Indicator %s does not appear to have a button' % indicator)
-            except: logger.warn('Failed to load indicator: %s' % indicator)
-        self.ui.indicator_box.show_all()
+                if hasattr(i, 'menu'): 
+                    menu = i.menu()
+                    self.ui.indicator_panel.add(menu)
+                    print menu
+                    #self.ui.indicator_panel.add(btn)
+                    self.indicators.append(menu)
+                else: logger.warn('Indicator %s does not appear to have a menu' % indicator)
+            #except: logger.warn('Failed to load indicator: %s' % indicator)
+        self.ui.indicator_panel.show_all()
         self.move(0, 0)
             
 

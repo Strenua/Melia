@@ -4,7 +4,7 @@ import gtk
 import os
 from melia_lib import indicator
 
-class button(indicator.Indicator):
+class menu(indicator.Indicator):
     def finit(self):
         menu = gtk.Menu()
         ls, s0, gs, sf, s1, lo, sus, res, sd = self.construct_and_append(menu, ['Lock Screen', gtk.SeparatorMenuItem(), 'Guest Session', 'Switch From %s...' % os.getenv('LOGNAME'), gtk.SeparatorMenuItem(), 'Log Out', 'Suspend', 'Restart', 'Shut Down'])

@@ -63,8 +63,8 @@ VERSION = "11.05.30 'Cloudy 7'"
 
 from weather_helper import *
 
-global button
-button = None
+global menu
+menu = None
 class Settings:
     """ Class to read/write settings """
     db = None
@@ -886,10 +886,10 @@ class indicator_weather(threading.Thread):
         log.debug("Indicator: creating")
         threading.Thread.__init__(self)
         self.main_icon = os.path.join
-        global button
+        global menu
         self.button = WIndicator ("weather-clear")
         
-        button = self.button
+        menu = self.button
         #self.button.set_status (appindicator.STATUS_ACTIVE)
         #self.button.set_attention_icon ("weather-indicator-error")
 

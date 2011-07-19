@@ -43,16 +43,15 @@ def main():
     # preferences
     # set some values for our first session
     default_preferences = {
-    'example_entry': 'I remember stuff',
     'orientation': 0, # 0=vertical 1=horizontal
     'top_panel_height': 25,
     'launcher_x_pos': 0.0,
-    'launcher_y_pos': 25.0,
+    'launcher_y_pos': 25,
     'launcher_width': 48.0,
     'launcher_height': 'default',
     'button_style': 0, # 0 = new, 1 = old
     'panel_transparent': False, # do not enable this
-    'desktop_dash': True,
+    'desktop_dash': False,
     'custom_colors': True, # use quiet mode (dark theme)?
     'autohide_launcher': False,
     'indicators': ['battery', 'idatetime', 'system'],
@@ -60,8 +59,10 @@ def main():
     'pinned': {
         0: 'nautilus-home',
         1: 'mozilla-firefox',
-        2: 'gedit'
-        }
+        2: 'gedit',
+        },
+    'expand_launcher': True, # expand the launcher vertically (True), or make it autosize to its contents (False)?
+    'extensions': ['test'], # a list of extensions to load from data/extensions
     }
     preferences.update(default_preferences)
     # user's stored preferences are used for 2nd and subsequent sessions

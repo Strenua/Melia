@@ -47,7 +47,7 @@ try:
 	module_indicator = True
 	
 	
-	class button(indicator.Indicator):
+	class menu(indicator.Indicator):
 		"""GNOME Battery Status indicator - shows battery status in GNOME indicator area"""
 		
 		

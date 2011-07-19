@@ -1,0 +1,16 @@
+Melia is currently in the early alpha stages, so don't expect too much of it yet :)
+Take a look at some of the screenshots in data/media, especially the ones that say 'plexydesk', which use http://github.com/siraj/plexydesk
+
+-- TO TEST --
+Install python (>=2.4), pygtk2, pycairo, python-gconf, ConfigParser, python-wnck
+$ git clone git://github.com/Strenua/Melia.git
+$ ./run.py
+If you have any errors, pastebin the entire output and send it to @crazedpsyc
+
+-- TO INSTALL --
+NOT RECOMMENDED! But if you really want to...
+install python-distutils-extra
+$ sudo python setup.py install
+
+----
+Have fun, and please contribute if you can!

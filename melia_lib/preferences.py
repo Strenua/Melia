@@ -16,8 +16,6 @@
 
 """Provides a shared preferences dictionary"""
 
-from desktopcouch.records.server import CouchDatabase
-from desktopcouch.records.record import Record
 import gtk
 import gobject
 
@@ -58,6 +56,7 @@ class User_dict(dict):
         
         create if necessary'''
         # logging.basicConfig will be called now
+        from desktopcouch.records.server import CouchDatabase
         self._database = CouchDatabase(self._db_name, create=True)
 
     def save(self):
@@ -75,6 +74,7 @@ class User_dict(dict):
         if len(results.rows) == 0:
             # No preferences have ever been saved
             # save them before returning.
+            from desktopcouch.records.record import Record
             self._key = self._database.put_record(Record(self))
         else:
             self.update(results.rows[0].value)
