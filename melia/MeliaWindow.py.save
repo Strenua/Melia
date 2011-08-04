@@ -244,7 +244,6 @@ class MeliaWindow(Window):
         self.move(int(preferences['launcher_x_pos']), int(preferences['launcher_y_pos']))
         self.notification_in_progress = False
         self.notification_stack = {}
-        self.notification_submenu = gtk.Menu()
         self.keep_launcher = False
         if preferences['autohide_launcher']:
             gtk.timeout_add(4000, self.start_autohide)
@@ -262,7 +261,6 @@ class MeliaWindow(Window):
             
             self.connect('leave-notify-event', self.start_autohide)
         #screen.connect('MOTION_LEFT', self.ah_show)
-        
         self.launcher = self
         
         # load extensions... after a 150ms delay just to be safe
@@ -378,7 +376,7 @@ class MeliaWindow(Window):
         self.panel.ui.dashbutton.connect('toggled', self.show_dash)
         ### TODO: REMOVE THIS AND FIX THE IMAGE SETTER!
         #self.panel.ui.notification_icon.hide()
-        #self.panel.ui.notification_icon.hide()
+        self.panel.ui.notification_icon.hide()
         
     ###############################################
     
@@ -585,22 +583,14 @@ class MeliaWindow(Window):
         elif timeout < 5000: timeout = 5000
         if self.notification_in_progress and self.notification_in_progress != id: self.notification_stack.update({id: (id, icon, summary, body, timeout)})
         else: 
-            self.panel.ui.notification_mi.set_label(summary)
-            self.panel.ui.notification_mi.set_state(gtk.STATE_SELECTED)
-            
-            bodyi = gtk.ImageMenuItem()
-            bodyi.set_label(body)
-            self.notification_submenu.append(bodyi)
-            self.panel.ui.notification_mi.set_submenu(self.notification_submenu)
-            self.panel.ui.notification_mi.show_all()
-            
-            if icon:
+            self.panel.ui.notification_area.set_label('%s: %s' % (summary, body))
+            self.panel.ui.layout1.set_state(gtk.STATE_SELECTED)
+            #if icon:
                 #self.panel.ui.notification_icon = gtk.Image()
                # print icon
-                im = gtk.image_new_from_icon_name(icon)
-                self.panel.ui.notification_mi.set_image(im)
-               
-            self.panel.ui.notification_mi.show()
+            #    self.panel.ui.notification_icon.set_from_icon_name(icon)
+            #    self.panel.ui.notification_icon.show()
+
             print 'setting timeout to', timeout 
             gtk.timeout_add(timeout, self.notification_expire)
             self.notification_in_progress = id

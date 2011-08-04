@@ -95,7 +95,7 @@ class MeliaPanelDialog(gtk.Window):
         self.ui.notification_mi = gtk.ImageMenuItem()
         self.ui.notification_area.append(self.ui.notification_mi)
         self.ui.notification_area.show_all()
-        
+        self.ui.notification_mi.set_label('moo...')
         ##
 
         for indicator in preferences['indicators']:

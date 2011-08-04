@@ -244,7 +244,6 @@ class MeliaWindow(Window):
         self.move(int(preferences['launcher_x_pos']), int(preferences['launcher_y_pos']))
         self.notification_in_progress = False
         self.notification_stack = {}
-        self.notification_submenu = gtk.Menu()
         self.keep_launcher = False
         if preferences['autohide_launcher']:
             gtk.timeout_add(4000, self.start_autohide)
@@ -587,11 +586,9 @@ class MeliaWindow(Window):
         else: 
             self.panel.ui.notification_mi.set_label(summary)
             self.panel.ui.notification_mi.set_state(gtk.STATE_SELECTED)
-            
             bodyi = gtk.ImageMenuItem()
             bodyi.set_label(body)
-            self.notification_submenu.append(bodyi)
-            self.panel.ui.notification_mi.set_submenu(self.notification_submenu)
+            self.panel.ui.notification_mi.set_submenu(bodyi)
             self.panel.ui.notification_mi.show_all()
             
             if icon:

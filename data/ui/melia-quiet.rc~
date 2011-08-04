@@ -50,7 +50,6 @@ widget "*Melia*Dialog*"     style "dark"
 widget "*GtkEntry*"         style "dark"
 widget "*GtkMessageDialog*" style "dark"
 widget "*GtkLayout*"        style "dark"
-widget "*GtkMenu*"        style "dark"
 widget "*GtkLabel*"        style "darklabel"
 
 
