@@ -551,12 +551,12 @@ class MeliaWindow(Window):
             self.ui.vbox1.set_orientation(gtk.ORIENTATION_HORIZONTAL)
             self.ui.topbox.set_orientation(gtk.ORIENTATION_HORIZONTAL)
             self.ui.bottombox.set_orientation(gtk.ORIENTATION_HORIZONTAL)
-            self.move(preferences['launcher_x_pos'], preferences['launcher_y_pos'])
+            self.move(int(preferences['launcher_x_pos']), int(preferences['launcher_y_pos']))
         else: 
             self.ui.vbox1.set_orientation(gtk.ORIENTATION_VERTICAL)
             self.ui.topbox.set_orientation(gtk.ORIENTATION_VERTICAL)
             self.ui.bottombox.set_orientation(gtk.ORIENTATION_VERTICAL)
-            self.move(preferences['launcher_x_pos'], preferences['launcher_y_pos'])
+            self.move(int(preferences['launcher_x_pos']), int(preferences['launcher_y_pos']))
             
     def update_height(self):
         #if preferences['launcher_height'] == 'default': preferences['launcher_height'] = float(self.get_screen().get_height() - int(preferences['top_panel_height']))

@@ -244,6 +244,7 @@ class MeliaWindow(Window):
         self.move(int(preferences['launcher_x_pos']), int(preferences['launcher_y_pos']))
         self.notification_in_progress = False
         self.notification_stack = {}
+        self.notification_submenu = gtk.Menu()
         self.keep_launcher = False
         if preferences['autohide_launcher']:
             gtk.timeout_add(4000, self.start_autohide)
@@ -550,12 +551,12 @@ class MeliaWindow(Window):
             self.ui.vbox1.set_orientation(gtk.ORIENTATION_HORIZONTAL)
             self.ui.topbox.set_orientation(gtk.ORIENTATION_HORIZONTAL)
             self.ui.bottombox.set_orientation(gtk.ORIENTATION_HORIZONTAL)
-            self.move(preferences['launcher_x_pos'], preferences['launcher_y_pos'])
+            self.move((preferences['launcher_x_pos']), (preferences['launcher_y_pos']))
         else: 
             self.ui.vbox1.set_orientation(gtk.ORIENTATION_VERTICAL)
             self.ui.topbox.set_orientation(gtk.ORIENTATION_VERTICAL)
             self.ui.bottombox.set_orientation(gtk.ORIENTATION_VERTICAL)
-            self.move(preferences['launcher_x_pos'], preferences['launcher_y_pos'])
+            self.move(int(preferences['launcher_x_pos']), int(preferences['launcher_y_pos']))
             
     def update_height(self):
         #if preferences['launcher_height'] == 'default': preferences['launcher_height'] = float(self.get_screen().get_height() - int(preferences['top_panel_height']))
@@ -586,9 +587,11 @@ class MeliaWindow(Window):
         else: 
             self.panel.ui.notification_mi.set_label(summary)
             self.panel.ui.notification_mi.set_state(gtk.STATE_SELECTED)
+            
             bodyi = gtk.ImageMenuItem()
             bodyi.set_label(body)
-            self.panel.ui.notification_mi.set_submenu(bodyi)
+            self.notification_submenu.append(bodyi)
+            self.panel.ui.notification_mi.set_submenu(self.notification_submenu)
             self.panel.ui.notification_mi.show_all()
             
             if icon:
