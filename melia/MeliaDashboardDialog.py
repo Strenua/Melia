@@ -64,6 +64,8 @@ class MeliaDashboardDialog(gtk.Window):
         
         self.ui.entry1.connect('changed', self.search)
         
+        self.set_size_request(int(self.get_screen().get_width() - preferences['launcher_width']), int(self.get_screen().get_height() - preferences['top_panel_height']))
+        
         bus = dbus.SessionBus()
         
         preferences.db_connect()
@@ -86,17 +88,17 @@ class MeliaDashboardDialog(gtk.Window):
 		# create an empty list for clearing other buttons
 		self.current_buttons = []
 		
-		gtk.timeout_add(10, self.init_bottom_toolbar)
+		gtk.timeout_add(5, self.init_bottom_toolbar)
 		
 		#self.parent.launcher_index = []
-		gtk.timeout_add(10, self.index_launchers)
+		gtk.timeout_add(5, self.index_launchers)
 		self.ui.entry1.set_activates_default(True)
                 
             #self.ui.entry1.modify_bg(gtk.STATE_NORMAL, color) 
         screenx, screeny = self.get_screen().get_width(), self.get_screen().get_height()
-        dashx = (screenx - preferences['launcher_width']) / 1.2
-        dashy = (screenx - preferences['top_panel_height']) / 2.0
-        self.set_size_request(int(round(dashx)), int(round(dashy)))
+        #dashx = (screenx - preferences['launcher_width']) / 1.2
+        #dashy = (screenx - preferences['top_panel_height']) / 2.0
+        #self.set_size_request(int(round(dashx)), int(round(dashy)))
         self.ui.bottom_toolbar.connect('drag-motion', self.drag_motion)
 
 	
@@ -113,11 +115,12 @@ class MeliaDashboardDialog(gtk.Window):
                # print '/usr/share/applications/' + desktop
                 try: items = cf.items('Desktop Entry')
                 except: raise NameError('no [Desktop Entry] section in %s' % '/usr/share/applications/' + desktop)
-                name, command, icon = False, False, False
+                name, command, icon, categories = False, False, False, False
                 for c in items:
                     if c[0] == 'name': name = c[1]
                     elif c[0] == 'icon': icon = c[1]
                     elif c[0] == 'exec': command = c[1].replace('%U', '').replace('%u', '')
+                    elif c[0] == 'categories': categories = c[1].split(';')[0:-1]
                 if icon and name and command:
 	                self.parent.launcher_index += [(name, icon, command)]
 	            
@@ -128,11 +131,12 @@ class MeliaDashboardDialog(gtk.Window):
                # print '~/.local/share/applications/' + desktop
                 try: items = cf.items('Desktop Entry')
                 except: logger.warn('no [Desktop Entry] section in %s' % os.getenv('HOME') + '/.local/share/applications/' + desktop)
-                name, command, icon = False, False, False
+                name, command, icon, categories = False, False, False, False
                 for c in items:
                     if c[0] == 'name': name = c[1]
                     elif c[0] == 'icon': icon = c[1]
                     elif c[0] == 'exec': command = c[1].replace('%U', '').replace('%u', '')
+                    elif c[0] == 'categories': categories = c[1].split(';')[0:-1]
                 if icon and name and command:
 	                self.parent.launcher_index += [(name, icon, command)]
 	                
@@ -235,11 +239,12 @@ class MeliaDashboardDialog(gtk.Window):
                 cf = ConfigParser()
                 cf.read(res['name'])
                 items = cf.items('Desktop Entry')
-                name, swc, command, icon = False, False, False, False
+                name, swc, command, icon, categories = False, False, False, False, False
                 for c in items:
                     if c[0] == 'name': name = c[1]
                     elif c[0] == 'icon': icon = c[1]
                     elif c[0] == 'exec': command = c[1].replace('%U', '').replace('%u', '')
+                    elif c[0] == 'categories': categories = c[1].split(';')[0:-1]
                 if icon and name and command:
                     img.set_from_icon_name(icon, gtk.ICON_SIZE_DIALOG)
                     btn.set_label(name)

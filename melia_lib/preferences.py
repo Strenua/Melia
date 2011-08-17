@@ -55,12 +55,14 @@ class User_dict(dict):
 
     def save(self):
         'write file'
+        print 'Writing preferences to', DATA_DIR + '/' + self._db_name + '.conf'
         f = open(DATA_DIR + '/' + self._db_name + '.conf', 'w')
         f.write('prefdb = ' + str(self))
         f.close()
  
     def load(self):
         'load from the file'
+        print 'Loading preferences from', DATA_DIR + '/' + self._db_name + '.conf'
         f = open(DATA_DIR + '/' + self._db_name + '.conf')
         exec(f.read())
         self.update(prefdb)

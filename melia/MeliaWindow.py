@@ -82,7 +82,7 @@ class Button(gtk.Button): # my cool buttons ;)
     def update_style(self):
         # figure out the button style from config
         if preferences['button_style'] < 1: 
-            self.set_size_request(int(preferences['launcher_width']), preferences['launcher_width'])
+            self.set_size_request(int(preferences['launcher_width']), int(preferences['launcher_width']))
             self.set_label('')        
         
         else: 
@@ -214,7 +214,7 @@ class MeliaWindow(Window):
                 
             else: 
                 logger.debug('No such launcher: %s' % preferences['pinned'][i])
-        gtk.timeout_add(10, self.start_panel)
+        gtk.timeout_add(5, self.start_panel)
 
         self.ui.Trash.command = 'nautilus trash:///'
         self.ui.Trash.list = {'Empty Trash': 'rm -rf %s/.local/share/Trash/info/* && rm -rf %s/.local/share/Trash/files/*' % (os.getenv('HOME'), os.getenv('HOME'))}
@@ -265,8 +265,8 @@ class MeliaWindow(Window):
         
         self.launcher = self
         
-        # load extensions... after a 150ms delay just to be safe
-        gtk.timeout_add(150, self.load_extensions)
+        # load extensions... after a 100ms delay just to be safe
+        gtk.timeout_add(100, self.load_extensions)
         
         # save changes to preferences
         preferences.save()
@@ -337,9 +337,10 @@ class MeliaWindow(Window):
             self.widgefy(self.desk.ui.viewport1)
             self.widgefy(self.desk.ui.table3)
             self.widgefy(self.desk.ui.entry1)
-            self.widgefy(self.desk.ui.media_apps_button) 
+            self.widgefy(self.desk.ui.media_apps_button)
+            if not preferences['orientation']: self.desk.move(int(preferences['launcher_width']), int(preferences['top_panel_height'])) 
         else: 
-            self.desk.destroy() 
+            pass#self.desk.destroy() 
             
     def show_dash(self, widget, data=None):
         if not widget.get_active(): 
@@ -449,7 +450,7 @@ class MeliaWindow(Window):
             x = ((self.btns.index(menu.btn) * bsrx) + (4 * self.btns.index(menu.btn))) + wx
             
         print x, y
-        return x, y, True
+        return int(x), int(y), True
                 
     def quicklaunch(self, widget, data=None):
         logger.debug('Running', widget.command)

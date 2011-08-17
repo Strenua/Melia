@@ -40,36 +40,6 @@ def main():
     'constructor for your class instances'
     parse_options()
 
-    # preferences
-    # set some values for our first session
-    default_preferences = {
-    'orientation': 0, # 0=vertical 1=horizontal
-    'top_panel_height': 25,
-    'launcher_x_pos': 0.0,
-    'launcher_y_pos': 25,
-    'launcher_width': 48.0,
-    'launcher_height': 'default',
-    'button_style': 0, # 0 = new, 1 = old
-    'panel_transparent': False, # do not enable this
-    'desktop_dash': False,
-    'custom_colors': True, # use quiet mode (dark theme)?
-    'autohide_launcher': False,
-    'indicators': ['battery', 'idatetime', 'system'],
-    'button_relief': 0,
-    'pinned': {
-        0: 'nautilus-home',
-        1: 'mozilla-firefox',
-        2: 'gedit',
-        },
-    'expand_launcher': True, # expand the launcher vertically (True), or make it autosize to its contents (False)?
-    'extensions': ['test'], # a list of extensions to load from data/extensions
-    }
-    preferences.update(default_preferences)
-    # user's stored preferences are used for 2nd and subsequent sessions
-    preferences.db_connect()
-    preferences.load()
-    preferences.update(default_preferences)
-    preferences.save()
 
     # Run the application. 
     #gtk.timeout_add(100, melia_dbus.run())   
