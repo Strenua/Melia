@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
+3# -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 ### BEGIN LICENSE
 # Copyright (C) 2011 <Michael Smith> <crazedpsyc@lavabit.com>
 # This program is free software: you can redistribute it and/or modify it 
