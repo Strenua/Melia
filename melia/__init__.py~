@@ -49,7 +49,7 @@ def main():
 
     melia_dbus.init(window)
     #melia_dbus.run()
-    
+    os.system('gnome-screenshot')
     gtk.main()
     
     preferences.save()
