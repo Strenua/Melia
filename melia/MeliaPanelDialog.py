@@ -81,11 +81,22 @@ class MeliaPanelDialog(gtk.Window):
         preferences.load()
 
         if preferences['panel_transparent']:
-            screen = self.get_screen()
-            rgba = screen.get_rgba_colormap()
-            self.set_colormap(rgba)
-            self.set_app_paintable(True)
-            self.connect("expose-event", transparent_expose)
+            #self.widgefy(self)
+            self.widgefy(self.ui.melia_panel_dialog)
+            self.widgefy(self.ui.hbox1)
+            self.widgefy(self.ui.hbox3)
+            self.widgefy(self.ui.hbox4)
+            self.widgefy(self.ui.dashbutton)
+            self.widgefy(self.ui.layout3)
+            self.widgefy(self.ui.layout4)
+            self.widgefy(self.ui.layout1)
+            self.widgefy(self.ui.hbox2)
+            self.widgefy(self.ui.indicator_panel)
+            self.widgefy(self.ui.layout8)
+            self.widgefy(self.ui.layout7)
+            self.widgefy(self.ui.notification_box)
+            self.widgefy(self.ui.notification_area)
+            self.widgefy(self.ui.layout2)
         
         self.left_button = None 
         self.active_indicator = None  
@@ -109,9 +120,18 @@ class MeliaPanelDialog(gtk.Window):
                     self.indicators.append(menu)
                 else: logger.warn('Indicator %s does not appear to have a menu' % indicator)
             #except: logger.warn('Failed to load indicator: %s' % indicator)
+            
+        
         self.ui.indicator_panel.show_all()
         self.move(0, 0)
-
+        
+        
+    def widgefy(self, widget):
+        screen = widget.get_screen()
+        rgba = screen.get_rgba_colormap()
+        widget.set_colormap(rgba)
+        widget.set_app_paintable(True)
+        widget.connect("expose-event", transparent_expose)
 
 
 if __name__ == "__main__":

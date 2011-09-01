@@ -69,7 +69,8 @@ class Button(gtk.Button): # my cool buttons ;)
         if len(window_title) > 20: window_title = window_title[:19] + '...'
         self.window_title = window_title
         # figure out the button style from config
-        if preferences['button_style'] < 1: return # for now, i'll just do nothing here :P
+        if preferences['button_style'] < 1: 
+            self.set_size_request(int(preferences['launcher_width']), int(preferences['launcher_width']))
         
         else: 
             # set width
@@ -128,14 +129,12 @@ class MeliaWindow(Window):
         super(MeliaWindow, self).finish_initializing(builder)
         self.AboutDialog = AboutMeliaDialog
         self.PreferencesDialog = PreferencesMeliaDialog
-        #self.MeliaPanel = MeliaPanelDialog
         
         # connect to couchdb
         preferences.db_connect()
         preferences.load()
         
         #set the height/orientation/position
-        #print dir(self.ui.melia_window)
         if preferences['launcher_height'] == 'default': 
             preferences['launcher_height'] = float(self.get_screen().get_height() - int(preferences['top_panel_height']))
         self.ui.melia_window.set_size_request(int(preferences['launcher_width']), int(preferences['launcher_height']))
@@ -147,12 +146,6 @@ class MeliaWindow(Window):
         # Code for other initialization actions should be added here.
         if preferences['custom_colors']:
             gtk.rc_parse(DATA_DIR + '/ui/melia-quiet.rc')
-        #self.ui.layout1.modify_bg(gtk.STATE_NORMAL, color)        
-        #client = gconf.client_get_default ();
-
-
-        #client.add_dir ("/apps/melia",
-        #              gconf.CLIENT_PRELOAD_NONE)
         
         # load all the custom quicklists
         self.qls = {}
@@ -179,11 +172,9 @@ class MeliaWindow(Window):
                     btn = Button()
                     btn.finish_initializing(name)
                     img = gtk.Image()
-                   # print dir(win.get_class_group().get_icon())
                     img.set_from_icon_name(icon, gtk.ICON_SIZE_DND)
                     
                     btn.set_image(img)
-                    #btn.set_relief(gtk.RELIEF_NONE)
                     btn.win_is_open = False
                     btn.connect('clicked', self.launcher)
                     btn.list = {}
@@ -220,24 +211,18 @@ class MeliaWindow(Window):
         self.ui.Trash.list = {'Empty Trash': 'rm -rf %s/.local/share/Trash/info/* && rm -rf %s/.local/share/Trash/files/*' % (os.getenv('HOME'), os.getenv('HOME'))}
         self.ui.Trash.appname = 'Trash'
         
-        #gtk.timeout_add(1000, self.update_wins)
-        
         screen.connect('window-opened', self.add_window)
         screen.connect('window-closed', self.remove_window)
         
-        #self.classes = {'File Manager': self.ui.Home}
         self.wins = {}
-        #self.btns = []
         for win in getwins():
             self.add_window(screen, win)
                    
-        #melia_dbus.init(self)
-        #melia_dbus.run()
         self.get_toplevel().show() # must call show() before property_change()
         if preferences['orientation'] == 0: screenshove = [int(preferences['launcher_width']), 0, int(preferences['top_panel_height']), 0]
         else: screenshove = [0, 0, int(preferences['top_panel_height']), int(preferences['launcher_height'])]
         print screenshove
-        if not preferences['autohide_launcher']:
+        if not preferences['autohide_launcher'] and not preferences['touch_ui']:
             self.get_toplevel().window.property_change("_NET_WM_STRUT", 
                 "CARDINAL", 32, gtk.gdk.PROP_MODE_REPLACE, screenshove)       
         #self.move(0, int(preferences['launcher_y_pos']))  
@@ -261,8 +246,7 @@ class MeliaWindow(Window):
             #self.widgefy(ahwin)
             
             self.connect('leave-notify-event', self.start_autohide)
-        #screen.connect('MOTION_LEFT', self.ah_show)
-        
+
         self.launcher = self
         
         # load extensions... after a 100ms delay just to be safe
@@ -307,6 +291,9 @@ class MeliaWindow(Window):
         gtk.timeout_add(7, self.do_unhide)
         #gtk.timeout_add(4500, self.start_autohide)
         
+    # for pulling the launcher out in touch mode
+    def pull_launcher(self, widget, data=None):
+        self.move(int(widget.get_value() * preferences['launcher_width']) - int(preferences['launcher_width']), int(preferences['launcher_y_pos']))
     ############################
         
     #### DESKTOP/DASH FUNCTIONS ####   
@@ -321,10 +308,7 @@ class MeliaWindow(Window):
 		rgba = screen.get_rgba_colormap()
 		widget.set_colormap(rgba)
 		widget.set_app_paintable(True)
-		widget.connect("expose-event", transparent_expose)
-		#color = gtk.gdk.color_parse('#000')
-        #widget.modify_text(gtk.STATE_NORMAL, color)  
-        #widget.modify_font(color) 
+		widget.connect("expose-event", transparent_expose) 
 		widget.show()
     def show_deskdash(self):
         if preferences['desktop_dash']:
@@ -355,8 +339,6 @@ class MeliaWindow(Window):
             self.dash.set_can_focus(True)
             self.dash.ui.entry1.set_can_focus(True)
             self.dash.ui.entry1.activate()
-        #self.dash.connect('focus', self.hide_dash)
-        #self.dash.set_events(gtk.gdk.FOCUS_CHANGE_MASK)
         
     def hide_dash(self, widget, data=None):
         self.dash.hide()
@@ -377,9 +359,14 @@ class MeliaWindow(Window):
         if preferences['desktop_dash']: self.show_deskdash()
         #
         self.panel.ui.dashbutton.connect('toggled', self.show_dash)
-        ### TODO: REMOVE THIS AND FIX THE IMAGE SETTER!
-        #self.panel.ui.notification_icon.hide()
-        #self.panel.ui.notification_icon.hide()
+        self.panel.ui.dashbutton.connect('enter-notify-event', self.show_dash)
+        if preferences['panel_transparent']: self.set_transparent()
+        self.panel.ui.scale1.set_value(0)
+        self.panel.ui.scale1.set_adjustment(gtk.Adjustment(0, 0, 1, 1))
+        self.panel.ui.scale1.connect('value-changed', self.pull_launcher)
+        self.panel.ui.scale1.set_sensitive(True)
+        if not preferences['touch_mods']: self.panel.ui.scale1.destroy()
+        else: self.move(int(0 - preferences['launcher_width']), int(preferences['launcher_x_pos']))
         
     ###############################################
     
@@ -417,18 +404,17 @@ class MeliaWindow(Window):
             if preferences['autohide_launcher']: self.ui.quicklist.connect('deactivate', self.start_autohide, True)
             self.keep_launcher = True
             
-            #logger.debug('BLABLA:', self.ui.quicklist.menu_get_for_attach_widget())
         elif event.button == 1:
             logger.debug('clicked', widget.get_label())
         
     def get_button_position(self, button):
         wx, wy = self.get_position()
         bx = 0
-        #bsrx, bsry = button.get_size_request()
-        #if bsry < 2: # ignore it and guess based on button style
         if preferences['button_style'] < 1: bsry = preferences['launcher_width'] - 4
         elif preferences['button_style'] == 1: bsry = 28
-        by = ((self.btns.index(button) * bsry) + (4 * self.btns.index(button))) + wy
+        try: by = ((self.btns.index(button) * bsry) + (4 * self.btns.index(button))) + wy
+        except ValueError: # assume its the trash button...
+            by = self.get_screen().get_height()
         return bx, by
         
     def set_ql_pos(self, menu, data=None):
@@ -474,13 +460,11 @@ class MeliaWindow(Window):
                 else: newlabel = '2'
                 btn.set_label(newlabel)
                 btn.win_is_open = True
-                #print win.get_class_group().get_name(), win.get_pid()
             else:
                 btn = Button()
                 btn.finish_initializing()
                 img = gtk.Image()
                 icon = win.get_icon()
-                #icon.scale(icon, preferences['launcher_width'], preferences['launcher_width'], preferences['launcher_width'], preferences['launcher_width'], 0, 0, 5, 5, 0)
                 img.set_from_pixbuf(icon)
                 
                 if preferences['orientation'] == 0: 
@@ -492,7 +476,6 @@ class MeliaWindow(Window):
                     img.set_size_request(int(preferences['launcher_height']), int(preferences['launcher_height']))
                     img.set_pixel_size(int(preferences['launcher_height']) - 10)
                 btn.set_image(img)
-                #btn.set_relief(gtk.RELIEF_NONE)
                                 
                 btn.win_is_open = True
                 btn.connect('clicked', self.minmaxer)
@@ -508,15 +491,8 @@ class MeliaWindow(Window):
                         
                 btn.appname = win.get_name()
                 btn.connect('button-press-event', self.on_click)
-                #btn.show()
-                #self.classes.update({win.get_class_group().get_name(): btn})
                 self.wins.update({win.get_xid(): btn})
-                #print win.get_class_group().get_name(), win.get_pid()
                 self.btns.append(btn)
-                #style = btn.get_style().copy()
-                #style.bg[gtk.STATE_NORMAL] = gtk.gdk.color_parse('#F07746')
-                #print str(style.props)
-                #btn.set_style(style)
                 btn.show()
                 btn.notify()
                 
@@ -560,11 +536,9 @@ class MeliaWindow(Window):
             self.move(int(preferences['launcher_x_pos']), int(preferences['launcher_y_pos']))
             
     def update_height(self):
-        #if preferences['launcher_height'] == 'default': preferences['launcher_height'] = float(self.get_screen().get_height() - int(preferences['top_panel_height']))
         self.set_size_request(int(preferences['launcher_width']), int(preferences['launcher_height']))
         
     def update_width(self):
-        #if preferences['launcher_height'] == 'default': preferences['launcher_height'] = float(self.get_screen().get_height() - int(preferences['top_panel_height']))O
         self.set_size_request(int(preferences['launcher_width']), int(preferences['launcher_height']))
         
     def update_button_style(self):
@@ -573,9 +547,10 @@ class MeliaWindow(Window):
     
     # FIXME: panel does not go completely transparent... :\
     def set_transparent(self): # make the panel transparent
-        md = gtk.MessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, "Sorry, Melia does not fully support panel transparency at this point, so it has been disabled")
-        md.run()
-        md.destroy()
+        #md = gtk.MessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, "Sorry, Melia does not fully support panel transparency at this point, so it has been disabled")
+        #md.run()
+        #md.destroy()
+        ''
     ##########################################
     
     #### NOTIFICATION FUNCTIONS ####
