@@ -293,7 +293,22 @@ class MeliaWindow(Window):
         
     # for pulling the launcher out in touch mode
     def pull_launcher(self, widget, data=None):
-        self.move(int(widget.get_value() * preferences['launcher_width']) - int(preferences['launcher_width']), int(preferences['launcher_y_pos']))
+        if not self.releasing_dragger: self.move(int(widget.get_value() * preferences['launcher_width']) - int(preferences['launcher_width']), int(preferences['launcher_y_pos']))
+        
+    def finish_pull(self, widget, data=None):
+        self.releasing_dragger = True
+        if widget.get_value() >= 0.5: 
+            self.move(int(preferences['launcher_x_pos']), int(preferences['launcher_y_pos']))
+            v = 1
+        else: 
+            self.move(0 - int(preferences['launcher_width']), int(preferences['launcher_y_pos']))
+            v = 0
+        gtk.timeout_add(10, self.unrelease_dragger, v)
+        
+    def unrelease_dragger(self, data=None):
+        self.panel.ui.scale1.set_value(data)
+        self.releasing_dragger = False
+        
     ############################
         
     #### DESKTOP/DASH FUNCTIONS ####   
@@ -364,9 +379,11 @@ class MeliaWindow(Window):
         self.panel.ui.scale1.set_value(0)
         self.panel.ui.scale1.set_adjustment(gtk.Adjustment(0, 0, 1, 1))
         self.panel.ui.scale1.connect('value-changed', self.pull_launcher)
+        self.panel.ui.scale1.connect('button-release-event', self.finish_pull)
         self.panel.ui.scale1.set_sensitive(True)
         if not preferences['touch_mods']: self.panel.ui.scale1.destroy()
         else: self.move(int(0 - preferences['launcher_width']), int(preferences['launcher_x_pos']))
+        self.releasing_dragger = False
         
     ###############################################
     
@@ -584,7 +601,7 @@ class MeliaWindow(Window):
     def notification_expire(self):
         print 'notification expiring'
         self.notification_in_progress = None
-        self.panel.ui.notification_area.set_label('')
+        self.panel.ui.notification_mi.set_label('')
         if self.notification_stack: 
             for n in self.notification_stack.keys():
                 nf = self.notification_stack[n]

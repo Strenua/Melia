@@ -87,8 +87,8 @@ class MeliaPanelDialog(gtk.Window):
             self.widgefy(self.ui.hbox3)
             self.widgefy(self.ui.hbox4)
             self.widgefy(self.ui.dashbutton)
-            self.widgefy(self.ui.layout3)
-            self.widgefy(self.ui.layout4)
+            #self.widgefy(self.ui.layout3)
+            #self.widgefy(self.ui.layout4)
             self.widgefy(self.ui.layout1)
             self.widgefy(self.ui.hbox2)
             self.widgefy(self.ui.indicator_panel)
@@ -96,7 +96,7 @@ class MeliaPanelDialog(gtk.Window):
             self.widgefy(self.ui.layout7)
             self.widgefy(self.ui.notification_box)
             self.widgefy(self.ui.notification_area)
-            self.widgefy(self.ui.layout2)
+            #self.widgefy(self.ui.layout2)
         
         self.left_button = None 
         self.active_indicator = None  

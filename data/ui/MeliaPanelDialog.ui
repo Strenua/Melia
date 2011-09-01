@@ -78,28 +78,6 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLayout" id="layout3">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLayout" id="layout4">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="GtkToggleButton" id="dashbutton">
                     <property name="width_request">0</property>
                     <property name="visible">True</property>
@@ -112,7 +90,7 @@
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
-                    <property name="position">3</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
               </object>
@@ -123,15 +101,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLayout" id="layout1">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
+              <placeholder/>
             </child>
           </object>
           <packing>
@@ -209,7 +179,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLayout" id="layout2">
+          <object class="GtkLayout" id="layout1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
           </object>
