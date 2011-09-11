@@ -21,6 +21,7 @@ import gtk
 import gobject
 from melia_lib import meliaconfig
 DATA_DIR = meliaconfig.__melia_data_directory__.replace('..', os.getcwd())
+if not DATA_DIR.endswith('/'): DATA_DIR += '/'
 
 class User_dict(dict):
     ''' a dictionary with extra methods:
@@ -55,14 +56,15 @@ class User_dict(dict):
 
     def save(self):
         'write file'
-        print 'Writing preferences to', DATA_DIR + '/' + self._db_name + '.conf'
-        f = open(DATA_DIR + '/' + self._db_name + '.conf', 'w')
+        print 'Writing preferences to', DATA_DIR + self._db_name + '.conf'
+        f = open(DATA_DIR + self._db_name + '.conf', 'w')
         f.write('prefdb = ' + str(self))
         f.close()
  
     def load(self):
         'load from the file'
-        f = open(DATA_DIR + '/' + self._db_name + '.conf')
+        print 'Loading preferences from', DATA_DIR + self._db_name + '.conf'
+        f = open(DATA_DIR + self._db_name + '.conf')
         exec(f.read())
         self.update(prefdb)
 

@@ -21,7 +21,6 @@
 import os
 import sys
 import gettext
-import gconf
 import cairo
 from ConfigParser import ConfigParser
 from gettext import gettext as _
@@ -79,6 +78,14 @@ class Button(gtk.Button): # my cool buttons ;)
             self.set_label(window_title)    
         if preferences['button_relief'] == 0: self.set_relief(gtk.RELIEF_NONE)
         elif preferences['button_relief'] == 1: self.set_relief(gtk.RELIEF_HALF)
+        self.drag_source_set(gtk.gdk.BUTTON1_MASK, [('Copy', gtk.TARGET_OTHER_APP, 0)], gtk.gdk.ACTION_COPY)
+        i = self.get_image()
+        if type(i.get_icon_name()[0]) == str: self.drag_source_set_icon_name(i.get_icon_name()[0])
+        else: self.drag_source_set_icon_pixbuf(i.get_pixbuf())
+        #self.connect('drag-begin', self.drag_begin)
+        self.connect('drag-data-get', self.drag_data_get_cb)
+        #self.drag_source_add_uri_targets(
+        #self.connect('drag-end', self.drag_end)
 
     def update_style(self):
         # figure out the button style from config
@@ -101,6 +108,16 @@ class Button(gtk.Button): # my cool buttons ;)
         if self.ncount >= 9: self.set_state(gtk.STATE_NORMAL)
         self.ncount += 1
         return self.ncount < 10
+        
+        
+    # DRAG FUNCTIONS
+   # def drag_begin(self, context, data):
+
+    def drag_data_get_cb(self, drag_context, selection_data, info, time, data):
+        print 'I am magical'
+        return 'file:///usr/share/applications/firefox.desktop'
+   # def drag_end(self, drag_context, data):
+      #  print 'end', drag_context, data
     
 def transparent_expose(widget, event):
 	cr = widget.window.cairo_create()
@@ -170,11 +187,12 @@ class MeliaWindow(Window):
                     if command and not swc: swc = preferences['pinned'][i]
                 if swc and command and icon and name:
                     btn = Button()
-                    btn.finish_initializing(name)
+                    
                     img = gtk.Image()
                     img.set_from_icon_name(icon, gtk.ICON_SIZE_DND)
                     
                     btn.set_image(img)
+                    btn.finish_initializing(name)
                     btn.win_is_open = False
                     btn.connect('clicked', self.launcher)
                     btn.list = {}
@@ -213,18 +231,22 @@ class MeliaWindow(Window):
         
         screen.connect('window-opened', self.add_window)
         screen.connect('window-closed', self.remove_window)
+        screen.connect('active-workspace-changed', self.update_tasklist)
         
         self.wins = {}
         for win in getwins():
             self.add_window(screen, win)
-                   
+                 
         self.get_toplevel().show() # must call show() before property_change()
         if preferences['orientation'] == 0: screenshove = [int(preferences['launcher_width']), 0, int(preferences['top_panel_height']), 0]
         else: screenshove = [0, 0, int(preferences['top_panel_height']), int(preferences['launcher_height'])]
         print screenshove
         if not preferences['autohide_launcher'] and not preferences['touch_mods']:
             self.get_toplevel().window.property_change("_NET_WM_STRUT", 
-                "CARDINAL", 32, gtk.gdk.PROP_MODE_REPLACE, screenshove)       
+                "CARDINAL", 32, gtk.gdk.PROP_MODE_REPLACE, screenshove)     
+        else: 
+            self.get_toplevel().window.property_change("_NET_WM_STRUT", 
+                "CARDINAL", 32, gtk.gdk.PROP_MODE_REPLACE, [0, 0, int(preferences['top_panel_height']), 0])  
         #self.move(0, int(preferences['launcher_y_pos']))  
         self.move(int(preferences['launcher_x_pos']), int(preferences['launcher_y_pos']))
         self.notification_in_progress = False
@@ -300,6 +322,7 @@ class MeliaWindow(Window):
         if widget.get_value() >= 0.5: 
             self.move(int(preferences['launcher_x_pos']), int(preferences['launcher_y_pos']))
             v = 1
+            gtk.timeout_add(4000, self.start_autohide)
         else: 
             self.move(0 - int(preferences['launcher_width']), int(preferences['launcher_y_pos']))
             v = 0
@@ -479,7 +502,7 @@ class MeliaWindow(Window):
                 btn.win_is_open = True
             else:
                 btn = Button()
-                btn.finish_initializing()
+                
                 img = gtk.Image()
                 icon = win.get_icon()
                 img.set_from_pixbuf(icon)
@@ -493,7 +516,9 @@ class MeliaWindow(Window):
                     img.set_size_request(int(preferences['launcher_height']), int(preferences['launcher_height']))
                     img.set_pixel_size(int(preferences['launcher_height']) - 10)
                 btn.set_image(img)
-                                
+                
+                btn.finish_initializing()              
+                
                 btn.win_is_open = True
                 btn.connect('clicked', self.minmaxer)
                 btn.win = win
@@ -513,17 +538,39 @@ class MeliaWindow(Window):
                 btn.show()
                 btn.notify()
                 
+                
     def remove_window(self, screen, win):
+        print 'hoo-1'
         if win.get_xid() in self.wins.keys():
             logger.debug('removing', win.get_name())
             btn = self.wins[win.get_xid()]
-            if btn.get_label(): # there's more than one
-                btn.set_label(str(int(button.get_label() - 1)))
+            if btn.get_label(): 
+                if btn.get_label() not in '1234567890': return # b0rk!!! b0rk!!!
+            else: 
+                btn.destroy()
+                self.btns.pop(self.btns.index(btn))
+                return
+            print 'hoo0'
+            if btn.get_label() and int(btn.get_label()) > 1: # there's more than one
+                btn.set_label(str(int(btn.get_label()) - 1))
+                print 'hoo1'
+            elif int(btn.get_label()) <= 1: 
+                btn.set_label('')
+                print 'hoo2'
             else: # remove the button
                 btn.destroy()
                 self.btns.pop(self.btns.index(btn))
+                print 'hoo3'
             self.wins.pop(win.get_xid())
         
+    def update_tasklist(self, a, b=None):
+        for win in self.wins.keys():
+            self.remove_window(wnck.screen_get_default(), wnck.window_get(win))
+        self.wins = {}
+        for win in getwins():
+            self.add_window(screen, win)
+        
+            
     def minmaxer(self, widget, event=None):
         win = widget.win
         if not win.is_minimized() and win.is_active():

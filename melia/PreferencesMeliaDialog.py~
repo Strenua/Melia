@@ -83,7 +83,6 @@ class PreferencesMeliaDialog(PreferencesDialog):
         self.ui.button_style.show_all()
         
         self.ui.launcher_height.set_adjustment(gtk.Adjustment(0, 0, self.get_screen().get_height(), 1))
-        self.ui.launcher_width.set_adjustment(gtk.Adjustment(0, 0, self.get_screen().get_width(), 1))
         
         for i in preferences['indicators']:
             #self.ui.liststore3.append(('hello',))
