@@ -1,8 +1,0 @@
-[Desktop Entry]
-_Name=Melia
-_Comment=Melia Desktop Shell
-Categories=GNOME;
-Exec=melia
-Icon=/usr/share/melia/media/melia.svg
-Terminal=false
-Type=Application
