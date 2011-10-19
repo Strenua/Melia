@@ -40,13 +40,16 @@ class HelloClutter:
         #grad.invalidate()
         #self.stage.add(grad)
 
+        box = mtk.Container(mtk.CONTAINER_VERTICAL, 0)
+
         mybutton = mtk.Button(icon='midori', size=(32,60), flat=True)
         mybutton.connect('clicked', self.on_midori_clicked)
-        self.stage.add(mybutton)
+        box.append(mybutton)
         
         mybutton = mtk.Button(icon='leafpad', size=(32,60), flat=True)
-        mybutton.set_position(0, 60)
-        self.stage.add(mybutton)
+        box.append(mybutton)
+        
+        self.stage.add(box)
         
         t = cluttergtk.Texture()
         t.set_from_icon_name(button, 'nm-signal-75')

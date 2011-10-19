@@ -4,6 +4,39 @@ _button = gtk.Button()
 
 import gobject
 
+CONTAINER_VERTICAL, CONTAINER_HORIZONTAL = range(2)
+
+class Container(clutter.Group):
+    '''A container which automatically arranges widgets, so they never overlap'''
+    def __init__(self, orientation, spacing=2):
+        super(Container, self).__init__()
+        
+        self.orientation = orientation
+        self.spacing = spacing
+
+        # x and y positions of the edge of the last widget added, used for placing the next widget
+        self.lastx = 0
+        self.lasty = 0
+    
+    def layout(self, actor, startpos=None):
+        if not startpos: startpos = (self.lastx, self.lasty)
+        if self.orientation == 0: x, y = (0, self.lasty + self.spacing)
+        else: x, y = (self.lastx + self.spacing, 0)
+        print x, y
+        self.lastx, self.lasty = x + actor.get_size()[0], y + actor.get_size()[1]
+        actor.set_position(x, y)
+        
+    def append(self, actor):
+        '''Append a widget to the container, automatically positioning it relative to other widgets in the container'''
+        self.add(actor)
+        actor.first = True
+        actor.connect('queue-relayout', self.relayout)
+        self.layout(actor)
+        
+    def relayout(self, actor):
+        if not actor.first: self.layout(actor, actor.get_position())
+        else: actor.first = False
+        
 class Button(clutter.Group):
     def __init__(self, label=None, icon=None, size=(80, 30), pos=(0, 0), labelpos='bottom', flat=False):    
         super(Button, self).__init__()
@@ -27,17 +60,27 @@ class Button(clutter.Group):
         self.set_position(pos[0], pos[1])
         
         # add actors
-        self.button = clutter.Rectangle()
-        self.button.set_color(clutter.color_from_string('#222'))
+        
+        #self.button.set_color(clutter.color_from_string('#222'))
         self.color = '#222'
-        self.button.set_size(size[0], size[1])
+        
         if not flat: 
-            self.button.set_border_width(2)
-            self.button.set_border_color(clutter.color_from_string('#212121'))
+            self.button = clutter.Texture('button-normal.png')
+    #        self.button.set_border_width(2)
+     #       self.button.set_border_color(clutter.color_from_string('#212121'))
+      #      self.button.set_color(clutter.color_from_string('#333'))
+       #     self.color = '#333'
+        else: 
+            self.button = clutter.Rectangle()
             self.button.set_color(clutter.color_from_string('#333'))
-            self.color = '#333'
+            self.lastbtncolor = self.button.get_color()
+        
+        bs = clutter.BindConstraint(self, clutter.BIND_WIDTH, -100)
+        #self.button.add_constraint(bs)
+            
+        self.button.set_size(size[0], size[1])
         self.add(self.button)
-        self.lastbtncolor = self.button.get_color()
+        
         
         if icon: 
             self.icon = cluttergtk.Texture()
@@ -108,18 +151,25 @@ class Button(clutter.Group):
         if icon: self.icon.set_from_icon_name(_button, icon)
               
     def on_click_btn(self, btn, event):
-        self.lastbtncolor = self.button.get_color()
-        self.button.animate(clutter.LINEAR, 50, 'color', clutter.color_from_string('#333'))
+        if self.flat: 
+            self.lastbtncolor = self.button.get_color()
+            self.button.animate(clutter.LINEAR, 50, 'color', clutter.color_from_string('#333'))
+        else: self.button.set_from_file('button-active.png')
+            
         self.emit('clicked', event)
         
     def on_release_btn(self, btn, event):
-        self.button.set_color(self.lastbtncolor)
+        if self.flat: self.button.set_color(self.lastbtncolor)
+        else: self.button.set_from_file('button-normal.png')
         
     def on_enter(self, w, event):
-        self.button.animate(clutter.LINEAR, 150, 'color', clutter.color_from_string('#555'))
+        if self.flat: self.button.animate(clutter.LINEAR, 150, 'color', clutter.color_from_string('#555'))
+        else: self.button.set_from_file('button-prelight.png')
+        
         
     def on_leave(self, w, event):
-        self.button.animate(clutter.LINEAR, 150, 'color', clutter.color_from_string(self.color))
+        if self.flat: self.button.animate(clutter.LINEAR, 150, 'color', clutter.color_from_string(self.color))
+        else: self.button.set_from_file('button-normal.png')
         
 gobject.type_register(Button)
 gobject.signal_new("clicked", Button, gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,))

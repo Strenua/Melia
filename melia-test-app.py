@@ -16,16 +16,24 @@ class HelloClutter:
         self.stage.set_title('My First Clutter Application')
         self.stage.connect('destroy', clutter.main_quit)
         button = mtk.Button(label='Button')
-        self.stage.add(button)
-
+        #self.stage.add(button)
+        
+        box = mtk.Container(mtk.CONTAINER_HORIZONTAL)
+        box.append(button)
+        
         button1 = mtk.Button(icon='help')
         button1.set_position(82, 0)
-        self.stage.add(button1)
+        #self.stage.add(button1)
+        box.append(button1)
 
         button2 = mtk.Button(icon='help', label='Button With Label', labelpos='right')
         button2.set_position(164, 0)
-        self.stage.add(button2)
+        #self.stage.add(button2)
+        box.append(button2)
         
+        self.stage.add(box)
+        
+        box.set_position(2,2)
                 
     def run (self):
         self.stage.show_all()
