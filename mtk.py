@@ -4,7 +4,7 @@ _button = gtk.Button()
 
 import gobject
 
-CONTAINER_VERTICAL, CONTAINER_HORIZONTAL = range(2)
+ORIENTATION_VERTICAL, ORIENTATION_HORIZONTAL = range(2)
 
 class Container(clutter.Group):
     '''A container which automatically arranges widgets, so they never overlap'''
@@ -13,6 +13,8 @@ class Container(clutter.Group):
         
         self.orientation = orientation
         self.spacing = spacing
+        
+        self.contents = []
 
         # x and y positions of the edge of the last widget added, used for placing the next widget
         self.lastx = 0
@@ -22,7 +24,6 @@ class Container(clutter.Group):
         if not startpos: startpos = (self.lastx, self.lasty)
         if self.orientation == 0: x, y = (0, self.lasty + self.spacing)
         else: x, y = (self.lastx + self.spacing, 0)
-        print x, y
         self.lastx, self.lasty = x + actor.get_size()[0], y + actor.get_size()[1]
         actor.set_position(x, y)
         
@@ -30,12 +31,25 @@ class Container(clutter.Group):
         '''Append a widget to the container, automatically positioning it relative to other widgets in the container'''
         self.add(actor)
         actor.first = True
-        actor.connect('queue-relayout', self.relayout)
+        #actor.connect('queue-relayout', self.relayout)
+        self.contents.append(actor)
         self.layout(actor)
         
     def relayout(self, actor):
         if not actor.first: self.layout(actor, actor.get_position())
         else: actor.first = False
+    
+    def remove(self, actor):
+        if self.lastx: self.lastx -= actor.get_width()
+        if self.lasty: self.lasty -= actor.get_height()
+        if self.contents.index(actor) < len(self.contents)-1: 
+            for c in self.contents[self.contents.index(actor)+1:]:
+                x,y = actor.get_position()
+                c.set_position(x, y)
+                
+        self.contents.pop(self.contents.index(actor))
+        
+        actor.destroy()
         
 class Button(clutter.Group):
     def __init__(self, label=None, icon=None, size=(80, 30), pos=(0, 0), labelpos='bottom', flat=False):    
@@ -72,7 +86,7 @@ class Button(clutter.Group):
        #     self.color = '#333'
         else: 
             self.button = clutter.Rectangle()
-            self.button.set_color(clutter.color_from_string('#333'))
+            self.button.set_color(clutter.color_from_string('#222'))
             self.lastbtncolor = self.button.get_color()
         
         bs = clutter.BindConstraint(self, clutter.BIND_WIDTH, -100)
@@ -83,8 +97,11 @@ class Button(clutter.Group):
         
         
         if icon: 
-            self.icon = cluttergtk.Texture()
-            self.icon.set_from_icon_name(_button, icon)
+            if type(icon) == str:
+                self.icon = cluttergtk.Texture()
+                self.icon.set_from_icon_name(_button, icon)
+            else: self.icon = icon
+            
             if size[0] > size[1]: self.iconsize = size[1]
             else: self.iconsize = size[0]
             self.icon.set_size(self.iconsize, self.iconsize)
@@ -95,7 +112,6 @@ class Button(clutter.Group):
             
             # and center the icon if there isn't a label
             if self.icon_name and not self.label_text: self.icon.set_position(icenterx, icentery)
-            
             
             self.add(self.icon)
             
@@ -132,7 +148,6 @@ class Button(clutter.Group):
             lx, ly = self.label.get_size()
             bx, by = self.get_size()
             if lx + 2 > bx:
-                print 'Hoo hoo', lx, bx, lx + 2 > bx
                 self.set_size(lx + 2, by)
                 self.button.set_size(lx + 2, by)
                 # and move it over to the new center
@@ -173,6 +188,12 @@ class Button(clutter.Group):
         
 gobject.type_register(Button)
 gobject.signal_new("clicked", Button, gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,))
+
+class Stage(clutter.Stage):
+    def __init__(self, *args, **kwargs):
+        super(Stage, self).__init__(*args, **kwargs)
+        self.connect('destroy', clutter.main_quit)
+        self.set_color(clutter.color_from_string('#000'))
                    
 class Menu(clutter.Stage):
     '''A menu. To be used with tap-hold/right-click and MtkMenuButton'''
@@ -183,7 +204,6 @@ class Menu(clutter.Stage):
         self.items = 0
         self.itemheight = 30
         self.set_size(80, 30)
-        print clutter.x11.get_stage_window(self)
         
     def append(self, item):
         '''Append a MtkButton to the menu'''

@@ -15,25 +15,36 @@ class HelloClutter:
         self.stage.set_size(800, 600)
         self.stage.set_title('My First Clutter Application')
         self.stage.connect('destroy', clutter.main_quit)
-        button = mtk.Button(label='Button')
-        #self.stage.add(button)
+        self.stage.set_opacity(0)
+        self.stage.set_use_alpha(True)
         
-        box = mtk.Container(mtk.CONTAINER_HORIZONTAL)
-        box.append(button)
+        vbox = mtk.Container(mtk.ORIENTATION_VERTICAL)
+        #vbox.set_position(2,2)
+        self.stage.add(vbox)
+        
+        box0 = mtk.Container(mtk.ORIENTATION_HORIZONTAL)
+        button0 = mtk.Button(label='Button')
+        box0.append(button0)
         
         button1 = mtk.Button(icon='help')
-        button1.set_position(82, 0)
-        #self.stage.add(button1)
-        box.append(button1)
-
-        button2 = mtk.Button(icon='help', label='Button With Label', labelpos='right')
-        button2.set_position(164, 0)
-        #self.stage.add(button2)
-        box.append(button2)
+        box0.append(button1)
         
-        self.stage.add(box)
+        button2 = mtk.Button(icon='help', label='Button With Icon', labelpos='right')
+        box0.append(button2)
         
-        box.set_position(2,2)
+        vbox.append(box0)
+        
+        box1 = mtk.Container(mtk.ORIENTATION_HORIZONTAL)
+        button3 = mtk.Button(label='Flat Button', flat=True)
+        box1.append(button3)
+        
+        button4 = mtk.Button(icon='help', flat=True)
+        box1.append(button4)
+        
+        button5 = mtk.Button(icon='help', label='Button With Icon', labelpos='right', flat=True)
+        box1.append(button5)
+        
+        vbox.append(box1)
                 
     def run (self):
         self.stage.show_all()

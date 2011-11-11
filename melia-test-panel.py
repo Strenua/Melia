@@ -5,14 +5,17 @@ import cluttergtk
 import gtk
 from clutter import x11
 import wnck
+import glib
 
-
+from lib import logic
 import mtk
 
 button = gtk.Button()
-       
-       
+
 screen = wnck.screen_get_default()
+# make wnck events, and other events non-blocking
+while gtk.events_pending():
+    gtk.main_iteration()
 
 class CairoGradientActor(clutter.CairoTexture):
     def __init__(self):
@@ -23,6 +26,8 @@ class CairoGradientActor(clutter.CairoTexture):
         print 'DRAW', a, b
 
 class HelloClutter:
+    orientation = mtk.ORIENTATION_VERTICAL
+    strict = False
     def __init__ (self):
         self.stage = clutter.Stage()
         self.stage.set_color(clutter.color_from_string('#222'))
@@ -30,38 +35,33 @@ class HelloClutter:
         self.stage.set_user_resizable(False)
         self.stage.set_size(32, 738)
         self.stage.set_position(0, 0)
-        self.stage.set_title('Melia\'s Bar')
+        self.stage.set_title('Melia Shell')
         self.stage.connect('destroy', clutter.main_quit)
-
-        # setup the gradient background
-        grad = CairoGradientActor()
-
-        #grad.set_surface_size(int(self.stage.get_size()[0]), int(self.stage.get_size()[1]))
-        #grad.invalidate()
-        #self.stage.add(grad)
-
-        box = mtk.Container(mtk.CONTAINER_VERTICAL, 0)
-
-        mybutton = mtk.Button(icon='midori', size=(32,60), flat=True)
-        mybutton.connect('clicked', self.on_midori_clicked)
-        box.append(mybutton)
         
-        mybutton = mtk.Button(icon='leafpad', size=(32,60), flat=True)
-        box.append(mybutton)
+        self.taskbox = mtk.Container(mtk.ORIENTATION_VERTICAL, 0)
         
-        self.stage.add(box)
+        for win in screen.get_windows():
+            logic.add_window(self, win)
+        screen.connect('window-opened', logic.add_window, self)
+        screen.connect('window-closed', logic.remove_window, self)
+
+        #mybutton = mtk.Button(icon='midori', size=(32,60), flat=True)
+        #mybutton.connect('clicked', self.on_midori_clicked)
+        #box.append(mybutton)
         
-        t = cluttergtk.Texture()
-        t.set_from_icon_name(button, 'nm-signal-75')
-        t.set_size(32, 32)
-        t.set_position(0, 700)
-        self.stage.add(t)
+        self.stage.add(self.taskbox)
         
-        t = cluttergtk.Texture()
-        t.set_from_icon_name(button, 'battery_plugged')
-        t.set_size(32, 32)
-        t.set_position(0, 700 - 32)
-        self.stage.add(t)
+        #t = cluttergtk.Texture()
+        #t.set_from_icon_name(button, 'nm-signal-75')
+        #t.set_size(32, 32)
+        #t.set_position(0, 700)
+        #self.stage.add(t)
+        
+        #t = cluttergtk.Texture()
+        #t.set_from_icon_name(button, 'battery_plugged')
+        #t.set_size(32, 32)
+        #t.set_position(0, 700 - 32)
+        #self.stage.add(t)
     
     def on_midori_clicked(self, btn, event):
         if event.button == 3: 
@@ -74,6 +74,16 @@ class HelloClutter:
             m.set_position(mx, 0)
             m.append(mtk.Button(icon='nautilus', size=(m.get_size()[0], 30), flat=True))
             m.show_all()
+            
+    def create_taskbutton(self, label='', icon='help'):
+        if self.orientation == mtk.ORIENTATION_VERTICAL: label = None
+        #if type(icon) != str: 
+        #    if self.strict: raise TypeError
+        #    else: icon = None
+        try: button = mtk.Button(icon=icon, size=(32,60), flat=True, label=label)
+        except glib.GError: button = mtk.Button(icon='unknown', size=(32,60), flat=True, label=label)
+        button.connect('clicked', logic.on_taskbutton_click)
+        return button
         
     def run (self):
         self.stage.show_all()
