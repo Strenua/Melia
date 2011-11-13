@@ -32,7 +32,6 @@ class HelloClutter:
         self.stage = clutter.Stage()
         self.stage.set_color(clutter.color_from_string('#222'))
         self.stage.set_use_alpha(True)
-        self.stage.set_user_resizable(False)
         self.stage.set_size(32, 738)
         self.stage.set_position(0, 0)
         self.stage.set_title('Melia Shell')

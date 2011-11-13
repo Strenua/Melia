@@ -7,7 +7,8 @@ import gobject
 ORIENTATION_VERTICAL, ORIENTATION_HORIZONTAL = range(2)
 
 class Container(clutter.Group):
-    '''A container which automatically arranges widgets, so they never overlap'''
+    '''A container which automatically arranges widgets, so they never overlap
+    Also allows scrolling, when necessary'''
     def __init__(self, orientation, spacing=2):
         super(Container, self).__init__()
         

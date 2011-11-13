@@ -19,6 +19,7 @@ def add_window(emitter, window, panel=None):
     
         
     pixbuf = window.get_icon()
+    print pixbuf
     icon = clutter.Texture()
     icon.set_from_rgb_data(
         pixbuf.get_pixels(),
