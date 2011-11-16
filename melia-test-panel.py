@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import sys
 import clutter
-import cluttergtk
 import gtk
 from clutter import x11
 import wnck
@@ -33,11 +32,11 @@ class HelloClutter:
         self.stage.set_color(clutter.color_from_string('#222'))
         self.stage.set_use_alpha(True)
         self.stage.set_size(32, 738)
-        self.stage.set_position(0, 0)
+        self.stage.set_position(0, 28)
         self.stage.set_title('Melia Shell')
         self.stage.connect('destroy', clutter.main_quit)
         
-        self.taskbox = mtk.Container(mtk.ORIENTATION_VERTICAL, 0)
+        self.taskbox = mtk.Container(self.orientation, 0)
         
         for win in screen.get_windows():
             logic.add_window(self, win)
@@ -50,18 +49,6 @@ class HelloClutter:
         
         self.stage.add(self.taskbox)
         
-        #t = cluttergtk.Texture()
-        #t.set_from_icon_name(button, 'nm-signal-75')
-        #t.set_size(32, 32)
-        #t.set_position(0, 700)
-        #self.stage.add(t)
-        
-        #t = cluttergtk.Texture()
-        #t.set_from_icon_name(button, 'battery_plugged')
-        #t.set_size(32, 32)
-        #t.set_position(0, 700 - 32)
-        #self.stage.add(t)
-    
     def on_midori_clicked(self, btn, event):
         if event.button == 3: 
             m = mtk.Menu()
@@ -79,8 +66,8 @@ class HelloClutter:
         #if type(icon) != str: 
         #    if self.strict: raise TypeError
         #    else: icon = None
-        try: button = mtk.Button(icon=icon, size=(32,60), flat=True, label=label)
-        except glib.GError: button = mtk.Button(icon='unknown', size=(32,60), flat=True, label=label)
+        try: button = mtk.Button(icon=icon, size=(32,60), flat=True, label=label, labelpos='right')
+        except glib.GError: button = mtk.Button(icon='help', size=(32,60), flat=True, label=label, labelpos='right')
         button.connect('clicked', logic.on_taskbutton_click)
         return button
         

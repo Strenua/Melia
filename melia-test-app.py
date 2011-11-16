@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys
 import mtk
-import clutter, cluttergtk, gtk
+import clutter, gtk
 #from gi.repository import Clutter, GtkClutter, Gtk
 
 button = gtk.Button()

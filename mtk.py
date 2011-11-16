@@ -1,4 +1,4 @@
-import clutter, cluttergtk, gtk
+import clutter, gtk
 
 _button = gtk.Button()
 
@@ -52,6 +52,20 @@ class Container(clutter.Group):
         
         actor.destroy()
         
+class Texture(clutter.Texture):
+	def set_from_icon_name(self, name, size):
+		icontheme = gtk.icon_theme_get_default()
+		pixbuf = icontheme.load_icon(name, size, gtk.ICON_LOOKUP_USE_BUILTIN)
+		self.set_from_rgb_data(
+			pixbuf.get_pixels(),
+			pixbuf.props.has_alpha,
+			pixbuf.props.width,
+			pixbuf.props.height,
+			pixbuf.props.rowstride,
+			4,
+			0
+		)	
+        
 class Button(clutter.Group):
     def __init__(self, label=None, icon=None, size=(80, 30), pos=(0, 0), labelpos='bottom', flat=False):    
         super(Button, self).__init__()
@@ -98,13 +112,14 @@ class Button(clutter.Group):
         
         
         if icon: 
-            if type(icon) == str:
-                self.icon = cluttergtk.Texture()
-                self.icon.set_from_icon_name(_button, icon)
-            else: self.icon = icon
-            
             if size[0] > size[1]: self.iconsize = size[1]
             else: self.iconsize = size[0]
+        	
+            if type(icon) == str:
+                self.icon = Texture()
+                self.icon.set_from_icon_name(icon, self.iconsize)
+                
+            else: self.icon = icon            
             self.icon.set_size(self.iconsize, self.iconsize)
             
             # find the center of the button for the icon
@@ -213,6 +228,10 @@ class Menu(clutter.Stage):
         item.set_size(self.get_size()[0], self.itemheight)
         self.items += 1
         self.set_size(80, self.itemheight * self.items)
+        
+    def activate(self, x, y):
+        self.show()
+        self.move(x, y)
        
 gobject.type_register(Menu)
 gobject.signal_new("activated", Menu, gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())       
