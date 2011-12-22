@@ -1,4 +1,6 @@
 import clutter, gtk
+import stylish
+import cairo
 
 _button = gtk.Button()
 
@@ -67,13 +69,14 @@ class Texture(clutter.Texture):
 		)	
         
 class Button(clutter.Group):
-    def __init__(self, label=None, icon=None, size=(80, 30), pos=(0, 0), labelpos='bottom', flat=False):    
+    def __init__(self, label=None, icon=None, size=(80, 30), pos=(0, 0), labelpos='bottom', flat=False, graddirection=(0.0, 0.0, 0.0, 1.0)):
         super(Button, self).__init__()
         self.icon_name = icon
         self.label_text = label
         self.size = size
         self.pos = pos
         self.flat = flat
+        self.graddirection = graddirection
         
       # set default buttonish behaviour
         
@@ -94,7 +97,19 @@ class Button(clutter.Group):
         self.color = '#222'
         
         if not flat: 
-            self.button = clutter.Texture('button-normal.png')
+            self.button = clutter.CairoTexture(width=size[0], height=size[1])
+            ctx = self.button.cairo_create()
+            ctx.scale(size[0], size[1])
+            pat = cairo.LinearGradient (graddirection[0], graddirection[1], graddirection[2], graddirection[3])
+            pat.add_color_stop_rgba(1, 0.1, 0.1, 0.1, 1)
+            pat.add_color_stop_rgba(0, 0.3, 0.3, 0.3, 1)
+            
+            ctx.rectangle (0,0,1,1)
+            ctx.set_source (pat)
+            ctx.fill ()
+            
+            del(ctx)
+            
     #        self.button.set_border_width(2)
      #       self.button.set_border_color(clutter.color_from_string('#212121'))
       #      self.button.set_color(clutter.color_from_string('#333'))
@@ -185,22 +200,47 @@ class Button(clutter.Group):
         if self.flat: 
             self.lastbtncolor = self.button.get_color()
             self.button.animate(clutter.LINEAR, 50, 'color', clutter.color_from_string('#333'))
-        else: self.button.set_from_file('button-active.png')
+        #else: self.button.set_from_file('button-active.png')
             
         self.emit('clicked', event)
         
     def on_release_btn(self, btn, event):
         if self.flat: self.button.set_color(self.lastbtncolor)
-        else: self.button.set_from_file('button-normal.png')
+        #else: self.button.set_from_file('button-normal.png')
         
     def on_enter(self, w, event):
         if self.flat: self.button.animate(clutter.LINEAR, 150, 'color', clutter.color_from_string('#555'))
-        else: self.button.set_from_file('button-prelight.png')
+        else: 
+            ctx = self.button.cairo_create()
+            ctx.scale(self.size[0], self.size[1])
+            graddirection = self.graddirection
+            pat = cairo.LinearGradient(graddirection[0], graddirection[1], graddirection[2], graddirection[3])
+            pat.add_color_stop_rgba(1, 0.2, 0.2, 0.2, 1)
+            pat.add_color_stop_rgba(0, 0.4, 0.4, 0.4, 1)
+                                                      
+            ctx.rectangle (0,0,1,1)
+            ctx.set_source (pat)
+            ctx.fill ()
+            del(ctx)
+            
+        #else: self.button.set_from_file('button-prelight.png')
         
         
     def on_leave(self, w, event):
         if self.flat: self.button.animate(clutter.LINEAR, 150, 'color', clutter.color_from_string(self.color))
-        else: self.button.set_from_file('button-normal.png')
+        else: 
+            ctx = self.button.cairo_create()
+            ctx.scale(self.size[0], self.size[1])
+            graddirection = self.graddirection
+            pat = cairo.LinearGradient(graddirection[0], graddirection[1], graddirection[2], graddirection[3])
+            pat.add_color_stop_rgba(1, 0.1, 0.1, 0.1, 1)
+            pat.add_color_stop_rgba(0, 0.3, 0.3, 0.3, 1)
+                                                                            
+            ctx.rectangle (0,0,1,1)
+            ctx.set_source (pat)
+            ctx.fill ()
+            del(ctx)
+        #else: self.button.set_from_file('button-normal.png')
         
 gobject.type_register(Button)
 gobject.signal_new("clicked", Button, gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,))

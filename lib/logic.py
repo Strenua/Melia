@@ -12,12 +12,13 @@ screen = wnck.screen_get_default()
 # a dictionary of xid-to-button
 open_windows = {}
 
-def add_window(emitter, window, panel=None):
+def add_window(emitter, window, panel=None, data={}):
     '''Add a taskbar button for a window, or add a window to a group'''
     if not panel: panel = emitter
-    if not window.get_window_type().value_nick == "normal" or not window.is_on_workspace(screen.get_active_workspace()) or window.is_skip_tasklist(): return
+    if not window.get_window_type().value_nick == "normal" or window.is_skip_tasklist(): return
+    if not data.get('all_workspaces') and not window.is_on_workspace(screen.get_active_workspace()): return
     
-        
+    
     pixbuf = window.get_icon()
     icon = clutter.Texture()
     icon.set_from_rgb_data(
