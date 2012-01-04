@@ -1,9 +1,24 @@
 import mtk
 import clutter
 import sys, os
+from Xlib import display, Xatom, Xutil
+
+display = display.Display()
+root = display.screen().root
+
+def get_window_by_title(title):
+    for outside in root.query_tree().children:
+        if outside.get_wm_name() == title:
+            return outside
+        for inside in outside.query_tree().children:
+            if inside.get_wm_name() == title:
+                return inside
+    return None
+
 
 class KBWin(mtk.Stage):
     def __init__(self):
+        clutter.init()
         super(KBWin, self).__init__()
         self.container = mtk.Container(mtk.ORIENTATION_VERTICAL)
         self.add(self.container)
@@ -12,6 +27,8 @@ class KBWin(mtk.Stage):
         self.set_property('accept-focus', False)
         #self.set_property('key-focus', False)
         self.set_property('offscreen', False)
+        
+        self.connect('activate', self.set_props)
         
         self.keys = (
                          [('q/^Q',113,81), ('w/^W',119,87), ('e/^E',101,69), ('r/^R',114,82), ('t/^T',116,84), ('y/^Y',121,89), ('u/^U',117,85), ('i/^I',105,73), ('o/^O',111,79), ('p/^P',112,80), ('icon:edit-clear',22)],
@@ -35,11 +52,20 @@ class KBWin(mtk.Stage):
             self.container.append(rowbox)
                 
     def key_press(self, button, event):
-        os.system('xdotool key ' + str(button.l[1]))
+        print 'Key', str(button.l[1]), 'pressed.'
+        os.system('xdotool key ' + str(button.l[1]).strip('(),'))
+
+    def set_props(self, e):
+        win = get_window_by_title('melia-osk.py')
+        win.change_property(display.intern_atom("_NET_WM_WINDOW_TYPE"), Xatom.ATOM, 32, [display.intern_atom("_NET_WM_WINDOW_TYPE_DOCK")])
+        win.set_wm_hints(flags=(Xutil.InputHint|Xutil.StateHint), input=0, initial_state=1)
+        
+
 
     def run (self):
         self.show_all()
         clutter.main()
+        
                     
 def main (args):
     app = KBWin()

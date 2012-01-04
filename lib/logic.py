@@ -12,14 +12,20 @@ screen = wnck.screen_get_default()
 # a dictionary of xid-to-button
 open_windows = {}
 
+# and class name to button
+groups = {}
+
 def add_window(emitter, window, panel=None, data={}):
     '''Add a taskbar button for a window, or add a window to a group'''
     if not panel: panel = emitter
     if not window.get_window_type().value_nick == "normal" or window.is_skip_tasklist(): return
     if not data.get('all_workspaces') and not window.is_on_workspace(screen.get_active_workspace()): return
     
+    print window.get_name()
     
     pixbuf = window.get_icon()
+    if window.get_icon_is_fallback():
+        pixbuf = gtk.gdk.pixbuf_new_from_file('window.png')
     icon = clutter.Texture()
     icon.set_from_rgb_data(
         pixbuf.get_pixels(),
@@ -36,14 +42,21 @@ def add_window(emitter, window, panel=None, data={}):
     button.appname = window.get_name()
     button.window = window
     
-    panel.taskbox.append(button)
+    if window.get_class_group().get_name() in groups.keys() and data.get('group_windows'):
+        # use the existing button, and add an indicator that there are more windows
+        button = groups.get(window.get_class_group().get_name())
+    else: 
+        groups.update({window.get_class_group().get_name(): button})
+        panel.taskbox.append(button)
+        
     open_windows.update({window.get_xid(): button})
+
     
 def remove_window(emitter, window, panel):
     xid = window.get_xid()
     if xid not in open_windows.keys(): return
     button = open_windows[xid]
-    panel.taskbox.remove(button)
+    button.destroy()
     open_windows.pop(xid)
     
 def on_taskbutton_click(button, event):

@@ -19,8 +19,9 @@ SCREEN_WIDTH, SCREEN_HEIGHT = (screen.get_width(), screen.get_height())
 
 #### Temporary Configuration #############################
 position = (0, 0) # x, y coords of this panel
-size = (32, SCREEN_HEIGHT) # x, y dimensions of this panel (variables that can be used are SCREEN_WIDTH and SCREEN_HEIGHT
-all_workspaces = False # show and manipulate windows from all workspaces?
+size = (32, SCREEN_HEIGHT) # x, y dimensions of this panel (variables that can be used are SCREEN_WIDTH and SCREEN_HEIGHT)
+all_workspaces = True # show and manipulate windows from all workspaces?
+group_windows = False
 
 ##########################################################
 
@@ -58,6 +59,7 @@ class HelloClutter:
     orientation = mtk.ORIENTATION_VERTICAL
     strict = False
     def __init__ (self):
+        clutter.init()
         self.stage = GradientStage()
         self.stage.set_color(clutter.color_from_string('#222'))
         self.stage.set_use_alpha(True)
@@ -69,7 +71,7 @@ class HelloClutter:
         self.taskbox = mtk.Container(self.orientation, 0)
         
         for win in screen.get_windows():
-            logic.add_window(self, win, data={'all_workspaces': all_workspaces})
+            logic.add_window(self, win, data={'all_workspaces': all_workspaces, 'group_windows': group_windows})
         screen.connect('window-opened', logic.add_window, self)
         screen.connect('window-closed', logic.remove_window, self)
 
@@ -79,18 +81,6 @@ class HelloClutter:
         
         self.stage.add(self.taskbox)
         
-    def on_midori_clicked(self, btn, event):
-        if event.button == 3: 
-            m = mtk.Menu()
-            px, py = btn.get_position()
-            sx, sy = btn.get_size()
-            mx = px + sx
-            my = py + sy
-            print mx, my
-            m.set_position(mx, 0)
-            m.append(mtk.Button(icon='nautilus', size=(m.get_size()[0], 30), flat=True))
-            m.show_all()
-            
     def create_taskbutton(self, label='', icon='help'):
         if self.orientation == mtk.ORIENTATION_VERTICAL: label = None
         #if type(icon) != str: 

@@ -8,11 +8,16 @@ import gobject
 
 ORIENTATION_VERTICAL, ORIENTATION_HORIZONTAL = range(2)
 
-class Container(clutter.Group):
+class Container(clutter.Box):
     '''A container which automatically arranges widgets, so they never overlap
     Also allows scrolling, when necessary'''
     def __init__(self, orientation, spacing=2):
-        super(Container, self).__init__()
+        self.layout = clutter.BoxLayout()
+        self.layout.set_use_animations(True)
+        if orientation == ORIENTATION_VERTICAL: self.layout.set_vertical(True)
+        self.layout.set_spacing(spacing)
+
+        super(Container, self).__init__(self.layout)
         
         self.orientation = orientation
         self.spacing = spacing
@@ -22,6 +27,7 @@ class Container(clutter.Group):
         # x and y positions of the edge of the last widget added, used for placing the next widget
         self.lastx = 0
         self.lasty = 0
+        
     
     def layout(self, actor, startpos=None):
         if not startpos: startpos = (self.lastx, self.lasty)
@@ -32,11 +38,12 @@ class Container(clutter.Group):
         
     def append(self, actor):
         '''Append a widget to the container, automatically positioning it relative to other widgets in the container'''
-        self.add(actor)
-        actor.first = True
+        #self.add(actor)
+        #actor.first = True
         #actor.connect('queue-relayout', self.relayout)
-        self.contents.append(actor)
-        self.layout(actor)
+        #self.contents.append(actor)
+        #self.layout(actor)
+        self.layout.pack(actor, False, False, False, clutter.BOX_ALIGNMENT_START, clutter.BOX_ALIGNMENT_START)
         
     def relayout(self, actor):
         if not actor.first: self.layout(actor, actor.get_position())
@@ -200,12 +207,38 @@ class Button(clutter.Group):
         if self.flat: 
             self.lastbtncolor = self.button.get_color()
             self.button.animate(clutter.LINEAR, 50, 'color', clutter.color_from_string('#333'))
+        else: 
+            ctx = self.button.cairo_create()
+            ctx.scale(self.size[0], self.size[1])
+            graddirection = self.graddirection
+            pat = cairo.LinearGradient(graddirection[0], graddirection[1], graddirection[2], graddirection[3])
+            pat.add_color_stop_rgba(1, 0.15, 0.15, 0.15, 1)
+            pat.add_color_stop_rgba(0, 0.05, 0.05, 0.05, 1)
+                                                                       
+            ctx.rectangle (0,0,1,1)
+            ctx.set_source (pat)
+            ctx.fill ()
+            del(ctx)
+            
         #else: self.button.set_from_file('button-active.png')
             
         self.emit('clicked', event)
         
     def on_release_btn(self, btn, event):
         if self.flat: self.button.set_color(self.lastbtncolor)
+        else:
+            ctx = self.button.cairo_create()
+            ctx.scale(self.size[0], self.size[1])
+            graddirection = self.graddirection
+            pat = cairo.LinearGradient(graddirection[0], graddirection[1], graddirection[2], graddirection[3])
+            pat.add_color_stop_rgba(1, 0.2, 0.2, 0.2, 1)
+            pat.add_color_stop_rgba(0, 0.4, 0.4, 0.4, 1)
+                                                                                        
+            ctx.rectangle (0,0,1,1)
+            ctx.set_source (pat)
+            ctx.fill ()
+            del(ctx)
+            
         #else: self.button.set_from_file('button-normal.png')
         
     def on_enter(self, w, event):
@@ -283,3 +316,27 @@ class MenuButton(Button):
 
         
 #gobject.type_register(Button)
+
+
+class Entry(clutter.Box):
+    def __init__(self, width, height):
+        super(Entry, self).__init__(clutter.BoxLayout())
+
+        # create cluttertext
+        self.text = clutter.Text()
+        self.add(self.text)
+        
+        # function
+        self.text.set_editable(True)
+        self.text.set_cursor_color(clutter.color_from_string("#000"))
+        self.text.set_cursor_visible(True)
+        
+        self.set_reactive(True)
+        
+        # style
+        self.text.set_color(clutter.color_from_string("#000"))
+        self.set_color(clutter.color_from_string("#fff"))        
+        
+        self.set_size(width, height)
+        
+gobject.type_register(Entry)
