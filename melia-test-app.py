@@ -12,7 +12,7 @@ x11.set_use_argb_visual(True)
 class HelloClutter:
     def __init__ (self):
         clutter.init()
-        self.stage = clutter.Stage()
+        self.stage = mtk.Stage()
         color = clutter.Color(0x00, 0x00, 0x00, 0xaa)
         self.stage.set_color(color)
         self.stage.set_user_resizable(False)
@@ -55,6 +55,7 @@ class HelloClutter:
         entry1.connect('button-press-event', self.entry_focused)
         
         vbox.append(entry1)
+        
                         
     def run (self):
         self.stage.show_all()

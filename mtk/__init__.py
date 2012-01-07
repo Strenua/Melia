@@ -64,19 +64,21 @@ class Container(clutter.Box):
 class Texture(clutter.Texture):
 	def set_from_icon_name(self, name, size):
 		icontheme = gtk.icon_theme_get_default()
-		pixbuf = icontheme.load_icon(name, size, gtk.ICON_LOOKUP_USE_BUILTIN)
+		pixbuf = icontheme.load_icon(name, size, 0)
+		if pixbuf.props.has_alpha: a = 4
+		else: a = 3
 		self.set_from_rgb_data(
 			pixbuf.get_pixels(),
 			pixbuf.props.has_alpha,
 			pixbuf.props.width,
 			pixbuf.props.height,
 			pixbuf.props.rowstride,
-			4,
+			a,
 			0
 		)	
         
 class Button(clutter.Group):
-    def __init__(self, label=None, icon=None, size=(80, 30), pos=(0, 0), labelpos='bottom', flat=False, graddirection=(0.0, 0.0, 0.0, 1.0)):
+    def __init__(self, label=None, icon=None, size=(80, 30), pos=(0, 0), labelpos='bottom', flat=False, graddirection=(0.0, 0.0, 0.0, 1.0), iconsize=None, color=clutter.Color(0x22, 0x22, 0x22, 0xff), hovercolor=clutter.Color(0x55, 0x55, 0x55, 0xff)):
         super(Button, self).__init__()
         self.icon_name = icon
         self.label_text = label
@@ -84,6 +86,9 @@ class Button(clutter.Group):
         self.pos = pos
         self.flat = flat
         self.graddirection = graddirection
+        self.iconsize = iconsize
+        self.color = color
+        self.hovercolor = hovercolor
         
       # set default buttonish behaviour
         
@@ -101,7 +106,6 @@ class Button(clutter.Group):
         # add actors
         
         #self.button.set_color(clutter.color_from_string('#222'))
-        self.color = '#222'
         
         if not flat: 
             self.button = clutter.CairoTexture(width=size[0], height=size[1])
@@ -118,30 +122,36 @@ class Button(clutter.Group):
             del(ctx)
             
     #        self.button.set_border_width(2)
-     #       self.button.set_border_color(clutter.color_from_string('#212121'))
+     #       self.button.set_border_
+     #color(clutter.color_from_string('#212121'))
       #      self.button.set_color(clutter.color_from_string('#333'))
        #     self.color = '#333'
         else: 
             self.button = clutter.Rectangle()
-            self.button.set_color(clutter.color_from_string('#222'))
+            self.button.set_color(self.color)
             self.lastbtncolor = self.button.get_color()
         
         bs = clutter.BindConstraint(self, clutter.BIND_WIDTH, -100)
         #self.button.add_constraint(bs)
-            
+        
         self.button.set_size(size[0], size[1])
         self.add(self.button)
         
         
         if icon: 
-            if size[0] > size[1]: self.iconsize = size[1]
-            else: self.iconsize = size[0]
+            if size[0] > size[1] and not self.iconsize: self.iconsize = size[1]
+            elif not self.iconsize: self.iconsize = size[0]
         	
-            if type(icon) == str:
+            if type(icon) == str or type(icon) == unicode:
                 self.icon = Texture()
-                self.icon.set_from_icon_name(icon, self.iconsize)
-                
+                try: self.icon.set_from_icon_name(icon, self.iconsize)
+                except: 
+                    self.icon = None
+                    self.icon_name = None
+                    icon = None
             else: self.icon = icon            
+                    
+        if icon: # ask again in case it was just dropped    
             self.icon.set_size(self.iconsize, self.iconsize)
             
             # find the center of the button for the icon
@@ -161,8 +171,9 @@ class Button(clutter.Group):
             x, y = self.get_size()
             if labelpos == 'bottom' and self.icon_name or labelpos == 'top' and self.icon_name: y += self.label.get_size()[1]
             elif labelpos == 'left' and self.icon_name or labelpos == 'right' and self.icon_name: x += self.label.get_size()[0]
-            self.set_size(x, y)
-            self.button.set_size(x, y)
+            if self.size == (80, 30): # skip if the size has been set manually
+                self.set_size(x, y)
+                self.button.set_size(x, y)
             
             # find the center of the button for the label
             centerx = (self.get_size()[0]/2) - (self.label.get_size()[0]/2)
@@ -170,30 +181,33 @@ class Button(clutter.Group):
             
                                     
             # move the label wherever it goes
+            x, y = self.get_size()
             if labelpos == 'bottom': self.label.set_position(centerx, y - self.label.get_size()[1])
             elif labelpos == 'top': self.label.set_position(centerx, 0) # just center it
             elif labelpos == 'right' and self.icon_name: self.label.set_position(self.icon.get_size()[0] + 10, centery)
             if not icon: self.label.set_position(centerx, centery) # center both ways
             
             # move the icon wherever *it* goes
-            if labelpos == 'top' and self.icon_name: self.icon.set_position(0, self.label.get_size()[1])            
+            if labelpos == 'top' and self.icon_name: self.icon.set_position((self.get_size()[0]/2)-(self.icon.get_size()[0]/2), self.label.get_size()[1])
+            elif labelpos == 'bottom' and self.icon_name: self.icon.set_position((self.get_size()[0]/2)-(self.icon.get_size()[0]/2), 0)
 
             # label color
             self.label.set_color(clutter.color_from_string('#fff'))
             self.add(self.label)
 
-            # make sure the label isn't too wide, and if it is, resize the button.
+            # make sure the label isn't too wide, and if it is, shorten the label.
             lx, ly = self.label.get_size()
             bx, by = self.get_size()
             if lx + 2 > bx:
-                self.set_size(lx + 2, by)
-                self.button.set_size(lx + 2, by)
+                self.label.set_max_length(10)
                 # and move it over to the new center
                 bpx, bpy = self.get_position()
                 lpx, lpy = self.label.get_position()
                 self.label.set_position(bpx + (self.get_size()[0]/2) - (self.label.get_size()[0]/2), lpy)
                 #if labelpos == 'right': self.label.set_position(self.label.get_position()[0] + self.icon.get_size()[0] + 10, lpy)
-            
+                
+            self.label.raise_top()
+        
         # set up the simple color transition animation
         anim = clutter.Animation()
         anim.set_object(self.button)
@@ -225,7 +239,7 @@ class Button(clutter.Group):
         self.emit('clicked', event)
         
     def on_release_btn(self, btn, event):
-        if self.flat: self.button.set_color(self.lastbtncolor)
+        if self.flat: self.button.set_color(self.color)
         else:
             ctx = self.button.cairo_create()
             ctx.scale(self.size[0], self.size[1])
@@ -242,7 +256,7 @@ class Button(clutter.Group):
         #else: self.button.set_from_file('button-normal.png')
         
     def on_enter(self, w, event):
-        if self.flat: self.button.animate(clutter.LINEAR, 150, 'color', clutter.color_from_string('#555'))
+        if self.flat: self.button.animate(clutter.LINEAR, 150, 'color', self.hovercolor)
         else: 
             ctx = self.button.cairo_create()
             ctx.scale(self.size[0], self.size[1])
@@ -260,7 +274,7 @@ class Button(clutter.Group):
         
         
     def on_leave(self, w, event):
-        if self.flat: self.button.animate(clutter.LINEAR, 150, 'color', clutter.color_from_string(self.color))
+        if self.flat: self.button.animate(clutter.LINEAR, 150, 'color', self.color)
         else: 
             ctx = self.button.cairo_create()
             ctx.scale(self.size[0], self.size[1])
@@ -282,7 +296,9 @@ class Stage(clutter.Stage):
     def __init__(self, *args, **kwargs):
         super(Stage, self).__init__(*args, **kwargs)
         self.connect('destroy', clutter.main_quit)
+        self.set_reactive(True)
         self.set_color(clutter.color_from_string('#000'))
+        self.add_action(clutter.DragAction())
                    
 class Menu(clutter.Stage):
     '''A menu. To be used with tap-hold/right-click and MtkMenuButton'''
