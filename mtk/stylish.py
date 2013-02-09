@@ -1,6 +1,6 @@
-class CSSParser:
-    '''A class for parsing single CSS file, or a directory of CSS files such as a theme'''
-    def __init__(self, basedir):
-        self.basedir = basedir
-        
-        
+# This is used for theming mtk
+import cssutils
+
+def parseFile(filename):
+    '''Just a little wrapper around cssutils.parseFile()'''
+    return cssutils.parseFile(filename)

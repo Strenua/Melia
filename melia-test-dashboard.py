@@ -4,8 +4,8 @@ import mtk
 import wnck
 import os
 from clutter import x11
-from xdg import DesktopEntry
 import time
+from lib import logic
 
 screen = wnck.screen_get_default()
 
@@ -18,39 +18,8 @@ padding_width = (SCREEN_WIDTH-content_width)/2
 print content_width
 
 x11.set_use_argb_visual(True)
-
-default_categories = ["AudioVideo", "Audio", "Video", "Development", "Education", "Game", "Graphics", "Network", "Office", "Settings", "System", "Utility"]
-category_icons = {
-        "All": "",
-        "AudioVideo": 'applications-multimedia',
-        "Audio": 'applications-multimedia',
-        "Video": 'applications-multimedia',
-        "Development": 'applications-development',
-        "Education": 'applications-science',
-        "Game": 'applications-games',
-        "Graphics": 'applications-graphics',
-        "Network": 'applications-internet',
-        "Office": 'applications-office',
-        "Settings": 'applications-engineering',
-        "System": 'applications-system',
-        "Utility": 'applications-other',
-}
-
-def index_applications():
-    out = []
-    apps = []
-    for dr in [d.rstrip('/')+'/applications/' for d in DesktopEntry.xdg_data_dirs]:
-        for d in os.listdir(dr):
-            try: 
-                desktop = DesktopEntry.DesktopEntry(dr+d)
-                if desktop.getName() not in apps and desktop.getIcon() and not 'wine' in desktop.getExec(): out += [(desktop.getName(), desktop.getExec(), desktop.getIcon(), desktop.getFileName())]
-                apps += [desktop.getName()]
-            except: pass
-    del(apps)
-    out.sort()
-    return out
         
-app_list = index_applications()
+app_list = logic.index_applications()
 
 class Dashboard(mtk.Stage):
     def __init__(self):
@@ -91,7 +60,7 @@ class Dashboard(mtk.Stage):
                 hbox = mtk.Container(mtk.ORIENTATION_HORIZONTAL, spacing=6)
                 appbox.append(hbox)
                 count = 0
-            if app[2]: testbutton = mtk.Button(label=app[0], icon=app[2], size=(73, 73), flat=True, labelpos='bottom', iconsize=48, color=clutter.Color(0x44, 0x44, 0x44, 0x00), hovercolor=clutter.Color(0x55, 0x55, 0x55, 0xaa))
+            if app[2]: testbutton = mtk.Button(label=app[0], icon=app[2], size=(73, 73), flat=True, labelpos='bottom', iconsize=48, background_color='#000', hover_color='#555a')
             testbutton.app = app
             testbutton.connect('clicked', self.launcher_down)
             testbutton.connect('button-release-event', self.launch)
@@ -104,9 +73,9 @@ class Dashboard(mtk.Stage):
         ### filter buttons ###
         cvbox = mtk.Container(mtk.ORIENTATION_VERTICAL, spacing=4)
         
-        default_categories.insert(0, 'All')
-        for category in default_categories:
-            cb = mtk.Button(label=category, icon=category_icons[category], labelpos='right', color=clutter.Color(0x00, 0x00, 0x00, 0x00), flat=True, size=(200,32), hovercolor=clutter.Color(0x55, 0x55, 0x55, 0xaa))
+        logic.default_categories.insert(0, 'All')
+        for category in logic.default_categories:
+            cb = mtk.Button(label=category, icon=logic.category_icons[category], labelpos='right', background_color='#000', flat=True, size=(200,32), hover_color='#555a')
             cvbox.append(cb)
             
         self.add(cvbox)

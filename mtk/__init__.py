@@ -1,12 +1,16 @@
+# -*- coding: utf8 -*-
 import clutter, gtk
-import stylish
 import cairo
+from config import Config
+
+CONFIG = Config()['mtk']
 
 _button = gtk.Button()
 
 import gobject
 
 ORIENTATION_VERTICAL, ORIENTATION_HORIZONTAL = range(2)
+
 
 class Container(clutter.Box):
     '''A container which automatically arranges widgets, so they never overlap
@@ -78,7 +82,8 @@ class Texture(clutter.Texture):
 		)	
         
 class Button(clutter.Group):
-    def __init__(self, label=None, icon=None, size=(80, 30), pos=(0, 0), labelpos='bottom', flat=False, graddirection=(0.0, 0.0, 0.0, 1.0), iconsize=None, color=clutter.Color(0x22, 0x22, 0x22, 0xff), hovercolor=clutter.Color(0x55, 0x55, 0x55, 0xff)):
+    classname = 'Button'
+    def __init__(self, label=None, icon=None, size=(100, 30), pos=(0, 0), labelpos='bottom', flat=False, graddirection=(0.0, 0.0, 0.0, 1.0), iconsize=None, background_color=None, hover_color=None):
         super(Button, self).__init__()
         self.icon_name = icon
         self.label_text = label
@@ -87,8 +92,8 @@ class Button(clutter.Group):
         self.flat = flat
         self.graddirection = graddirection
         self.iconsize = iconsize
-        self.color = color
-        self.hovercolor = hovercolor
+        self.background_color = background_color
+        self.hover_color = hover_color
         
       # set default buttonish behaviour
         
@@ -102,8 +107,6 @@ class Button(clutter.Group):
         # configure
         self.set_size(size[0], size[1])
         self.set_position(pos[0], pos[1])
-        
-        # add actors
         
         #self.button.set_color(clutter.color_from_string('#222'))
         
@@ -128,7 +131,7 @@ class Button(clutter.Group):
        #     self.color = '#333'
         else: 
             self.button = clutter.Rectangle()
-            self.button.set_color(self.color)
+            self.set_state('normal')
             self.lastbtncolor = self.button.get_color()
         
         bs = clutter.BindConstraint(self, clutter.BIND_WIDTH, -100)
@@ -169,8 +172,17 @@ class Button(clutter.Group):
             
             # compute the necessary resizies
             x, y = self.get_size()
-            if labelpos == 'bottom' and self.icon_name or labelpos == 'top' and self.icon_name: y += self.label.get_size()[1]
-            elif labelpos == 'left' and self.icon_name or labelpos == 'right' and self.icon_name: x += self.label.get_size()[0]
+            lx, ly = self.label.get_size()
+            shortened = False
+
+            while lx + 21 > x:
+                shortened = True
+                self.label.set_text(self.label.get_text()[:-1])
+                lx = self.label.get_size()[0]
+
+            if shortened: self.label.set_text(self.label.get_text().strip()+'…')
+            if labelpos == 'bottom' and self.icon_name or labelpos == 'top' and self.icon_name: y += ly
+            elif labelpos == 'left' and self.icon_name or labelpos == 'right' and self.icon_name: x += lx
             if self.size == (80, 30): # skip if the size has been set manually
                 self.set_size(x, y)
                 self.button.set_size(x, y)
@@ -181,18 +193,20 @@ class Button(clutter.Group):
             
                                     
             # move the label wherever it goes
+            print labelpos
             x, y = self.get_size()
-            if labelpos == 'bottom': self.label.set_position(centerx, y - self.label.get_size()[1])
-            elif labelpos == 'top': self.label.set_position(centerx, 0) # just center it
-            elif labelpos == 'right' and self.icon_name: self.label.set_position(self.icon.get_size()[0] + 10, centery)
-            if not icon: self.label.set_position(centerx, centery) # center both ways
+            #print centerx, centery
+            if icon and labelpos == 'bottom': self.label.set_position(centerx, y - self.label.get_size()[1])
+            elif icon and labelpos == 'top': self.label.set_position(centerx, 0) # just center it
+            elif icon and labelpos == 'right' and self.icon_name: self.label.set_position(self.icon.get_size()[0] + 10, centery)
+            elif not icon: self.label.set_position(int(centerx), int(centery)) # center both ways
             
             # move the icon wherever *it* goes
             if labelpos == 'top' and self.icon_name: self.icon.set_position((self.get_size()[0]/2)-(self.icon.get_size()[0]/2), self.label.get_size()[1])
             elif labelpos == 'bottom' and self.icon_name: self.icon.set_position((self.get_size()[0]/2)-(self.icon.get_size()[0]/2), 0)
 
             # label color
-            self.label.set_color(clutter.color_from_string('#fff'))
+            self.label.set_color(CONFIG['button']['color'])
             self.add(self.label)
 
             # make sure the label isn't too wide, and if it is, shorten the label.
@@ -216,88 +230,55 @@ class Button(clutter.Group):
     
     def set_icon_by_name(self, name):
         if icon: self.icon.set_from_icon_name(_button, icon)
-              
-    def on_click_btn(self, btn, event):
+
+    def set_state(self, state):
+        '''Set the state of the button. 
+        State can be one of 'normal', 'down', or 'highlight' '''
         if self.flat: 
             self.lastbtncolor = self.button.get_color()
-            self.button.animate(clutter.LINEAR, 50, 'color', clutter.color_from_string('#333'))
+            self.button.animate(clutter.LINEAR, 50, 'color', clutter.color_from_string(self.background_color or CONFIG['button'][state]['background-color'][0] if state == 'normal' else self.hover_color or CONFIG['button'][state]['background-color'][0]))
         else: 
             ctx = self.button.cairo_create()
             ctx.scale(self.size[0], self.size[1])
             graddirection = self.graddirection
             pat = cairo.LinearGradient(graddirection[0], graddirection[1], graddirection[2], graddirection[3])
-            pat.add_color_stop_rgba(1, 0.15, 0.15, 0.15, 1)
-            pat.add_color_stop_rgba(0, 0.05, 0.05, 0.05, 1)
+            col1 = clutter.color_from_string(CONFIG['button'][state]['background-color'][0])
+            col2 = clutter.color_from_string(CONFIG['button'][state]['background-color'][1])
+
+            pat.add_color_stop_rgba(0 if state == 'down' else 1, round(col1.red/255.0,2), round(col1.blue/255.0,2), round(col1.green/255.0,2), round(col1.alpha/255.0,2))
+            pat.add_color_stop_rgba(1 if state == 'down' else 0, round(col2.red/255.0,2), round(col2.blue/255.0,2), round(col2.green/255.0,2), round(col2.alpha/255.0,2))
                                                                        
-            ctx.rectangle (0,0,1,1)
-            ctx.set_source (pat)
-            ctx.fill ()
+            ctx.rectangle(0,0,1,1)
+            ctx.set_source(pat)
+            ctx.fill()
             del(ctx)
-            
-        #else: self.button.set_from_file('button-active.png')
-            
+            del(pat)
+            del(col1)
+            del(col2)
+              
+    def on_click_btn(self, btn, event):
+        self.set_state('down') 
         self.emit('clicked', event)
         
     def on_release_btn(self, btn, event):
-        if self.flat: self.button.set_color(self.color)
-        else:
-            ctx = self.button.cairo_create()
-            ctx.scale(self.size[0], self.size[1])
-            graddirection = self.graddirection
-            pat = cairo.LinearGradient(graddirection[0], graddirection[1], graddirection[2], graddirection[3])
-            pat.add_color_stop_rgba(1, 0.2, 0.2, 0.2, 1)
-            pat.add_color_stop_rgba(0, 0.4, 0.4, 0.4, 1)
-                                                                                        
-            ctx.rectangle (0,0,1,1)
-            ctx.set_source (pat)
-            ctx.fill ()
-            del(ctx)
-            
-        #else: self.button.set_from_file('button-normal.png')
+        self.set_state('hover')
         
     def on_enter(self, w, event):
-        if self.flat: self.button.animate(clutter.LINEAR, 150, 'color', self.hovercolor)
-        else: 
-            ctx = self.button.cairo_create()
-            ctx.scale(self.size[0], self.size[1])
-            graddirection = self.graddirection
-            pat = cairo.LinearGradient(graddirection[0], graddirection[1], graddirection[2], graddirection[3])
-            pat.add_color_stop_rgba(1, 0.2, 0.2, 0.2, 1)
-            pat.add_color_stop_rgba(0, 0.4, 0.4, 0.4, 1)
-                                                      
-            ctx.rectangle (0,0,1,1)
-            ctx.set_source (pat)
-            ctx.fill ()
-            del(ctx)
-            
-        #else: self.button.set_from_file('button-prelight.png')
-        
+        self.set_state('hover')
         
     def on_leave(self, w, event):
-        if self.flat: self.button.animate(clutter.LINEAR, 150, 'color', self.color)
-        else: 
-            ctx = self.button.cairo_create()
-            ctx.scale(self.size[0], self.size[1])
-            graddirection = self.graddirection
-            pat = cairo.LinearGradient(graddirection[0], graddirection[1], graddirection[2], graddirection[3])
-            pat.add_color_stop_rgba(1, 0.1, 0.1, 0.1, 1)
-            pat.add_color_stop_rgba(0, 0.3, 0.3, 0.3, 1)
-                                                                            
-            ctx.rectangle (0,0,1,1)
-            ctx.set_source (pat)
-            ctx.fill ()
-            del(ctx)
-        #else: self.button.set_from_file('button-normal.png')
+        self.set_state('normal')
         
 gobject.type_register(Button)
 gobject.signal_new("clicked", Button, gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,))
+gobject.property("color", clutter.Color(0xff,0xff,0xff,0xff))
 
 class Stage(clutter.Stage):
     def __init__(self, *args, **kwargs):
         super(Stage, self).__init__(*args, **kwargs)
         self.connect('destroy', clutter.main_quit)
         self.set_reactive(True)
-        self.set_color(clutter.color_from_string('#000'))
+        self.set_color(clutter.color_from_string(CONFIG['stage']['background-color']))
         self.add_action(clutter.DragAction())
                    
 class Menu(clutter.Stage):
@@ -335,11 +316,12 @@ class MenuButton(Button):
 
 
 class Entry(clutter.Box):
-    def __init__(self, width, height):
+    def __init__(self, width, height, placeholder=""):
         super(Entry, self).__init__(clutter.BoxLayout())
 
         # create cluttertext
         self.text = clutter.Text()
+        self.text.set_text(placeholder)
         self.add(self.text)
         
         # function
@@ -350,9 +332,17 @@ class Entry(clutter.Box):
         self.set_reactive(True)
         
         # style
-        self.text.set_color(clutter.color_from_string("#000"))
         self.set_color(clutter.color_from_string("#fff"))        
+        self.text.set_color(clutter.color_from_string("#000"))
         
         self.set_size(width, height)
+        
+        # other stuff
+        self.connect('button-press-event', self.on_focus)
+        #self.text.set_text('Text')
+        
+        
+    def on_focus(self, actor, data=None):
+        self.get_stage().set_key_focus(self.text)
         
 gobject.type_register(Entry)

@@ -52,7 +52,7 @@ class KBWin(mtk.Stage):
             self.container.append(rowbox)
                 
     def key_press(self, button, event):
-        print 'Key', str(button.l[1]), 'pressed.'
+        print 'Key', chr(button.l[1]), 'pressed.'
         os.system('xdotool key ' + str(button.l[1]).strip('(),'))
 
     def set_props(self, e):
