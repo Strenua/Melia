@@ -118,7 +118,6 @@ class Dashboard(mtk.Stage):
 
     def finish_drag(self, action, actor, event_x, event_y, modifiers, data=None):
         #print event_x, event_y, self.started_at
-        print self.active_launcher._state
         if self.active_launcher: self.active_launcher.set_state('normal')
         if (event_x, event_y) == self.started_at: self.dragged = False
         else: self.dragged = True
