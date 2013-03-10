@@ -193,7 +193,6 @@ class Button(clutter.Group):
             
                                     
             # move the label wherever it goes
-            print labelpos
             x, y = self.get_size()
             #print centerx, centery
             if icon and labelpos == 'bottom': self.label.set_position(centerx, y - self.label.get_size()[1])
@@ -255,6 +254,7 @@ class Button(clutter.Group):
             del(pat)
             del(col1)
             del(col2)
+            self._state = state
               
     def on_click_btn(self, btn, event):
         self.set_state('down') 

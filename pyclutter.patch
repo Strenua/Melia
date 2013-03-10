@@ -1,0 +1,119 @@
+diff --git a/clutter/__init__.py b/clutter/__init__.py
+index 2f525dd..b589748 100644
+--- a/clutter/__init__.py
++++ b/clutter/__init__.py
+@@ -62,11 +62,6 @@ def _init ():
+     try:
+         sys_path = sys.path[:]
+ 
+-        try:
+-            _clutter.init()
+-        except RuntimeError, e:
+-            import warnings
+-            warnings.warn(str(e), _clutter.Warning)
+     finally:
+         if sys.path != sys_path:
+             sys.path[:] = sys_path
+diff --git a/examples/behave.py b/examples/behave.py
+index eefec5d..908c627 100644
+--- a/examples/behave.py
++++ b/examples/behave.py
+@@ -1,5 +1,6 @@
+ import sys
+ import clutter
++clutter.init()
+ 
+ class BehaviourRotate (clutter.Behaviour):
+     __gtype_name__ = 'BehaviourRotate'
+diff --git a/examples/clock.py b/examples/clock.py
+index 394a9ee..68bae78 100644
+--- a/examples/clock.py
++++ b/examples/clock.py
+@@ -2,6 +2,7 @@
+ # -*- coding: utf-8 -*-
+ 
+ import clutter
++clutter.init()
+ import math
+ from clutter import CairoTexture
+ from datetime import datetime
+diff --git a/examples/entry.py b/examples/entry.py
+index 39056b8..de5f97d 100644
+--- a/examples/entry.py
++++ b/examples/entry.py
+@@ -10,6 +10,7 @@
+ #        write text and hit <return> for Entry buffer console print
+ 
+ import clutter
++clutter.init()
+ 
+ class EntryWidget (clutter.Text):
+     def __init__(self, stage):
+diff --git a/examples/flowers.py b/examples/flowers.py
+index 7c51455..2e3a113 100644
+--- a/examples/flowers.py
++++ b/examples/flowers.py
+@@ -8,6 +8,7 @@ import time
+ from clutter import CairoTexture
+ import gobject
+ import cairo
++clutter.init()
+ 
+ '''
+ Pretty cairo flower hack.
+diff --git a/examples/script.py b/examples/script.py
+index 6075788..91b3aa0 100644
+--- a/examples/script.py
++++ b/examples/script.py
+@@ -1,5 +1,6 @@
+ import sys
+ import clutter
++clutter.init()
+ from clutter import cogl
+ 
+ BUFFER = '''
+diff --git a/examples/super-oh.py b/examples/super-oh.py
+index b07d2d6..f37e193 100644
+--- a/examples/super-oh.py
++++ b/examples/super-oh.py
+@@ -1,5 +1,6 @@
+ import sys
+ import clutter
++clutter.init()
+ import gtk
+ import math
+ 
+diff --git a/examples/test-box-layout.py b/examples/test-box-layout.py
+index 8873fbc..9a7f124 100644
+--- a/examples/test-box-layout.py
++++ b/examples/test-box-layout.py
+@@ -1,5 +1,6 @@
+ import random
+ import clutter
++clutter.init()
+ from clutter import cogl
+ 
+ class TestBoxLayout(object):
+diff --git a/examples/test-multitexture.py b/examples/test-multitexture.py
+index b045c2a..8935907 100644
+--- a/examples/test-multitexture.py
++++ b/examples/test-multitexture.py
+@@ -1,5 +1,6 @@
+ import clutter
+ from clutter import cogl
++clutter.init()
+ 
+ 
+ class MultiTexture(clutter.Actor):
+diff --git a/examples/test-shader.py b/examples/test-shader.py
+index 6a7aa7d..7d0a94b 100644
+--- a/examples/test-shader.py
++++ b/examples/test-shader.py
+@@ -3,6 +3,7 @@
+ 
+ import sys
+ import clutter
++clutter.init()
+ 
+ SHADER_BRIGHTNESS_CONTRAST = """
+ uniform sampler2D tex;

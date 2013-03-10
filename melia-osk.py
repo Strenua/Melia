@@ -2,9 +2,16 @@ import mtk
 import clutter
 import sys, os
 from Xlib import display, Xatom, Xutil
+import virtkey, time
+v = virtkey.virtkey()
 
 display = display.Display()
 root = display.screen().root
+
+##### TODO XXX TODO #####
+# The only thing that prevents this from truly working is that it steals focus from the window it's trying to type in :(
+# To avoid that, it needs some X11 properties set. That is... not easy.
+# First, gotta get the window's XID. ... Okay, just go with that for now.
 
 def get_window_by_title(title):
     for outside in root.query_tree().children:
@@ -25,8 +32,6 @@ class KBWin(mtk.Stage):
         
         self.set_size(800, 200)
         self.set_property('accept-focus', False)
-        #self.set_property('key-focus', False)
-        self.set_property('offscreen', False)
         
         self.connect('activate', self.set_props)
         
@@ -53,7 +58,7 @@ class KBWin(mtk.Stage):
                 
     def key_press(self, button, event):
         print 'Key', chr(button.l[1]), 'pressed.'
-        os.system('xdotool key ' + str(button.l[1]).strip('(),'))
+        v.press_unicode(button.l[1]), v.release_unicode(button.l[1])
 
     def set_props(self, e):
         win = get_window_by_title('melia-osk.py')

@@ -1,2 +1,1 @@
-NOTE: This branch is currently not at all usable, it is merely a demonstration of the new interface.
-mtk.py is the 'Melia ToolKit', based on clutter. It will soon be converted to Vala for access across all languages that support GObject Introspection.
+You must apply the included patch to pyclutter for any of this to work. pyClutter initializes clutter internally, preventing us from enabling transparency.

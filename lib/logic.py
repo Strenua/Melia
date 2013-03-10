@@ -7,8 +7,8 @@
 import wnck
 import gtk
 import clutter
-from xdg import DesktopEntry
 import os
+import gmenu
 screen = wnck.screen_get_default()
 
 # a dictionary of xid-to-button
@@ -71,39 +71,18 @@ def on_taskbutton_click(button, event):
     else: win.unminimize(gtk.get_current_event_time())
     
     
+def flatten_list(input):
+    output = []
+    for i in input:
+        if type(i) == list:
+            output.append(flatten_list(i))
+        else:
+            output.append(i)
+    return output
     
-# for the dashboard
-default_categories = ["AudioVideo", "Audio", "Video", "Development", "Education", "Game", "Graphics", "Network", "Office", "Settings", "System", "Utility"]
-category_icons = {
-        "All": "",
-        "AudioVideo": 'applications-multimedia',
-        "Audio": 'applications-multimedia',
-        "Video": 'applications-multimedia',
-        "Development": 'applications-development',
-        "Education": 'applications-science',
-        "Game": 'applications-games',
-        "Graphics": 'applications-graphics',
-        "Network": 'applications-internet',
-        "Office": 'applications-office',
-        "Settings": 'applications-engineering',
-        "System": 'applications-system',
-        "Utility": 'applications-other',
-}
-
 def index_applications():
-    out = []
-    apps = []
-    #return [('Test', 'test', 'help', '/usr/share/applications/firefox.desktop')]
-    for dr in [d.rstrip('/')+'/applications/' for d in os.getenv('XDG_DATA_DIRS').split(':')]:
-        for d in os.listdir(dr):
-            try: 
-                desktop = DesktopEntry.DesktopEntry(dr+d)
-                if desktop.getName() not in apps and desktop.getIcon() and not 'wine' in desktop.getExec(): out += [(desktop.getName(), desktop.getExec(), desktop.getIcon(), desktop.getFileName())]
-                apps += [desktop.getName()]
-            except: pass
-    del(apps)
-    out.sort()
-    return out
+    tree = gmenu.lookup_tree('applications.menu')
+    return tree.root.get_contents()
     
 def find_apps(query, index):
     out = []
